@@ -1,0 +1,68 @@
+-- Create storage buckets for media
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES 
+  ('images', 'images', true, 10485760, ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml']),
+  ('videos', 'videos', true, 104857600, ARRAY['video/mp4', 'video/webm', 'video/ogg']),
+  ('documents', 'documents', true, 20971520, ARRAY['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'])
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage policies for images bucket
+CREATE POLICY "Public read images" ON storage.objects
+  FOR SELECT TO anon, authenticated
+  USING (bucket_id = 'images');
+
+CREATE POLICY "Authenticated upload images" ON storage.objects
+  FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'images');
+
+CREATE POLICY "Authenticated delete images" ON storage.objects
+  FOR DELETE TO authenticated
+  USING (bucket_id = 'images');
+
+-- Storage policies for videos bucket
+CREATE POLICY "Public read videos" ON storage.objects
+  FOR SELECT TO anon, authenticated
+  USING (bucket_id = 'videos');
+
+CREATE POLICY "Authenticated upload videos" ON storage.objects
+  FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'videos');
+
+CREATE POLICY "Authenticated delete videos" ON storage.objects
+  FOR DELETE TO authenticated
+  USING (bucket_id = 'videos');
+
+-- Storage policies for documents bucket
+CREATE POLICY "Public read documents" ON storage.objects
+  FOR SELECT TO anon, authenticated
+  USING (bucket_id = 'documents');
+
+CREATE POLICY "Authenticated upload documents" ON storage.objects
+  FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'documents');
+
+CREATE POLICY "Authenticated delete documents" ON storage.objects
+  FOR DELETE TO authenticated
+  USING (bucket_id = 'documents');
+
+-- Media library table to track uploads
+CREATE TABLE media_library (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  file_name TEXT NOT NULL,
+  original_name TEXT NOT NULL,
+  file_type TEXT NOT NULL CHECK (file_type IN ('image', 'video', 'document')),
+  file_url TEXT NOT NULL,
+  file_size INTEGER,
+  mime_type TEXT,
+  alt_text TEXT,
+  uploaded_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE media_library ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public read media_library"
+  ON media_library FOR SELECT TO anon, authenticated USING (true);
+
+CREATE POLICY "Authenticated manage media_library"
+  ON media_library FOR ALL TO authenticated USING (true) WITH CHECK (true);

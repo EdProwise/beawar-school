@@ -1,0 +1,238 @@
+-- Site Settings (single row for global settings)
+CREATE TABLE site_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  school_name TEXT NOT NULL DEFAULT 'Orbit School',
+  tagline TEXT DEFAULT 'Excellence in Education',
+  logo_url TEXT,
+  favicon_url TEXT,
+  primary_color TEXT DEFAULT '#4C0DC9',
+  accent_color TEXT DEFAULT '#d4a853',
+  email TEXT DEFAULT 'info@school.edu',
+  phone TEXT DEFAULT '+1 234 567 8900',
+  phone_secondary TEXT,
+  address TEXT DEFAULT '123 Education Lane, City 12345',
+  map_embed_url TEXT,
+  facebook_url TEXT,
+  twitter_url TEXT,
+  instagram_url TEXT,
+  youtube_url TEXT,
+  whatsapp_number TEXT,
+  footer_text TEXT DEFAULT 'Shaping future leaders with excellence.',
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE site_settings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read site_settings"
+  ON site_settings FOR SELECT
+  TO anon, authenticated
+  USING (true);
+
+CREATE POLICY "Allow authenticated update site_settings"
+  ON site_settings FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Insert default settings
+INSERT INTO site_settings (school_name, tagline, email, phone, address) 
+VALUES ('Orbit School', 'Excellence in Education', 'info@orbitschool.edu', '+1 234 567 8900', '123 Education Lane, Academic District, City 12345');
+
+-- Hero Slides
+CREATE TABLE hero_slides (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  subtitle TEXT,
+  image_url TEXT NOT NULL,
+  cta_primary_text TEXT DEFAULT 'Apply Now',
+  cta_primary_link TEXT DEFAULT '/admissions',
+  cta_secondary_text TEXT,
+  cta_secondary_link TEXT,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE hero_slides ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read hero_slides"
+  ON hero_slides FOR SELECT TO anon, authenticated
+  USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage hero_slides"
+  ON hero_slides FOR ALL TO authenticated
+  USING (true) WITH CHECK (true);
+
+-- Insert default hero slides
+INSERT INTO hero_slides (title, subtitle, image_url, sort_order) VALUES
+  ('Welcome to Orbit School', 'Shaping Future Leaders with Excellence', '/hero_campus.png', 1),
+  ('World-Class Education', 'Discover your potential with our innovative curriculum', '/classroom.png', 2),
+  ('State-of-the-Art Facilities', 'Modern infrastructure for holistic development', '/library.png', 3);
+
+-- About Section Content
+CREATE TABLE about_content (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  section_title TEXT DEFAULT 'About Us',
+  section_subtitle TEXT,
+  main_heading TEXT DEFAULT 'Welcome to Orbit School',
+  main_description TEXT,
+  mission_title TEXT DEFAULT 'Our Mission',
+  mission_text TEXT,
+  vision_title TEXT DEFAULT 'Our Vision',
+  vision_text TEXT,
+  history_text TEXT,
+  main_image_url TEXT,
+  secondary_image_url TEXT,
+  years_of_excellence INTEGER DEFAULT 25,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE about_content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read about_content"
+  ON about_content FOR SELECT TO anon, authenticated USING (true);
+
+CREATE POLICY "Allow authenticated manage about_content"
+  ON about_content FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+INSERT INTO about_content (main_heading, main_description, mission_text, vision_text, years_of_excellence) VALUES
+  ('Welcome to Orbit School', 
+   'Since 1995, Orbit School has been at the forefront of educational excellence, nurturing young minds to become future leaders.',
+   'To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world.',
+   'To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society.',
+   25);
+
+-- Highlight Cards (Why Choose Us)
+CREATE TABLE highlight_cards (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  icon_name TEXT DEFAULT 'Star',
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE highlight_cards ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read highlight_cards"
+  ON highlight_cards FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage highlight_cards"
+  ON highlight_cards FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+INSERT INTO highlight_cards (title, description, icon_name, sort_order) VALUES
+  ('Expert Faculty', 'Experienced and dedicated teachers committed to student success', 'Users', 1),
+  ('Modern Facilities', 'State-of-the-art infrastructure for comprehensive learning', 'Building', 2),
+  ('Holistic Development', 'Focus on academics, sports, arts, and character building', 'Award', 3),
+  ('Global Standards', 'International curriculum aligned with global education standards', 'Globe', 4);
+
+-- Statistics/Counters
+CREATE TABLE statistics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  label TEXT NOT NULL,
+  value INTEGER NOT NULL,
+  suffix TEXT DEFAULT '+',
+  icon_name TEXT,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE statistics ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read statistics"
+  ON statistics FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage statistics"
+  ON statistics FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+INSERT INTO statistics (label, value, suffix, icon_name, sort_order) VALUES
+  ('Students', 1500, '+', 'Users', 1),
+  ('Expert Teachers', 120, '+', 'GraduationCap', 2),
+  ('Years of Excellence', 25, '+', 'Calendar', 3),
+  ('Success Rate', 98, '%', 'TrendingUp', 4);
+
+-- Academic Programs
+CREATE TABLE academic_programs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  subtitle TEXT,
+  description TEXT,
+  icon_name TEXT DEFAULT 'BookOpen',
+  image_url TEXT,
+  grade_range TEXT,
+  features TEXT[], -- Array of features
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE academic_programs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read academic_programs"
+  ON academic_programs FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage academic_programs"
+  ON academic_programs FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+INSERT INTO academic_programs (title, subtitle, description, grade_range, icon_name, sort_order) VALUES
+  ('Pre-Primary', 'Ages 3-5', 'Foundation years focusing on play-based learning and early development', 'Nursery - KG', 'Baby', 1),
+  ('Primary School', 'Grades 1-5', 'Building strong academic foundations with focus on literacy and numeracy', 'Grades 1-5', 'BookOpen', 2),
+  ('Secondary School', 'Grades 6-10', 'Comprehensive education preparing students for higher studies', 'Grades 6-10', 'GraduationCap', 3),
+  ('Higher Secondary', 'Grades 11-12', 'Specialized streams in Science, Commerce, and Arts', 'Grades 11-12', 'Award', 4);
+
+-- Facilities
+CREATE TABLE facilities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  description TEXT,
+  icon_name TEXT DEFAULT 'Building',
+  image_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE facilities ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read facilities"
+  ON facilities FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage facilities"
+  ON facilities FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+INSERT INTO facilities (title, description, icon_name, image_url, sort_order) VALUES
+  ('Smart Classrooms', 'Digital learning with interactive boards and modern technology', 'Monitor', '/classroom.png', 1),
+  ('Library', 'Extensive collection of 20,000+ books and digital resources', 'BookOpen', '/library.png', 2),
+  ('Science Labs', 'Well-equipped labs for Physics, Chemistry, and Biology', 'FlaskConical', '/science_lab.png', 3),
+  ('Sports Complex', 'Indoor and outdoor facilities for various sports', 'Dumbbell', '/sports.png', 4),
+  ('Computer Lab', 'Modern computers with high-speed internet access', 'Monitor', '/classroom.png', 5),
+  ('Transport', 'GPS-enabled buses covering all major routes', 'Bus', '/hero_campus.png', 6);
+
+-- Page Content (for static pages like Privacy, Terms, etc.)
+CREATE TABLE page_content (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  page_slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT,
+  meta_description TEXT,
+  is_published BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE page_content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read published pages"
+  ON page_content FOR SELECT TO anon, authenticated USING (is_published = true);
+
+CREATE POLICY "Allow authenticated manage pages"
+  ON page_content FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Enable realtime for key tables
+ALTER PUBLICATION supabase_realtime ADD TABLE site_settings;
+ALTER PUBLICATION supabase_realtime ADD TABLE hero_slides;
+ALTER PUBLICATION supabase_realtime ADD TABLE statistics;

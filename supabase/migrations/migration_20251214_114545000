@@ -1,0 +1,97 @@
+-- Admissions Page Content
+CREATE TABLE admissions_content (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  page_title TEXT DEFAULT 'Admissions',
+  page_subtitle TEXT DEFAULT 'Join Our School Community',
+  intro_text TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE admissions_content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read admissions_content"
+  ON admissions_content FOR SELECT TO anon, authenticated USING (true);
+
+CREATE POLICY "Allow authenticated manage admissions_content"
+  ON admissions_content FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Insert default content
+INSERT INTO admissions_content (page_title, page_subtitle, intro_text) VALUES
+  ('Admissions', 'Join Our School Community', 'We welcome applications from families who share our commitment to academic excellence and holistic development.');
+
+-- Admission Steps
+CREATE TABLE admission_steps (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  step_number INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  icon_name TEXT DEFAULT 'CheckCircle',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE admission_steps ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read admission_steps"
+  ON admission_steps FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage admission_steps"
+  ON admission_steps FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Insert default steps
+INSERT INTO admission_steps (step_number, title, description, icon_name) VALUES
+  (1, 'Submit Inquiry', 'Fill out the online inquiry form with your child''s details', 'FileText'),
+  (2, 'Campus Visit', 'Schedule a tour of our campus and meet our faculty', 'Building'),
+  (3, 'Application Form', 'Complete the detailed application form with required documents', 'ClipboardList'),
+  (4, 'Assessment', 'Your child will undergo an age-appropriate assessment', 'GraduationCap'),
+  (5, 'Interview', 'Meet with our admissions team for a brief interview', 'Users'),
+  (6, 'Admission Decision', 'Receive your admission decision and complete enrollment', 'CheckCircle');
+
+-- Admission Requirements
+CREATE TABLE admission_requirements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  items TEXT[] NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE admission_requirements ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read admission_requirements"
+  ON admission_requirements FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage admission_requirements"
+  ON admission_requirements FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Insert default requirements
+INSERT INTO admission_requirements (title, items, sort_order) VALUES
+  ('Required Documents', ARRAY['Birth Certificate (Original + Copy)', 'Previous School Report Cards', 'Transfer Certificate (if applicable)', 'Passport Size Photographs (4)', 'Parent/Guardian ID Proof', 'Address Proof'], 1),
+  ('Age Criteria', ARRAY['Pre-Primary: 3-5 years as of March 31st', 'Grade 1: 5.5-6.5 years as of March 31st', 'Other Grades: Age-appropriate admissions'], 2);
+
+-- Admission FAQs
+CREATE TABLE admission_faqs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE admission_faqs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read admission_faqs"
+  ON admission_faqs FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage admission_faqs"
+  ON admission_faqs FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Insert default FAQs
+INSERT INTO admission_faqs (question, answer, sort_order) VALUES
+  ('What is the admission process?', 'Our admission process includes inquiry submission, campus visit, application form, assessment, interview, and final admission decision.', 1),
+  ('What documents are required?', 'You need to submit birth certificate, previous report cards, transfer certificate (if applicable), photographs, and parent ID proof.', 2),
+  ('Is there an entrance test?', 'Yes, we conduct age-appropriate assessments to understand your child''s learning level and needs.', 3),
+  ('What are the fee payment options?', 'We offer annual, semi-annual, and quarterly payment options. Details are shared upon admission.', 4);

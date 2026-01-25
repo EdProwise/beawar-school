@@ -1,0 +1,31 @@
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { HeroSection } from "@/components/sections/HeroSection";
+import { AboutSection } from "@/components/sections/AboutSection";
+import { StatsSection } from "@/components/sections/StatsSection";
+import { AcademicsSection } from "@/components/sections/AcademicsSection";
+import { FacilitiesSection } from "@/components/sections/FacilitiesSection";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
+import { NewsSection } from "@/components/sections/NewsSection";
+import { ContactCTASection } from "@/components/sections/ContactCTASection";
+
+const Index = () => {
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        <HeroSection />
+        <AboutSection />
+        <StatsSection />
+        <AcademicsSection />
+        <FacilitiesSection />
+        <TestimonialsSection />
+        <NewsSection />
+        <ContactCTASection />
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Index;

@@ -1,0 +1,38 @@
+-- Add CTA button texts to site settings
+ALTER TABLE site_settings 
+ADD COLUMN IF NOT EXISTS cta_primary_text TEXT DEFAULT 'Apply Now',
+ADD COLUMN IF NOT EXISTS cta_primary_link TEXT DEFAULT '/admissions',
+ADD COLUMN IF NOT EXISTS cta_secondary_text TEXT DEFAULT 'Portal',
+ADD COLUMN IF NOT EXISTS cta_secondary_link TEXT DEFAULT '/students';
+
+-- Portal Pages Content
+CREATE TABLE portal_content (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  portal_type TEXT NOT NULL CHECK (portal_type IN ('students', 'teachers', 'parents')),
+  page_title TEXT NOT NULL,
+  page_subtitle TEXT,
+  intro_text TEXT,
+  login_url TEXT,
+  features TEXT[],
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(portal_type)
+);
+
+ALTER TABLE portal_content ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read portal_content"
+  ON portal_content FOR SELECT TO anon, authenticated USING (is_active = true);
+
+CREATE POLICY "Allow authenticated manage portal_content"
+  ON portal_content FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Insert default portal content
+INSERT INTO portal_content (portal_type, page_title, page_subtitle, intro_text, features) VALUES
+  ('students', 'Student Portal', 'Access your learning dashboard', 'Welcome to your personalized learning space. Access your timetable, assignments, exam results, and learning resources all in one place.', 
+   ARRAY['View Timetable & Schedule', 'Submit Online Homework', 'Check Exam Results', 'Access Learning Resources', 'Download Study Materials', 'View Attendance Records']),
+  ('teachers', 'Teacher Portal', 'Manage your classroom', 'Access your teaching dashboard with tools for attendance, lesson planning, and student management.',
+   ARRAY['Mark Student Attendance', 'Lesson Planning Tools', 'Access Staff Notice Board', 'Grade Assignments', 'View Class Schedules', 'Communicate with Parents']),
+  ('parents', 'Parent Portal', 'Stay connected with your child''s education', 'Track your child''s academic progress, fee payments, and school announcements all in one place.',
+   ARRAY['Pay School Fees Online', 'View Attendance Reports', 'Read Announcements', 'Download School App', 'Track Academic Progress', 'Communicate with Teachers']);
