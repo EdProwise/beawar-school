@@ -9,16 +9,10 @@ import { useAuth } from "@/hooks/use-auth";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
-  {
-    name: "Academics",
-    path: "/academics",
-    children: [
-      { name: "Curriculum", path: "/academics#curriculum" },
-      { name: "Pre-Primary", path: "/academics#pre-primary" },
-      { name: "Primary", path: "/academics#primary" },
-      { name: "Secondary", path: "/academics#secondary" },
-    ],
-  },
+    {
+      name: "Academics",
+      path: "/academics",
+    },
   { name: "Admissions", path: "/admissions" },
   { name: "Facilities", path: "/facilities" },
   { name: "Gallery", path: "/gallery" },
