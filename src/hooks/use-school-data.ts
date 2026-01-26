@@ -537,3 +537,28 @@ export function useMilestones() {
     },
   });
 }
+
+// Academic Excellence
+export interface AcademicExcellence {
+  id: string;
+  title: string;
+  description: string | null;
+  icon_name: string | null;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export function useAcademicExcellence() {
+  return useQuery({
+    queryKey: ["academic-excellence"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("academic_excellence")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as AcademicExcellence[];
+    },
+  });
+}

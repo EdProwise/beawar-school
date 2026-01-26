@@ -6,10 +6,10 @@ import {
   Users, Award, Clock, Target, Baby, GraduationCap, Lightbulb, BookOpen, Loader2 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAcademicPrograms, useSiteSettings } from "@/hooks/use-school-data";
+import { useAcademicPrograms, useSiteSettings, useAcademicExcellence } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, React.ElementType> = {
-  Baby, BookOpen, GraduationCap, Award, Lightbulb, Users, Palette, Book, Microscope, Calculator
+  Baby, BookOpen, GraduationCap, Award, Lightbulb, Users, Palette, Book, Microscope, Calculator, Clock, Target
 };
 
 const features = [
@@ -54,14 +54,22 @@ const defaultPrograms = [
   },
 ];
 
-const Academics = () => {
-  const { data: settings } = useSiteSettings();
-  const { data: programs = [], isLoading } = useAcademicPrograms();
+  const Academics = () => {
+    const { data: settings } = useSiteSettings();
+    const { data: programs = [], isLoading } = useAcademicPrograms();
+    const { data: excellenceHighlights = [], isLoading: isLoadingExcellence } = useAcademicExcellence();
 
-  const schoolName = settings?.school_name || "Orbit School";
-  const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
+    const schoolName = settings?.school_name || "Orbit School";
+    const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
+    const displayExcellence = excellenceHighlights.length > 0 ? excellenceHighlights : features.map((f, i) => ({
+      id: `feature-${i}`,
+      title: f.title,
+      description: f.description,
+      icon_name: f.title.includes("Class") ? "Users" : f.title.includes("Faculty") ? "Award" : f.title.includes("Hours") ? "Clock" : "Target"
+    }));
 
-  return (
+    return (
+
     <div className="min-h-screen">
       <Header />
       <main>
@@ -163,15 +171,18 @@ const Academics = () => {
               </h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {features.map((feature, index) => (
-                <div key={index} className="bg-card p-6 rounded-2xl border border-border text-center hover:shadow-medium transition-all">
-                  <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
-                    <feature.icon className="w-7 h-7 text-primary" />
+              {displayExcellence.map((feature) => {
+                const IconComponent = iconMap[feature.icon_name || "Award"] || Award;
+                return (
+                  <div key={feature.id} className="bg-card p-6 rounded-2xl border border-border text-center hover:shadow-medium transition-all">
+                    <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
+                      <IconComponent className="w-7 h-7 text-primary" />
+                    </div>
+                    <h3 className="font-heading font-semibold text-foreground mb-2">{feature.title}</h3>
+                    <p className="text-muted-foreground text-sm">{feature.description}</p>
                   </div>
-                  <h3 className="font-heading font-semibold text-foreground mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.description}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
