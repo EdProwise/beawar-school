@@ -10,11 +10,25 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Pencil, Trash2, Save, GripVertical } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, Save, GripVertical, FileUp, File, ExternalLink } from "lucide-react";
 
 export default function AdminAdmissionsContent() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isUploading, setIsUploading] = useState(false);
+
+  // Settings State
+  const { data: settings = {}, isLoading: settingsLoading } = useQuery({
+    queryKey: ["admin-admission-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("admission_settings").select("*");
+      if (error) throw error;
+      return data.reduce((acc: any, curr: any) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      }, {});
+    },
+  });
 
   // Steps State
   const [stepDialogOpen, setStepDialogOpen] = useState(false);
@@ -134,6 +148,50 @@ export default function AdminAdmissionsContent() {
     setFaqDialogOpen(true);
   };
 
+  const handleBrochureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      toast({ title: "Invalid file type", description: "Please upload a PDF file", variant: "destructive" });
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split(".").pop();
+      const fileName = `brochure-${Date.now()}.${fileExt}`;
+      const filePath = `admissions/${fileName}`;
+
+      // 1. Upload to Storage
+      const { error: uploadError, data } = await supabase.storage
+        .from("school-assets")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("school-assets")
+        .getPublicUrl(filePath);
+
+      // 3. Update Database
+      const { error: dbError } = await supabase
+        .from("admission_settings")
+        .upsert({ key: "brochure_url", value: publicUrl }, { onConflict: "key" });
+
+      if (dbError) throw dbError;
+
+      queryClient.invalidateQueries({ queryKey: ["admin-admission-settings"] });
+      toast({ title: "Brochure uploaded successfully!" });
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="mb-8">
@@ -145,7 +203,57 @@ export default function AdminAdmissionsContent() {
         <TabsList>
           <TabsTrigger value="steps">Admission Steps</TabsTrigger>
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
+          <TabsTrigger value="brochure">Brochure</TabsTrigger>
         </TabsList>
+
+        {/* Brochure Tab */}
+        <TabsContent value="brochure" className="space-y-4">
+          <div className="bg-card rounded-xl border border-border p-6 max-w-2xl">
+            <h2 className="text-xl font-semibold mb-4">School Brochure</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Upload the latest school brochure PDF. This will be available for download on the public admissions page.
+            </p>
+
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4">
+                <Label htmlFor="brochure-upload">Upload PDF Brochure</Label>
+                <div className="flex items-center gap-4">
+                  <Input
+                    id="brochure-upload"
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleBrochureUpload}
+                    disabled={isUploading}
+                    className="max-w-xs cursor-pointer"
+                  />
+                  {isUploading && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
+                </div>
+              </div>
+
+              {settings.brochure_url && (
+                <div className="mt-8 p-4 bg-secondary/30 rounded-lg border border-border flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <File className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Current Brochure</p>
+                      <p className="text-xs text-muted-foreground">PDF Document</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={settings.brochure_url} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        View
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
 
         {/* Steps Tab */}
         <TabsContent value="steps" className="space-y-4">

@@ -250,6 +250,25 @@ export function useAdmissionFaqs() {
   });
 }
 
+// Admission Settings
+export function useAdmissionSettings() {
+  return useQuery({
+    queryKey: ["admission-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("admission_settings")
+        .select("*");
+      if (error) throw error;
+      
+      // Convert array to key-value object
+      return data.reduce((acc: any, curr: any) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      }, {});
+    },
+  });
+}
+
 // Newsletter Subscription Hook
 export function useSubscribeNewsletter() {
   const { toast } = useToast();

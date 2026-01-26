@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { CheckCircle, ArrowRight, HelpCircle, Loader2, FileText, Building, ClipboardList, GraduationCap, Users } from "lucide-react";
+import { CheckCircle, ArrowRight, HelpCircle, Loader2, FileText, Building, ClipboardList, GraduationCap, Users, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubmitAdmissionInquiry, useAdmissionSteps, useAdmissionFaqs } from "@/hooks/use-school-data";
+import { useSubmitAdmissionInquiry, useAdmissionSteps, useAdmissionFaqs, useAdmissionSettings } from "@/hooks/use-school-data";
 import {
   Accordion,
   AccordionContent,
@@ -31,6 +31,7 @@ const Admissions = () => {
   const submitMutation = useSubmitAdmissionInquiry();
   const { data: steps = [], isLoading: stepsLoading } = useAdmissionSteps();
   const { data: faqs = [], isLoading: faqsLoading } = useAdmissionFaqs();
+  const { data: settings = {} } = useAdmissionSettings();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,12 +65,23 @@ const Admissions = () => {
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto mb-8">
               Begin your child's journey to excellence. Applications are now open.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Button variant="gold" size="lg" asChild>
-                <a href="#inquiry">Apply Now</a>
-              </Button>
-              <Button variant="hero" size="lg">Download Brochure</Button>
-            </div>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <Button variant="gold" size="lg" asChild>
+                  <a href="#inquiry">Apply Now</a>
+                </Button>
+                <Button variant="hero" size="lg" asChild disabled={!settings.brochure_url}>
+                  <a 
+                    href={settings.brochure_url || "#"} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <FileDown className="w-5 h-5" />
+                    Download Brochure
+                  </a>
+                </Button>
+              </div>
+
           </div>
         </section>
 
