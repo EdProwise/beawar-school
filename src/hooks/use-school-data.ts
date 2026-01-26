@@ -325,6 +325,7 @@ export interface SiteSettings {
   footer_text: string | null;
   primary_color: string | null;
   accent_color: string | null;
+  campus_video_url: string | null;
 }
 
 export function useSiteSettings() {
@@ -489,6 +490,7 @@ export interface Facility {
   description: string | null;
   icon_name: string | null;
   image_url: string | null;
+  images: string[] | null;
   is_active: boolean;
   sort_order: number;
 }
