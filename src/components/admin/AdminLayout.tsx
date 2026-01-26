@@ -53,7 +53,7 @@ const navItems: NavItem[] = [
   { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },
   {
-    name: "Settings > Admin user",
+    name: "Settings",
     icon: Settings,
     children: [
       { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
@@ -77,7 +77,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const { user, profile, signOut } = useAuth();
 
   // Keep settings open if one of its children is active
-  const isSettingsActive = navItems.find(i => i.name === "Settings > Admin user")?.children?.some(c => location.pathname === c.path);
+  const isSettingsActive = navItems.find(i => i.name === "Settings")?.children?.some(c => location.pathname === c.path);
   const [settingsOpen, setSettingsOpen] = useState(isSettingsActive);
 
   const handleSignOut = async () => {
