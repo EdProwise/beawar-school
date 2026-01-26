@@ -34,7 +34,14 @@ interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
-const navItems = [
+interface NavItem {
+  name: string;
+  path?: string;
+  icon: any;
+  children?: { name: string; path: string; icon: any }[];
+}
+
+const navItems: NavItem[] = [
   { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Admission Inquiries", path: "/admin/admissions", icon: Users },
   { name: "Contact Message", path: "/admin/contacts", icon: Mail },
@@ -45,15 +52,21 @@ const navItems = [
   { name: "Facilities", path: "/admin/facilities-manage", icon: Building },
   { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },
-  { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
-  { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
-  { name: "Highlights", path: "/admin/highlights", icon: Star },
-  { name: "Site Settings", path: "/admin/settings", icon: Settings },
-  { name: "Portal", path: "/admin/portals", icon: UserCircle },
-  { name: "Media Library", path: "/admin/media", icon: FolderOpen },
-  { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
-  { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
-  { name: "Legal Pages", path: "/admin/legal", icon: Shield },
+  {
+    name: "Settings > Admin user",
+    icon: Settings,
+    children: [
+      { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
+      { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
+      { name: "Highlights", path: "/admin/highlights", icon: Star },
+      { name: "Site Settings", path: "/admin/settings", icon: Settings },
+      { name: "Portal", path: "/admin/portals", icon: UserCircle },
+      { name: "Media Library", path: "/admin/media", icon: FolderOpen },
+      { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
+      { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
+      { name: "Legal Pages", path: "/admin/legal", icon: Shield },
+    ]
+  },
 ];
 
 export function AdminLayout({ children }: AdminLayoutProps) {
@@ -62,6 +75,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
+
+  // Keep settings open if one of its children is active
+  const isSettingsActive = navItems.find(i => i.name === "Settings > Admin user")?.children?.some(c => location.pathname === c.path);
+  const [settingsOpen, setSettingsOpen] = useState(isSettingsActive);
 
   const handleSignOut = async () => {
     await signOut();
@@ -99,11 +116,59 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         {/* Navigation - Scrollable */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
           {navItems.map((item) => {
+            if (item.children) {
+              const hasActiveChild = item.children.some(c => location.pathname === c.path);
+              
+              return (
+                <div key={item.name} className="space-y-1">
+                  <button
+                    onClick={() => setSettingsOpen(!settingsOpen)}
+                    className={cn(
+                      "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all",
+                      hasActiveChild
+                        ? "text-primary"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <item.icon className="w-5 h-5" />
+                      {item.name}
+                    </div>
+                    <ChevronDown className={cn("w-4 h-4 transition-transform", settingsOpen && "rotate-180")} />
+                  </button>
+                  
+                  {settingsOpen && (
+                    <div className="pl-4 space-y-1">
+                      {item.children.map((child) => {
+                        const isActive = location.pathname === child.path;
+                        return (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            onClick={() => setSidebarOpen(false)}
+                            className={cn(
+                              "flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-medium transition-all",
+                              isActive
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            )}
+                          >
+                            <child.icon className="w-4 h-4" />
+                            {child.name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.path}
-                to={item.path}
+                to={item.path!}
                 onClick={() => setSidebarOpen(false)}
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all",
@@ -147,7 +212,17 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </button>
 
           <h1 className="font-heading font-semibold text-foreground hidden lg:block">
-            {navItems.find((item) => item.path === location.pathname)?.name || "Dashboard"}
+            {(() => {
+              const activeItem = navItems.find((item) => item.path === location.pathname);
+              if (activeItem) return activeItem.name;
+              
+              const activeChild = navItems
+                .flatMap(item => item.children || [])
+                .find(child => child.path === location.pathname);
+              if (activeChild) return activeChild.name;
+              
+              return "Dashboard";
+            })()}
           </h1>
 
           {/* User Menu */}
