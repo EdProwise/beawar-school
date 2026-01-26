@@ -513,3 +513,27 @@ export function useCoreValues() {
     },
   });
 }
+
+// Milestones
+export interface Milestone {
+  id: string;
+  year: string;
+  event: string;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export function useMilestones() {
+  return useQuery({
+    queryKey: ["milestones"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("milestones")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as Milestone[];
+    },
+  });
+}

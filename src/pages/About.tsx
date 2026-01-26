@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, Star, Shield, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues } from "@/hooks/use-school-data";
+import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, any> = {
   Award,
@@ -14,22 +14,15 @@ const iconMap: Record<string, any> = {
   Shield,
   Target,
   Lightbulb,
+  CheckCircle,
 };
-
-const defaultMilestones = [
-  { year: "1995", event: "School founded with 50 students" },
-  { year: "2000", event: "Expanded to include Higher Secondary" },
-  { year: "2005", event: "New campus inaugurated with modern facilities" },
-  { year: "2010", event: "Achieved 100% board results" },
-  { year: "2015", event: "Introduced digital learning initiatives" },
-  { year: "2020", event: "Ranked among top 10 schools in the region" },
-];
 
 const About = () => {
   const { data: settings } = useSiteSettings();
   const { data: about, isLoading: aboutLoading } = useAboutContent();
   const { data: highlights = [] } = useHighlightCards();
   const { data: coreValues = [] } = useCoreValues();
+  const { data: milestones = [] } = useMilestones();
 
   const schoolName = settings?.school_name || "Orbit School";
   const yearsOfExcellence = about?.years_of_excellence || 25;
@@ -177,9 +170,9 @@ const About = () => {
                 Key milestones in our {yearsOfExcellence}+ years of educational excellence
               </p>
             </div>
-            <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {defaultMilestones.map((milestone, index) => (
-                <div key={index} className="text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+              {milestones.map((milestone, index) => (
+                <div key={milestone.id} className="text-center">
                   <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
                     <span className="font-heading font-bold text-accent-foreground">{milestone.year}</span>
                   </div>
@@ -200,13 +193,18 @@ const About = () => {
                 </h2>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {highlights.map((card) => (
-                  <div key={card.id} className="p-6 rounded-2xl bg-card border border-border">
-                    <CheckCircle className="w-8 h-8 text-primary mb-4" />
-                    <h3 className="font-heading font-semibold text-foreground mb-2">{card.title}</h3>
-                    <p className="text-muted-foreground text-sm">{card.description}</p>
-                  </div>
-                ))}
+                {highlights.map((card) => {
+                  const IconComponent = iconMap[card.icon_name || "CheckCircle"] || CheckCircle;
+                  return (
+                    <div key={card.id} className="p-6 rounded-2xl bg-card border border-border group hover:border-primary transition-colors">
+                      <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <IconComponent className="w-6 h-6 text-primary group-hover:text-primary-foreground" />
+                      </div>
+                      <h3 className="font-heading font-semibold text-foreground mb-2">{card.title}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{card.description}</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section>

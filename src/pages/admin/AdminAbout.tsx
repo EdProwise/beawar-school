@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Plus, Trash2, Award, Heart, Users, GraduationCap, Star, Shield, Target, Lightbulb } from "lucide-react";
-import { useCoreValues, type CoreValue } from "@/hooks/use-school-data";
+import { Loader2, Save, Plus, Trash2, Award, Heart, Users, GraduationCap, Star, Shield, Target, Lightbulb, CheckCircle } from "lucide-react";
+import { useCoreValues, useMilestones, useHighlightCards, type CoreValue, type Milestone, type HighlightCard } from "@/hooks/use-school-data";
 
 const iconOptions = [
   { name: "Award", icon: Award },
@@ -19,6 +19,7 @@ const iconOptions = [
   { name: "Shield", icon: Shield },
   { name: "Target", icon: Target },
   { name: "Lightbulb", icon: Lightbulb },
+  { name: "CheckCircle", icon: CheckCircle },
 ];
 
 export default function AdminAbout() {
@@ -39,6 +40,8 @@ export default function AdminAbout() {
   });
 
   const { data: coreValues, isLoading: coreValuesLoading } = useCoreValues();
+  const { data: milestones, isLoading: milestonesLoading } = useMilestones();
+  const { data: highlights, isLoading: highlightsLoading } = useHighlightCards();
 
   const [formData, setFormData] = useState({
     section_title: "About Us",
@@ -54,6 +57,8 @@ export default function AdminAbout() {
   });
 
   const [localCoreValues, setLocalCoreValues] = useState<CoreValue[]>([]);
+  const [localMilestones, setLocalMilestones] = useState<Milestone[]>([]);
+  const [localHighlights, setLocalHighlights] = useState<HighlightCard[]>([]);
 
   useEffect(() => {
     if (about) {
@@ -73,10 +78,16 @@ export default function AdminAbout() {
   }, [about]);
 
   useEffect(() => {
-    if (coreValues) {
-      setLocalCoreValues(coreValues);
-    }
+    if (coreValues) setLocalCoreValues(coreValues);
   }, [coreValues]);
+
+  useEffect(() => {
+    if (milestones) setLocalMilestones(milestones);
+  }, [milestones]);
+
+  useEffect(() => {
+    if (highlights) setLocalHighlights(highlights);
+  }, [highlights]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -96,52 +107,88 @@ export default function AdminAbout() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-about-content"] });
       queryClient.invalidateQueries({ queryKey: ["about-content"] });
-      toast({ title: "About content saved successfully!" });
-    },
-    onError: () => {
-      toast({ title: "Error saving content", variant: "destructive" });
     },
   });
 
   const coreValueMutation = useMutation({
     mutationFn: async (values: CoreValue[]) => {
-      // For simplicity, we delete and re-insert or update
-      // But let's do it properly: update existing, insert new, delete removed
       const existingIds = coreValues?.map(v => v.id) || [];
       const currentIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
       const toDelete = existingIds.filter(id => !currentIds.includes(id));
 
       if (toDelete.length > 0) {
-        const { error: delError } = await supabase
-          .from("core_values")
-          .delete()
-          .in("id", toDelete);
+        const { error: delError } = await supabase.from("core_values").delete().in("id", toDelete);
         if (delError) throw delError;
       }
 
       for (const val of values) {
         if (val.id.startsWith("temp-")) {
           const { id, ...rest } = val;
-          const { error: insError } = await supabase
-            .from("core_values")
-            .insert([rest]);
+          const { error: insError } = await supabase.from("core_values").insert([rest]);
           if (insError) throw insError;
         } else {
-          const { error: updError } = await supabase
-            .from("core_values")
-            .update(val)
-            .eq("id", val.id);
+          const { error: updError } = await supabase.from("core_values").update(val).eq("id", val.id);
           if (updError) throw updError;
         }
       }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["core-values"] });
-      toast({ title: "Core values saved successfully!" });
     },
-    onError: (error) => {
-      console.error("Error saving core values:", error);
-      toast({ title: "Error saving core values", variant: "destructive" });
+  });
+
+  const milestoneMutation = useMutation({
+    mutationFn: async (values: Milestone[]) => {
+      const existingIds = milestones?.map(m => m.id) || [];
+      const currentIds = values.map(m => m.id).filter(id => !id.startsWith("temp-"));
+      const toDelete = existingIds.filter(id => !currentIds.includes(id));
+
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase.from("milestones").delete().in("id", toDelete);
+        if (delError) throw delError;
+      }
+
+      for (const val of values) {
+        if (val.id.startsWith("temp-")) {
+          const { id, ...rest } = val;
+          const { error: insError } = await supabase.from("milestones").insert([rest]);
+          if (insError) throw insError;
+        } else {
+          const { error: updError } = await supabase.from("milestones").update(val).eq("id", val.id);
+          if (updError) throw updError;
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["milestones"] });
+    },
+  });
+
+  const highlightMutation = useMutation({
+    mutationFn: async (values: HighlightCard[]) => {
+      const existingIds = highlights?.map(h => h.id) || [];
+      const currentIds = values.map(h => h.id).filter(id => !id.startsWith("temp-"));
+      const toDelete = existingIds.filter(id => !currentIds.includes(id));
+
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase.from("highlight_cards").delete().in("id", toDelete);
+        if (delError) throw delError;
+      }
+
+      for (const val of values) {
+        if (val.id.startsWith("temp-")) {
+          const { id, ...rest } = val;
+          const { error: insError } = await supabase.from("highlight_cards").insert([rest]);
+          if (insError) throw insError;
+        } else {
+          const { error: updError } = await supabase.from("highlight_cards").update(val).eq("id", val.id);
+          if (updError) throw updError;
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["highlight-cards"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-highlight-cards"] });
     },
   });
 
@@ -165,13 +212,61 @@ export default function AdminAbout() {
     setLocalCoreValues(localCoreValues.filter(v => v.id !== id));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateMutation.mutate(formData);
-    coreValueMutation.mutate(localCoreValues);
+  const handleAddMilestone = () => {
+    const newVal: Milestone = {
+      id: `temp-${Date.now()}`,
+      year: "2024",
+      event: "New Milestone",
+      is_active: true,
+      sort_order: localMilestones.length,
+    };
+    setLocalMilestones([...localMilestones, newVal]);
   };
 
-  if (isLoading) {
+  const handleUpdateMilestone = (id: string, updates: Partial<Milestone>) => {
+    setLocalMilestones(localMilestones.map(m => m.id === id ? { ...m, ...updates } : m));
+  };
+
+  const handleRemoveMilestone = (id: string) => {
+    setLocalMilestones(localMilestones.filter(m => m.id !== id));
+  };
+
+  const handleAddHighlight = () => {
+    const newVal: HighlightCard = {
+      id: `temp-${Date.now()}`,
+      title: "New Highlight",
+      description: "",
+      icon_name: "CheckCircle",
+      is_active: true,
+      sort_order: localHighlights.length,
+    };
+    setLocalHighlights([...localHighlights, newVal]);
+  };
+
+  const handleUpdateHighlight = (id: string, updates: Partial<HighlightCard>) => {
+    setLocalHighlights(localHighlights.map(h => h.id === id ? { ...h, ...updates } : h));
+  };
+
+  const handleRemoveHighlight = (id: string) => {
+    setLocalHighlights(localHighlights.filter(h => h.id !== id));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await Promise.all([
+        updateMutation.mutateAsync(formData),
+        coreValueMutation.mutateAsync(localCoreValues),
+        milestoneMutation.mutateAsync(localMilestones),
+        highlightMutation.mutateAsync(localHighlights),
+      ]);
+      toast({ title: "All changes saved successfully!" });
+    } catch (error) {
+      toast({ title: "Error saving changes", variant: "destructive" });
+    }
+  };
+
+  if (isLoading || coreValuesLoading || milestonesLoading || highlightsLoading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-64">
@@ -183,16 +278,19 @@ export default function AdminAbout() {
 
   return (
     <AdminLayout>
-      <div className="max-w-4xl">
+      <div className="max-w-4xl pb-20">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">About Page Content</h1>
-          <p className="text-muted-foreground">Manage your school's about page content</p>
+          <p className="text-muted-foreground">Manage your school's about page content, milestones, and highlights</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Main Content */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4">Main Content</h2>
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              Main Content
+            </h2>
             <div className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -220,7 +318,7 @@ export default function AdminAbout() {
                   id="main_heading"
                   value={formData.main_heading}
                   onChange={(e) => setFormData({ ...formData, main_heading: e.target.value })}
-                  placeholder="Welcome to Our School"
+                  placeholder="A Legacy of Educational Excellence"
                 />
               </div>
               <div>
@@ -230,7 +328,7 @@ export default function AdminAbout() {
                   value={formData.main_description}
                   onChange={(e) => setFormData({ ...formData, main_description: e.target.value })}
                   rows={4}
-                  placeholder="Describe your school's story and what makes it unique..."
+                  placeholder="Describe your school's story..."
                 />
               </div>
               <div>
@@ -255,35 +353,38 @@ export default function AdminAbout() {
             </div>
           </div>
 
-          {/* Mission */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4">Mission</h2>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="mission_title">Mission Title</Label>
-                <Input
-                  id="mission_title"
-                  value={formData.mission_title}
-                  onChange={(e) => setFormData({ ...formData, mission_title: e.target.value })}
-                  placeholder="Our Mission"
-                />
-              </div>
-              <div>
-                <Label htmlFor="mission_text">Mission Statement</Label>
-                <Textarea
-                  id="mission_text"
-                  value={formData.mission_text}
-                  onChange={(e) => setFormData({ ...formData, mission_text: e.target.value })}
-                  rows={4}
-                  placeholder="To provide holistic education that empowers students..."
-                />
+          {/* Mission & Vision */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Target className="w-5 h-5 text-primary" />
+                Mission
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="mission_title">Mission Title</Label>
+                  <Input
+                    id="mission_title"
+                    value={formData.mission_title}
+                    onChange={(e) => setFormData({ ...formData, mission_title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="mission_text">Mission Statement</Label>
+                  <Textarea
+                    id="mission_text"
+                    value={formData.mission_text}
+                    onChange={(e) => setFormData({ ...formData, mission_text: e.target.value })}
+                    rows={4}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-
-            {/* Vision */}
-            <div className="bg-card rounded-xl border border-border p-6">
-              <h2 className="text-xl font-semibold mb-4">Vision</h2>
+            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <Shield className="w-5 h-5 text-accent-dark" />
+                Vision
+              </h2>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="vision_title">Vision Title</Label>
@@ -291,7 +392,6 @@ export default function AdminAbout() {
                     id="vision_title"
                     value={formData.vision_title}
                     onChange={(e) => setFormData({ ...formData, vision_title: e.target.value })}
-                    placeholder="Our Vision"
                   />
                 </div>
                 <div>
@@ -301,89 +401,194 @@ export default function AdminAbout() {
                     value={formData.vision_text}
                     onChange={(e) => setFormData({ ...formData, vision_text: e.target.value })}
                     rows={4}
-                    placeholder="To be a globally recognized institution..."
                   />
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Core Values */}
-            <div className="bg-card rounded-xl border border-border p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Core Values (The Pillars of Our Education)</h2>
-                <Button type="button" variant="outline" size="sm" onClick={handleAddCoreValue}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Value
-                </Button>
-              </div>
-              <div className="space-y-4">
-                {localCoreValues.map((value, index) => (
-                  <div key={value.id} className="p-4 bg-background rounded-lg border border-border relative group">
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveCoreValue(value.id)}
-                      className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-4">
-                        <div>
-                          <Label>Title</Label>
-                          <Input
-                            value={value.title}
-                            onChange={(e) => handleUpdateCoreValue(value.id, { title: e.target.value })}
-                            placeholder="Value Title"
-                          />
-                        </div>
-                        <div>
-                          <Label>Icon</Label>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {iconOptions.map((opt) => (
-                              <button
-                                key={opt.name}
-                                type="button"
-                                onClick={() => handleUpdateCoreValue(value.id, { icon_name: opt.name })}
-                                className={`p-2 rounded-md border ${value.icon_name === opt.name ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border hover:border-primary"}`}
-                                title={opt.name}
-                              >
-                                <opt.icon className="w-5 h-5" />
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
+          {/* Core Values */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Heart className="w-5 h-5 text-destructive" />
+                Core Values
+              </h2>
+              <Button type="button" variant="outline" size="sm" onClick={handleAddCoreValue}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Value
+              </Button>
+            </div>
+            <div className="space-y-4">
+              {localCoreValues.map((value) => (
+                <div key={value.id} className="p-4 bg-background rounded-lg border border-border relative group">
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCoreValue(value.id)}
+                    className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
                       <div>
-                        <Label>Description</Label>
-                        <Textarea
-                          value={value.description || ""}
-                          onChange={(e) => handleUpdateCoreValue(value.id, { description: e.target.value })}
-                          rows={4}
-                          placeholder="Describe this core value..."
+                        <Label>Title</Label>
+                        <Input
+                          value={value.title}
+                          onChange={(e) => handleUpdateCoreValue(value.id, { title: e.target.value })}
                         />
                       </div>
+                      <div>
+                        <Label>Icon</Label>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {iconOptions.map((opt) => (
+                            <button
+                              key={opt.name}
+                              type="button"
+                              onClick={() => handleUpdateCoreValue(value.id, { icon_name: opt.name })}
+                              className={`p-2 rounded-md border ${value.icon_name === opt.name ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border hover:border-primary"}`}
+                            >
+                              <opt.icon className="w-4 h-4" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Textarea
+                        value={value.description || ""}
+                        onChange={(e) => handleUpdateCoreValue(value.id, { description: e.target.value })}
+                        rows={4}
+                      />
                     </div>
                   </div>
-                ))}
-                {localCoreValues.length === 0 && (
-                  <p className="text-center py-8 text-muted-foreground bg-secondary/20 rounded-lg border border-dashed border-border">
-                    No core values added yet. Click "Add Value" to start.
-                  </p>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
+          </div>
 
-            <Button type="submit" size="lg" disabled={updateMutation.isPending || coreValueMutation.isPending}>
-              {updateMutation.isPending || coreValueMutation.isPending ? (
+          {/* Our Journey (Milestones) */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Star className="w-5 h-5 text-yellow-500" />
+                Our Journey (Milestones)
+              </h2>
+              <Button type="button" variant="outline" size="sm" onClick={handleAddMilestone}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Milestone
+              </Button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {localMilestones.map((milestone) => (
+                <div key={milestone.id} className="p-4 bg-background rounded-lg border border-border relative group">
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveMilestone(milestone.id)}
+                    className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Year</Label>
+                      <Input
+                        value={milestone.year}
+                        onChange={(e) => handleUpdateMilestone(milestone.id, { year: e.target.value })}
+                        placeholder="e.g., 1995"
+                      />
+                    </div>
+                    <div>
+                      <Label>Event</Label>
+                      <Input
+                        value={milestone.event}
+                        onChange={(e) => handleUpdateMilestone(milestone.id, { event: e.target.value })}
+                        placeholder="e.g., School founded"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <>
-                <Save className="w-4 h-4" />
-                Save Content
-              </>
-            )}
-          </Button>
+          {/* Why Choose Orbit International (Highlights) */}
+          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Award className="w-5 h-5 text-primary" />
+                Why Choose Orbit International
+              </h2>
+              <Button type="button" variant="outline" size="sm" onClick={handleAddHighlight}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Highlight
+              </Button>
+            </div>
+            <div className="space-y-4">
+              {localHighlights.map((highlight) => (
+                <div key={highlight.id} className="p-4 bg-background rounded-lg border border-border relative group">
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveHighlight(highlight.id)}
+                    className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Title</Label>
+                        <Input
+                          value={highlight.title}
+                          onChange={(e) => handleUpdateHighlight(highlight.id, { title: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>Icon</Label>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {iconOptions.map((opt) => (
+                            <button
+                              key={opt.name}
+                              type="button"
+                              onClick={() => handleUpdateHighlight(highlight.id, { icon_name: opt.name })}
+                              className={`p-2 rounded-md border ${highlight.icon_name === opt.name ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border hover:border-primary"}`}
+                            >
+                              <opt.icon className="w-4 h-4" />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Textarea
+                        value={highlight.description || ""}
+                        onChange={(e) => handleUpdateHighlight(highlight.id, { description: e.target.value })}
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 sticky bottom-8 py-4 bg-background/80 backdrop-blur-sm border-t border-border mt-12">
+            <Button
+              type="submit"
+              size="lg"
+              className="px-12"
+              disabled={updateMutation.isPending || coreValueMutation.isPending || milestoneMutation.isPending || highlightMutation.isPending}
+            >
+              {updateMutation.isPending || coreValueMutation.isPending || milestoneMutation.isPending || highlightMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save All Changes
+            </Button>
+          </div>
         </form>
       </div>
     </AdminLayout>
