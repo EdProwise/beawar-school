@@ -7,7 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, Award, Heart, Users, GraduationCap, Star, Shield, Target, Lightbulb } from "lucide-react";
+import { useCoreValues, type CoreValue } from "@/hooks/use-school-data";
+
+const iconOptions = [
+  { name: "Award", icon: Award },
+  { name: "Heart", icon: Heart },
+  { name: "Users", icon: Users },
+  { name: "GraduationCap", icon: GraduationCap },
+  { name: "Star", icon: Star },
+  { name: "Shield", icon: Shield },
+  { name: "Target", icon: Target },
+  { name: "Lightbulb", icon: Lightbulb },
+];
 
 export default function AdminAbout() {
   const { toast } = useToast();
@@ -26,6 +38,8 @@ export default function AdminAbout() {
     },
   });
 
+  const { data: coreValues, isLoading: coreValuesLoading } = useCoreValues();
+
   const [formData, setFormData] = useState({
     section_title: "About Us",
     main_heading: "",
@@ -38,6 +52,8 @@ export default function AdminAbout() {
     main_image_url: "",
     years_of_excellence: 25,
   });
+
+  const [localCoreValues, setLocalCoreValues] = useState<CoreValue[]>([]);
 
   useEffect(() => {
     if (about) {
@@ -55,6 +71,12 @@ export default function AdminAbout() {
       });
     }
   }, [about]);
+
+  useEffect(() => {
+    if (coreValues) {
+      setLocalCoreValues(coreValues);
+    }
+  }, [coreValues]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -81,9 +103,72 @@ export default function AdminAbout() {
     },
   });
 
+  const coreValueMutation = useMutation({
+    mutationFn: async (values: CoreValue[]) => {
+      // For simplicity, we delete and re-insert or update
+      // But let's do it properly: update existing, insert new, delete removed
+      const existingIds = coreValues?.map(v => v.id) || [];
+      const currentIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
+      const toDelete = existingIds.filter(id => !currentIds.includes(id));
+
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase
+          .from("core_values")
+          .delete()
+          .in("id", toDelete);
+        if (delError) throw delError;
+      }
+
+      for (const val of values) {
+        if (val.id.startsWith("temp-")) {
+          const { id, ...rest } = val;
+          const { error: insError } = await supabase
+            .from("core_values")
+            .insert([rest]);
+          if (insError) throw insError;
+        } else {
+          const { error: updError } = await supabase
+            .from("core_values")
+            .update(val)
+            .eq("id", val.id);
+          if (updError) throw updError;
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["core-values"] });
+      toast({ title: "Core values saved successfully!" });
+    },
+    onError: (error) => {
+      console.error("Error saving core values:", error);
+      toast({ title: "Error saving core values", variant: "destructive" });
+    },
+  });
+
+  const handleAddCoreValue = () => {
+    const newVal: CoreValue = {
+      id: `temp-${Date.now()}`,
+      title: "New Value",
+      description: "",
+      icon_name: "Award",
+      is_active: true,
+      sort_order: localCoreValues.length,
+    };
+    setLocalCoreValues([...localCoreValues, newVal]);
+  };
+
+  const handleUpdateCoreValue = (id: string, updates: Partial<CoreValue>) => {
+    setLocalCoreValues(localCoreValues.map(v => v.id === id ? { ...v, ...updates } : v));
+  };
+
+  const handleRemoveCoreValue = (id: string) => {
+    setLocalCoreValues(localCoreValues.filter(v => v.id !== id));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMutation.mutate(formData);
+    coreValueMutation.mutate(localCoreValues);
   };
 
   if (isLoading) {
@@ -196,34 +281,101 @@ export default function AdminAbout() {
             </div>
           </div>
 
-          {/* Vision */}
-          <div className="bg-card rounded-xl border border-border p-6">
-            <h2 className="text-xl font-semibold mb-4">Vision</h2>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="vision_title">Vision Title</Label>
-                <Input
-                  id="vision_title"
-                  value={formData.vision_title}
-                  onChange={(e) => setFormData({ ...formData, vision_title: e.target.value })}
-                  placeholder="Our Vision"
-                />
-              </div>
-              <div>
-                <Label htmlFor="vision_text">Vision Statement</Label>
-                <Textarea
-                  id="vision_text"
-                  value={formData.vision_text}
-                  onChange={(e) => setFormData({ ...formData, vision_text: e.target.value })}
-                  rows={4}
-                  placeholder="To be a globally recognized institution..."
-                />
+            {/* Vision */}
+            <div className="bg-card rounded-xl border border-border p-6">
+              <h2 className="text-xl font-semibold mb-4">Vision</h2>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="vision_title">Vision Title</Label>
+                  <Input
+                    id="vision_title"
+                    value={formData.vision_title}
+                    onChange={(e) => setFormData({ ...formData, vision_title: e.target.value })}
+                    placeholder="Our Vision"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="vision_text">Vision Statement</Label>
+                  <Textarea
+                    id="vision_text"
+                    value={formData.vision_text}
+                    onChange={(e) => setFormData({ ...formData, vision_text: e.target.value })}
+                    rows={4}
+                    placeholder="To be a globally recognized institution..."
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <Button type="submit" size="lg" disabled={updateMutation.isPending}>
-            {updateMutation.isPending ? (
+            {/* Core Values */}
+            <div className="bg-card rounded-xl border border-border p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Core Values (The Pillars of Our Education)</h2>
+                <Button type="button" variant="outline" size="sm" onClick={handleAddCoreValue}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Value
+                </Button>
+              </div>
+              <div className="space-y-4">
+                {localCoreValues.map((value, index) => (
+                  <div key={value.id} className="p-4 bg-background rounded-lg border border-border relative group">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveCoreValue(value.id)}
+                      className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-4">
+                        <div>
+                          <Label>Title</Label>
+                          <Input
+                            value={value.title}
+                            onChange={(e) => handleUpdateCoreValue(value.id, { title: e.target.value })}
+                            placeholder="Value Title"
+                          />
+                        </div>
+                        <div>
+                          <Label>Icon</Label>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {iconOptions.map((opt) => (
+                              <button
+                                key={opt.name}
+                                type="button"
+                                onClick={() => handleUpdateCoreValue(value.id, { icon_name: opt.name })}
+                                className={`p-2 rounded-md border ${value.icon_name === opt.name ? "bg-primary text-primary-foreground border-primary" : "bg-card border-border hover:border-primary"}`}
+                                title={opt.name}
+                              >
+                                <opt.icon className="w-5 h-5" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <Label>Description</Label>
+                        <Textarea
+                          value={value.description || ""}
+                          onChange={(e) => handleUpdateCoreValue(value.id, { description: e.target.value })}
+                          rows={4}
+                          placeholder="Describe this core value..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {localCoreValues.length === 0 && (
+                  <p className="text-center py-8 text-muted-foreground bg-secondary/20 rounded-lg border border-dashed border-border">
+                    No core values added yet. Click "Add Value" to start.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <Button type="submit" size="lg" disabled={updateMutation.isPending || coreValueMutation.isPending}>
+              {updateMutation.isPending || coreValueMutation.isPending ? (
+
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>

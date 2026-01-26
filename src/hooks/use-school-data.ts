@@ -488,3 +488,28 @@ export function useFacilities() {
     },
   });
 }
+
+// Core Values
+export interface CoreValue {
+  id: string;
+  title: string;
+  description: string | null;
+  icon_name: string | null;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export function useCoreValues() {
+  return useQuery({
+    queryKey: ["core-values"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("core_values")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as CoreValue[];
+    },
+  });
+}

@@ -1,9 +1,20 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2 } from "lucide-react";
+import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, Star, Shield, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAboutContent, useHighlightCards, useSiteSettings } from "@/hooks/use-school-data";
+import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues } from "@/hooks/use-school-data";
+
+const iconMap: Record<string, any> = {
+  Award,
+  Heart,
+  Users,
+  GraduationCap,
+  Star,
+  Shield,
+  Target,
+  Lightbulb,
+};
 
 const defaultMilestones = [
   { year: "1995", event: "School founded with 50 students" },
@@ -14,17 +25,11 @@ const defaultMilestones = [
   { year: "2020", event: "Ranked among top 10 schools in the region" },
 ];
 
-const values = [
-  { icon: Award, title: "Excellence", description: "Striving for the highest standards in all endeavors" },
-  { icon: Heart, title: "Integrity", description: "Upholding honesty and strong moral principles" },
-  { icon: Users, title: "Inclusivity", description: "Welcoming diversity and fostering belonging" },
-  { icon: GraduationCap, title: "Innovation", description: "Embracing new ideas and creative solutions" },
-];
-
 const About = () => {
   const { data: settings } = useSiteSettings();
   const { data: about, isLoading: aboutLoading } = useAboutContent();
   const { data: highlights = [] } = useHighlightCards();
+  const { data: coreValues = [] } = useCoreValues();
 
   const schoolName = settings?.school_name || "Orbit School";
   const yearsOfExcellence = about?.years_of_excellence || 25;
@@ -142,15 +147,18 @@ const About = () => {
               </h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {values.map((value, index) => (
-                <div key={index} className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-medium transition-all">
-                  <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
-                    <value.icon className="w-8 h-8 text-primary" />
+              {coreValues.map((value, index) => {
+                const IconComponent = iconMap[value.icon_name || "Award"] || Award;
+                return (
+                  <div key={value.id} className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-medium transition-all">
+                    <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
+                      <IconComponent className="w-8 h-8 text-primary" />
+                    </div>
+                    <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{value.title}</h3>
+                    <p className="text-muted-foreground text-sm">{value.description}</p>
                   </div>
-                  <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{value.title}</h3>
-                  <p className="text-muted-foreground text-sm">{value.description}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
