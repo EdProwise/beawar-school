@@ -136,18 +136,18 @@ const Admissions = () => {
           <div className="container">
             <div className="max-w-4xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-12 items-center">
-                <div>
-                  <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-                    Get Started
-                  </span>
-                  <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-                    Submit Your Inquiry
-                  </h2>
-                  <p className="text-muted-foreground mb-8">
-                    Take the first step towards giving your child an exceptional education. 
-                    Fill out the form and our admissions team will get in touch within 24 hours.
-                  </p>
-                  <div className="space-y-4">
+                  <div>
+                    <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
+                      Get Started
+                    </span>
+                    <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
+                      {settings.inquiry_title || "Submit Your Inquiry"}
+                    </h2>
+                    <p className="text-muted-foreground mb-8">
+                      {settings.inquiry_description || "Take the first step towards giving your child an exceptional education. Fill out the form and our admissions team will get in touch within 24 hours."}
+                    </p>
+                    <div className="space-y-4">
+
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
                         <CheckCircle className="w-5 h-5 text-accent-foreground" />
@@ -167,92 +167,102 @@ const Admissions = () => {
                       <span className="text-foreground">Meet our faculty and staff</span>
                     </div>
                   </div>
+                  </div>
+
+                  {settings.use_custom_inquiry_html === 'true' && settings.inquiry_html ? (
+                    <div className="bg-card rounded-2xl p-4 shadow-elegant border border-border overflow-hidden">
+                      <div 
+                        dangerouslySetInnerHTML={{ __html: settings.inquiry_html }} 
+                        className="w-full flex justify-center"
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-card rounded-2xl p-8 shadow-elegant border border-border">
+                      <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Parent's Name *
+                          </label>
+                          <input
+                            type="text"
+                            name="parent_name"
+                            value={formData.parent_name}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="Enter your name"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Email Address *
+                          </label>
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="your@email.com"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Phone Number *
+                          </label>
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                            placeholder="+91 98765 43210"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-foreground mb-2">
+                            Grade Applying For *
+                          </label>
+                          <select
+                            name="grade_applying"
+                            value={formData.grade_applying}
+                            onChange={handleChange}
+                            required
+                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                          >
+                            <option value="">Select Grade</option>
+                            <option value="Pre-Primary">Pre-Primary (Nursery - KG)</option>
+                            <option value="Grade 1-5">Primary (Grade 1-5)</option>
+                            <option value="Grade 6-8">Middle School (Grade 6-8)</option>
+                            <option value="Grade 9-10">Secondary (Grade 9-10)</option>
+                            <option value="Grade 11-12">Higher Secondary (Grade 11-12)</option>
+                          </select>
+                        </div>
+                        <Button 
+                          type="submit" 
+                          className="w-full" 
+                          size="lg"
+                          disabled={submitMutation.isPending}
+                        >
+                          {submitMutation.isPending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Submitting...
+                            </>
+                          ) : (
+                            <>
+                              Submit Inquiry
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </Button>
+                      </form>
+                    </div>
+                  )}
                 </div>
 
-                <div className="bg-card rounded-2xl p-8 shadow-elegant border border-border">
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        Parent's Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="parent_name"
-                        value={formData.parent_name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                        placeholder="Enter your name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                        placeholder="your@email.com"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        Phone Number *
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                        placeholder="+91 98765 43210"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">
-                        Grade Applying For *
-                      </label>
-                      <select
-                        name="grade_applying"
-                        value={formData.grade_applying}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                      >
-                        <option value="">Select Grade</option>
-                        <option value="Pre-Primary">Pre-Primary (Nursery - KG)</option>
-                        <option value="Grade 1-5">Primary (Grade 1-5)</option>
-                        <option value="Grade 6-8">Middle School (Grade 6-8)</option>
-                        <option value="Grade 9-10">Secondary (Grade 9-10)</option>
-                        <option value="Grade 11-12">Higher Secondary (Grade 11-12)</option>
-                      </select>
-                    </div>
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
-                      size="lg"
-                      disabled={submitMutation.isPending}
-                    >
-                      {submitMutation.isPending ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : (
-                        <>
-                          Submit Inquiry
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
-                    </Button>
-                  </form>
-                </div>
-              </div>
             </div>
           </div>
         </section>

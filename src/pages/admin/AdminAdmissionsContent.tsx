@@ -16,6 +16,15 @@ export default function AdminAdmissionsContent() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Settings Form State
+  const [inquiryForm, setInquiryForm] = useState({
+    inquiry_title: "",
+    inquiry_description: "",
+    inquiry_html: "",
+    use_custom_inquiry_html: false,
+  });
 
   // Settings State
   const { data: settings = {}, isLoading: settingsLoading } = useQuery({
@@ -23,10 +32,42 @@ export default function AdminAdmissionsContent() {
     queryFn: async () => {
       const { data, error } = await supabase.from("admission_settings").select("*");
       if (error) throw error;
-      return data.reduce((acc: any, curr: any) => {
+      const settingsMap = data.reduce((acc: any, curr: any) => {
         acc[curr.key] = curr.value;
         return acc;
       }, {});
+      
+      // Sync form state when data is loaded
+      setInquiryForm({
+        inquiry_title: settingsMap.inquiry_title || "Submit Your Inquiry",
+        inquiry_description: settingsMap.inquiry_description || "",
+        inquiry_html: settingsMap.inquiry_html || "",
+        use_custom_inquiry_html: settingsMap.use_custom_inquiry_html === 'true',
+      });
+      
+      return settingsMap;
+    },
+  });
+
+  const saveSettingsMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const updates = Object.entries(data).map(([key, value]) => ({
+        key,
+        value: String(value),
+      }));
+
+      const { error } = await supabase
+        .from("admission_settings")
+        .upsert(updates, { onConflict: "key" });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-admission-settings"] });
+      toast({ title: "Settings saved successfully!" });
+    },
+    onError: (error: any) => {
+      toast({ title: "Error saving settings", description: error.message, variant: "destructive" });
     },
   });
 
@@ -204,7 +245,89 @@ export default function AdminAdmissionsContent() {
           <TabsTrigger value="steps">Admission Steps</TabsTrigger>
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
           <TabsTrigger value="brochure">Brochure</TabsTrigger>
+          <TabsTrigger value="inquiry">Inquiry Section</TabsTrigger>
         </TabsList>
+
+        {/* Inquiry Section Tab */}
+        <TabsContent value="inquiry" className="space-y-4">
+          <div className="bg-card rounded-xl border border-border p-6 max-w-2xl">
+            <h2 className="text-xl font-semibold mb-4">Inquiry Section Settings</h2>
+            <p className="text-sm text-muted-foreground mb-6">
+              Customize the "Submit Your Inquiry" section on the admissions page.
+            </p>
+
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="inquiry_title">Section Title</Label>
+                <Input
+                  id="inquiry_title"
+                  value={inquiryForm.inquiry_title}
+                  onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_title: e.target.value })}
+                  placeholder="e.g., Submit Your Inquiry"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="inquiry_description">Section Description</Label>
+                <Textarea
+                  id="inquiry_description"
+                  value={inquiryForm.inquiry_description}
+                  onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_description: e.target.value })}
+                  placeholder="Enter section description..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg border border-border">
+                <div className="space-y-0.5">
+                  <Label className="text-base">Use External Code (HTML)</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Enable this to replace the default inquiry form with custom HTML code (e.g., Google Forms iframe).
+                  </p>
+                </div>
+                <Switch
+                  checked={inquiryForm.use_custom_inquiry_html}
+                  onCheckedChange={(checked) => setInquiryForm({ ...inquiryForm, use_custom_inquiry_html: checked })}
+                />
+              </div>
+
+              {inquiryForm.use_custom_inquiry_html && (
+                <div className="space-y-2">
+                  <Label htmlFor="inquiry_html">External HTML Code</Label>
+                  <Textarea
+                    id="inquiry_html"
+                    value={inquiryForm.inquiry_html}
+                    onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_html: e.target.value })}
+                    placeholder="Paste your HTML/iframe code here..."
+                    className="font-mono text-sm"
+                    rows={8}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Note: Be careful with external code as it can affect page layout and security.
+                  </p>
+                </div>
+              )}
+
+              <Button 
+                onClick={() => saveSettingsMutation.mutate(inquiryForm)}
+                disabled={saveSettingsMutation.isPending}
+                className="w-full"
+              >
+                {saveSettingsMutation.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
 
         {/* Brochure Tab */}
         <TabsContent value="brochure" className="space-y-4">
