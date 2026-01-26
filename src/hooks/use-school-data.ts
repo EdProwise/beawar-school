@@ -22,7 +22,7 @@ export interface NewsEvent {
 export interface GalleryItem {
   id: string;
   title: string;
-  category: "campus" | "events" | "sports" | "academics" | "labs" | "arts";
+  category: string;
   image_url: string;
   description: string | null;
   is_published: boolean;
@@ -135,7 +135,7 @@ export function useGalleryItems(category?: string) {
         .order("sort_order", { ascending: true });
 
       if (category && category !== "All") {
-        query = query.eq("category", category.toLowerCase());
+        query = query.eq("category", category);
       }
 
       const { data, error } = await query;

@@ -4,12 +4,27 @@ import { Footer } from "@/components/layout/Footer";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGalleryItems } from "@/hooks/use-school-data";
-
-const categories = ["All", "Campus", "Events", "Sports", "Academics", "Labs"];
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const { data: categories = ["All"] } = useQuery({
+    queryKey: ["gallery-categories-public"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gallery_items")
+        .select("category")
+        .eq("is_published", true)
+        .order("category");
+      if (error) return ["All"];
+      const unique = Array.from(new Set(data.map((i) => i.category)));
+      // Normalize to Title Case for display if needed, but keeping as is for consistency with Admin
+      return ["All", ...unique];
+    },
+  });
   
   const { data: galleryItems = [], isLoading } = useGalleryItems(activeCategory);
 

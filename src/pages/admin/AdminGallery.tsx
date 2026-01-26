@@ -37,6 +37,19 @@ const AdminGallery = () => {
     },
   });
 
+  const { data: existingCategories = [] } = useQuery({
+    queryKey: ["gallery-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gallery_items")
+        .select("category")
+        .order("category");
+      if (error) return [];
+      const unique = Array.from(new Set(data.map(i => i.category)));
+      return unique;
+    },
+  });
+
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("gallery_items").delete().eq("id", id);
@@ -156,10 +169,12 @@ const AdminGallery = () => {
       {isModalOpen && (
         <GalleryModal
           item={editingItem}
+          categories={existingCategories}
           onClose={() => setIsModalOpen(false)}
           onSuccess={() => {
             setIsModalOpen(false);
             queryClient.invalidateQueries({ queryKey: ["admin-gallery"] });
+            queryClient.invalidateQueries({ queryKey: ["gallery-categories"] });
           }}
         />
       )}
@@ -169,11 +184,12 @@ const AdminGallery = () => {
 
 interface GalleryModalProps {
   item: GalleryItem | null;
+  categories: string[];
   onClose: () => void;
   onSuccess: () => void;
 }
 
-function GalleryModal({ item, onClose, onSuccess }: GalleryModalProps) {
+function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProps) {
   const [formData, setFormData] = useState({
     title: item?.title || "",
     category: item?.category || "campus",
@@ -237,22 +253,31 @@ function GalleryModal({ item, onClose, onSuccess }: GalleryModalProps) {
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Category *</label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
-            >
-              <option value="campus">Campus</option>
-              <option value="events">Events</option>
-              <option value="sports">Sports</option>
-              <option value="academics">Academics</option>
-              <option value="labs">Labs</option>
-              <option value="arts">Arts</option>
-            </select>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Category *</label>
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                list="category-suggestions"
+                placeholder="Select or type a category"
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
+                required
+              />
+              <datalist id="category-suggestions">
+                {categories.map((cat) => (
+                  <option key={cat} value={cat} />
+                ))}
+                {!categories.includes("campus") && <option value="campus" />}
+                {!categories.includes("events") && <option value="events" />}
+                {!categories.includes("sports") && <option value="sports" />}
+                {!categories.includes("academics") && <option value="academics" />}
+                {!categories.includes("labs") && <option value="labs" />}
+                {!categories.includes("arts") && <option value="arts" />}
+              </datalist>
+            </div>
+
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">Image *</label>
             <FileUpload
