@@ -218,8 +218,8 @@ export const mongodb = {
         upload: async (path: string, file: File) => {
           try {
             const formData = new FormData();
-            formData.append('file', file);
             formData.append('path', path);
+            formData.append('file', file);
 
             const response = await fetch(`${API_URL.replace('/api', '')}/api/storage/upload`, {
               method: 'POST',
@@ -232,12 +232,26 @@ export const mongodb = {
             return { data: null, error: { message: error.message } };
           }
         },
-        getPublicUrl: (path: string) => {
-          const baseUrl = API_URL.replace('/api', '');
-          return { data: { publicUrl: `${baseUrl}/uploads/${path}` } };
-        },
-      })
-    }
+          getPublicUrl: (path: string) => {
+            const baseUrl = API_URL.replace('/api', '');
+            return { data: { publicUrl: `${baseUrl}/uploads/${path}` } };
+          },
+          remove: async (paths: string[]) => {
+            try {
+              const response = await fetch(`${API_URL.replace('/api', '')}/api/storage/remove`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ paths }),
+              });
+              const data = await response.json();
+              if (!response.ok) throw new Error(data.error);
+              return { data, error: null };
+            } catch (error: any) {
+              return { data: null, error: { message: error.message } };
+            }
+          }
+        })
+      }
 
 };
 
