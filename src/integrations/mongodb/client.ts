@@ -101,7 +101,10 @@ class MongoDBQueryBuilder {
         response = await fetch(`${API_URL}/${this.table}/upsert`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: this.body }),
+          body: JSON.stringify({ 
+            data: this.body,
+            onConflict: this.params.get('onConflict') 
+          }),
         });
       } else {
         throw new Error(`Unsupported method: ${this.method}`);
@@ -175,9 +178,12 @@ class MongoDBQueryBuilder {
     return this;
   }
 
-  upsert(values: any) {
+  upsert(values: any, options?: { onConflict?: string }) {
     this.method = 'UPSERT';
     this.body = values;
+    if (options?.onConflict) {
+      this.params.set('onConflict', options.onConflict);
+    }
     return this;
   }
 }

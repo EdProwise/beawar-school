@@ -300,19 +300,29 @@ app.delete('/api/:table/:id', async (req, res) => {
 app.post('/api/:table/upsert', async (req, res) => {
   try {
     const { table } = req.params;
-    const { data } = req.body;
+    const { data, onConflict } = req.body;
     const Model = getModel(table);
     
-    // For upsert, we use the 'id' field if provided, or fallback to data.id
-    const id = data.id;
-    const result = await Model.findOneAndUpdate(
-      { id: id },
-      data,
-      { upsert: true, new: true }
-    );
+    const items = Array.isArray(data) ? data : [data];
+    const conflictKey = onConflict || 'id';
+
+    const results = [];
+    for (const item of items) {
+      const filter: any = {};
+      // Support finding by the conflict key
+      filter[conflictKey] = item[conflictKey];
+      
+      const result = await Model.findOneAndUpdate(
+        filter,
+        item,
+        { upsert: true, new: true, setDefaultsOnInsert: true }
+      );
+      results.push(result);
+    }
     
-    res.json(result);
+    res.json(Array.isArray(data) ? results : results[0]);
   } catch (error: any) {
+    console.error('Upsert error:', error);
     res.status(500).json({ error: error.message });
   }
 });
