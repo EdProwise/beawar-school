@@ -71,13 +71,13 @@ const Contact = () => {
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>
-          <div className="container relative text-center">
-            <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
-              Contact Us
-            </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Submit your enquiry
-            </h1>
+            <div className="container relative text-center">
+              <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
+                Submit your enquiry
+              </span>
+              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
+                Submit your enquiry
+              </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
               We'd love to hear from you. Reach out for admissions inquiries, general questions, or to schedule a campus tour.
             </p>
