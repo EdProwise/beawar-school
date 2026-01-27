@@ -12,6 +12,63 @@ const iconMap: Record<string, React.ElementType> = {
   Baby, BookOpen, GraduationCap, Award, Lightbulb, Users, Palette, Book, Microscope, Calculator, Clock, Target
 };
 
+const cardStyles = [
+  {
+    light: "bg-indigo-50/50",
+    iconBg: "bg-indigo-100",
+    iconText: "text-indigo-600",
+    border: "border-indigo-100",
+    hoverBorder: "group-hover:border-indigo-300",
+    shadow: "hover:shadow-indigo-500/10",
+    gradient: "from-indigo-500/20 to-transparent"
+  },
+  {
+    light: "bg-rose-50/50",
+    iconBg: "bg-rose-100",
+    iconText: "text-rose-600",
+    border: "border-rose-100",
+    hoverBorder: "group-hover:border-rose-300",
+    shadow: "hover:shadow-rose-500/10",
+    gradient: "from-rose-500/20 to-transparent"
+  },
+  {
+    light: "bg-amber-50/50",
+    iconBg: "bg-amber-100",
+    iconText: "text-amber-600",
+    border: "border-amber-100",
+    hoverBorder: "group-hover:border-amber-300",
+    shadow: "hover:shadow-amber-500/10",
+    gradient: "from-amber-500/20 to-transparent"
+  },
+  {
+    light: "bg-emerald-50/50",
+    iconBg: "bg-emerald-100",
+    iconText: "text-emerald-600",
+    border: "border-emerald-100",
+    hoverBorder: "group-hover:border-emerald-300",
+    shadow: "hover:shadow-emerald-500/10",
+    gradient: "from-emerald-500/20 to-transparent"
+  },
+  {
+    light: "bg-purple-50/50",
+    iconBg: "bg-purple-100",
+    iconText: "text-purple-600",
+    border: "border-purple-100",
+    hoverBorder: "group-hover:border-purple-300",
+    shadow: "hover:shadow-purple-500/10",
+    gradient: "from-purple-500/20 to-transparent"
+  },
+  {
+    light: "bg-sky-50/50",
+    iconBg: "bg-sky-100",
+    iconText: "text-sky-600",
+    border: "border-sky-100",
+    hoverBorder: "group-hover:border-sky-300",
+    shadow: "hover:shadow-sky-500/10",
+    gradient: "from-sky-500/20 to-transparent"
+  }
+];
+
 const features = [
   { icon: Users, title: "Small Class Sizes", description: "Personalized attention with optimal student-teacher ratio" },
   { icon: Award, title: "Experienced Faculty", description: "Highly qualified and passionate educators" },
@@ -163,7 +220,7 @@ const defaultPrograms = [
         </section>
 
         {/* Features */}
-        <section className="py-20 bg-secondary/50">
+        <section className="py-20 bg-background">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
@@ -173,16 +230,28 @@ const defaultPrograms = [
                 Academic Excellence at {schoolName}
               </h2>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {displayExcellence.map((feature) => {
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {displayExcellence.map((feature, index) => {
                 const IconComponent = iconMap[feature.icon_name || "Award"] || Award;
+                const style = cardStyles[index % cardStyles.length];
                 return (
-                  <div key={feature.id} className="bg-card p-6 rounded-2xl border border-border text-center hover:shadow-medium transition-all">
-                    <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="w-7 h-7 text-primary" />
+                  <div 
+                    key={feature.id} 
+                    className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
+                  >
+                    {/* Hover Gradient Overlay */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    
+                    <div className="relative z-10">
+                      <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
+                        <IconComponent className={`w-7 h-7 ${style.iconText}`} />
+                      </div>
+                      <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
                     </div>
-                    <h3 className="font-heading font-semibold text-foreground mb-2">{feature.title}</h3>
-                    <p className="text-muted-foreground text-sm">{feature.description}</p>
+
+                    {/* Bottom Accent Line */}
+                    <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
                   </div>
                 );
               })}
