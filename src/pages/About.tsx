@@ -20,6 +20,63 @@ const iconMap: Record<string, any> = {
   TrendingUp,
 };
 
+const cardStyles = [
+  {
+    light: "bg-indigo-50/50",
+    iconBg: "bg-indigo-100",
+    iconText: "text-indigo-600",
+    border: "border-indigo-100",
+    hoverBorder: "group-hover:border-indigo-300",
+    shadow: "hover:shadow-indigo-500/10",
+    gradient: "from-indigo-500/20 to-transparent"
+  },
+  {
+    light: "bg-rose-50/50",
+    iconBg: "bg-rose-100",
+    iconText: "text-rose-600",
+    border: "border-rose-100",
+    hoverBorder: "group-hover:border-rose-300",
+    shadow: "hover:shadow-rose-500/10",
+    gradient: "from-rose-500/20 to-transparent"
+  },
+  {
+    light: "bg-amber-50/50",
+    iconBg: "bg-amber-100",
+    iconText: "text-amber-600",
+    border: "border-amber-100",
+    hoverBorder: "group-hover:border-amber-300",
+    shadow: "hover:shadow-amber-500/10",
+    gradient: "from-amber-500/20 to-transparent"
+  },
+  {
+    light: "bg-emerald-50/50",
+    iconBg: "bg-emerald-100",
+    iconText: "text-emerald-600",
+    border: "border-emerald-100",
+    hoverBorder: "group-hover:border-emerald-300",
+    shadow: "hover:shadow-emerald-500/10",
+    gradient: "from-emerald-500/20 to-transparent"
+  },
+  {
+    light: "bg-purple-50/50",
+    iconBg: "bg-purple-100",
+    iconText: "text-purple-600",
+    border: "border-purple-100",
+    hoverBorder: "group-hover:border-purple-300",
+    shadow: "hover:shadow-purple-500/10",
+    gradient: "from-purple-500/20 to-transparent"
+  },
+  {
+    light: "bg-sky-50/50",
+    iconBg: "bg-sky-100",
+    iconText: "text-sky-600",
+    border: "border-sky-100",
+    hoverBorder: "group-hover:border-sky-300",
+    shadow: "hover:shadow-sky-500/10",
+    gradient: "from-sky-500/20 to-transparent"
+  }
+];
+
 const About = () => {
   const { data: settings } = useSiteSettings();
   const { data: about, isLoading: aboutLoading } = useAboutContent();
@@ -181,20 +238,33 @@ const About = () => {
                   The Pillars of Our Education
                 </h2>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {coreValues.map((value, index) => {
-                  const IconComponent = iconMap[value.icon_name || "Award"] || Award;
-                  return (
-                    <div key={value.id} className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-medium transition-all">
-                      <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
-                        <IconComponent className="w-8 h-8 text-primary" />
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {coreValues.map((value, index) => {
+                    const IconComponent = iconMap[value.icon_name || "Award"] || Award;
+                    const style = cardStyles[index % cardStyles.length];
+                    return (
+                      <div 
+                        key={value.id} 
+                        className={`group relative p-8 rounded-3xl border ${style.border} ${style.light} ${style.hoverBorder} ${style.shadow} transition-all duration-500 hover:-translate-y-2 overflow-hidden`}
+                      >
+                        {/* Decorative Gradient Background */}
+                        <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${style.gradient} rounded-bl-full -mr-16 -mt-16 transition-transform duration-500 group-hover:scale-150 opacity-50`} />
+                        
+                        <div className="relative z-10">
+                          <div className={`w-16 h-16 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500`}>
+                            <IconComponent className={`w-8 h-8 ${style.iconText}`} />
+                          </div>
+                          <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                            {value.title}
+                          </h3>
+                          <div className="text-muted-foreground leading-relaxed">
+                            <FormattedContent content={value.description || ""} />
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{value.title}</h3>
-                      <FormattedContent content={value.description || ""} />
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
             </div>
           </section>
 
@@ -234,20 +304,37 @@ const About = () => {
                   Why Choose {schoolName}?
                 </h2>
               </div>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {highlights.map((card) => {
-                  const IconComponent = iconMap[card.icon_name || "CheckCircle"] || CheckCircle;
-                  return (
-                    <div key={card.id} className="p-6 rounded-2xl bg-card border border-border group hover:border-primary transition-colors">
-                      <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <IconComponent className="w-6 h-6 text-primary group-hover:text-primary-foreground" />
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {highlights.map((card, index) => {
+                    const IconComponent = iconMap[card.icon_name || "CheckCircle"] || CheckCircle;
+                    // Use cardStyles in reverse order for variety
+                    const style = cardStyles[(cardStyles.length - 1 - index) % cardStyles.length];
+                    return (
+                      <div 
+                        key={card.id} 
+                        className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
+                      >
+                        {/* Hover Gradient Overlay */}
+                        <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                        
+                        <div className="relative z-10">
+                          <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
+                            <IconComponent className={`w-7 h-7 ${style.iconText}`} />
+                          </div>
+                          <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                            {card.title}
+                          </h3>
+                          <p className="text-muted-foreground leading-relaxed">
+                            {card.description}
+                          </p>
+                        </div>
+
+                        {/* Bottom Accent Line */}
+                        <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
                       </div>
-                      <h3 className="font-heading font-semibold text-foreground mb-2">{card.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{card.description}</p>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
             </div>
           </section>
         )}
