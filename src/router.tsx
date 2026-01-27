@@ -33,7 +33,6 @@ import AdminAbout from "./pages/admin/AdminAbout";
 import AdminAcademics from "./pages/admin/AdminAcademics";
 import AdminHighlights from "./pages/admin/AdminHighlights";
 import AdminAdmissionsContent from "./pages/admin/AdminAdmissionsContent";
-import AdminPortals from "./pages/admin/AdminPortals";
 import AdminLegalPages from "./pages/admin/AdminLegalPages";
 import AdminMedia from "./pages/admin/AdminMedia";
 
@@ -200,11 +199,6 @@ export const routers = [
       path: "/admin/admissions-content",
       name: 'admin-admissions-content',
       element: <AdminAdmissionsContent />,
-    },
-    {
-      path: "/admin/portals",
-      name: 'admin-portals',
-      element: <AdminPortals />,
     },
     {
       path: "/admin/legal",

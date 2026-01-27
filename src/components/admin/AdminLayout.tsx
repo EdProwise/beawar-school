@@ -21,11 +21,10 @@ import {
   Info,
   Star,
   FileText,
-  ClipboardList,
-  UserCircle,
-  Shield,
-  FolderOpen
-} from "lucide-react";
+    ClipboardList,
+    Shield,
+    FolderOpen
+  } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -59,9 +58,8 @@ const navItems: NavItem[] = [
         { name: "Site Settings", path: "/admin/settings", icon: Settings },
         { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
         { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
-        { name: "Highlights", path: "/admin/highlights", icon: Star },
-        { name: "Portal", path: "/admin/portals", icon: UserCircle },
-        { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
+          { name: "Highlights", path: "/admin/highlights", icon: Star },
+          { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
         { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
         { name: "Legal Pages", path: "/admin/legal", icon: Shield },
         { name: "Media Library", path: "/admin/media", icon: FolderOpen },
