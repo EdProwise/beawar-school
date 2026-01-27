@@ -148,12 +148,68 @@ class MongoDBQueryBuilder {
 export const mongodb = {
   from: (table: string) => new MongoDBQueryBuilder(table),
   auth: {
-    // Basic session mock for compatibility
-    getSession: async () => ({ data: { session: null }, error: null }),
-    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-    signInWithPassword: async () => ({ data: { user: null }, error: { message: 'Auth migration pending' } }),
-    signUp: async () => ({ data: { user: null }, error: { message: 'Auth migration pending' } }),
-    signOut: async () => ({ error: null }),
+    // Basic session management
+    getSession: async () => {
+      const session = localStorage.getItem('school_session');
+      return { data: { session: session ? JSON.parse(session) : null }, error: null };
+    },
+    onAuthStateChange: (callback: any) => {
+      const handleStorageChange = () => {
+        const session = localStorage.getItem('school_session');
+        callback('SIGNED_IN', session ? JSON.parse(session) : null);
+      };
+      window.addEventListener('storage', handleStorageChange);
+      
+      // Initial trigger
+      const session = localStorage.getItem('school_session');
+      if (session) {
+        setTimeout(() => callback('SIGNED_IN', JSON.parse(session)), 0);
+      }
+      
+      return { data: { subscription: { unsubscribe: () => window.removeEventListener('storage', handleStorageChange) } } };
+    },
+    signInWithPassword: async ({ email, password }: any) => {
+      try {
+        const response = await fetch(`${API_URL.replace('/api', '')}/api/auth/signin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+        
+        localStorage.setItem('school_session', JSON.stringify(data.session));
+        // Manually trigger storage event for current tab
+        window.dispatchEvent(new Event('storage'));
+        
+        return { data, error: null };
+      } catch (error: any) {
+        return { data: { user: null, session: null }, error: { message: error.message } };
+      }
+    },
+    signUp: async ({ email, password, options }: any) => {
+      try {
+        const response = await fetch(`${API_URL.replace('/api', '')}/api/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, data: options?.data }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
+        
+        localStorage.setItem('school_session', JSON.stringify(data.session));
+        window.dispatchEvent(new Event('storage'));
+        
+        return { data, error: null };
+      } catch (error: any) {
+        return { data: { user: null, session: null }, error: { message: error.message } };
+      }
+    },
+    signOut: async () => {
+      localStorage.removeItem('school_session');
+      window.dispatchEvent(new Event('storage'));
+      return { error: null };
+    },
   },
   storage: {
     from: (bucket: string) => ({

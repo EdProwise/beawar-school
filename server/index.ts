@@ -26,7 +26,47 @@ const getModel = (tableName: string) => {
 };
 
 // Generic API Routes
-    app.get('/api/:table', async (req, res) => {
+app.post('/api/auth/signin', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const User = getModel('users');
+    const user = await User.findOne({ email, password });
+    
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    res.json({ user: { id: user.id || user._id, email: user.email }, session: { access_token: 'mock-token', user: { id: user.id || user._id, email: user.email } } });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/auth/signup', async (req, res) => {
+  try {
+    const { email, password, data } = req.body;
+    const User = getModel('users');
+    
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+    
+    const id = new mongoose.Types.ObjectId().toString();
+    const newUser = new User({ id, email, password, ...data });
+    await newUser.save();
+    
+    // Also create a profile
+    const Profile = getModel('profiles');
+    await new Profile({ id, email, ...data }).save();
+    
+    res.json({ user: { id, email }, session: { access_token: 'mock-token', user: { id, email } } });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/:table', async (req, res) => {
     try {
       const { table } = req.params;
       const { select, sort, order, limit, count, head, ...filters } = req.query;
