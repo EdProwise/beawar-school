@@ -175,9 +175,9 @@ const defaultPrograms = [
                       <div 
                         key={program.id} 
                         id={program.title.toLowerCase().replace(/\s+/g, '-')}
-                        className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${isEven ? '' : 'lg:flex-row-reverse'}`}
+                        className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
                       >
-                        <div className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}>
+                        <div className={`relative z-10 min-w-0 ${isEven ? '' : 'lg:order-2'}`}>
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center">
                             <IconComponent className="w-6 h-6 text-primary" />
@@ -190,7 +190,7 @@ const defaultPrograms = [
                             <div className="mb-6">
                               <FormattedContent 
                                 content={program.description || ""} 
-                                className="prose-p:text-muted-foreground"
+                                className="prose-p:text-muted-foreground break-words"
                               />
                             </div>
 
@@ -201,12 +201,12 @@ const defaultPrograms = [
                           </Link>
                         </Button>
                       </div>
-                      <div className={isEven ? '' : 'lg:order-1'}>
+                      <div className={`min-w-0 ${isEven ? '' : 'lg:order-1'}`}>
                         <div className="relative">
                           <img 
                             src={program.image_url || "/classroom.png"} 
                             alt={program.title}
-                            className="rounded-2xl shadow-strong w-full"
+                            className="rounded-2xl shadow-strong w-full object-cover"
                           />
                           <div className="absolute -bottom-4 -right-4 bg-accent px-6 py-3 rounded-xl shadow-strong">
                             <p className="text-accent-foreground font-semibold">{program.subtitle || program.grade_range}</p>
