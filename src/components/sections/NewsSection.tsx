@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNewsEvents, useUpcomingEvents } from "@/hooks/use-school-data";
 
 export function NewsSection() {
-  const { data: fetchedNews = [], isLoading: isLoadingNews } = useNewsEvents(5);
+  const { data: fetchedNews = [], isLoading: isLoadingNews } = useNewsEvents(6);
   const { data: upcomingEvents = [], isLoading: isLoadingEvents } = useUpcomingEvents();
 
   const formatDate = (dateStr: string | null | undefined) => {
@@ -30,18 +30,7 @@ export function NewsSection() {
     return doc.body.textContent || "";
   };
 
-  const staticCard = {
-    id: 'static-latest',
-    title: 'Latest News & Events',
-    slug: '',
-    excerpt: 'Stay updated with all the latest happenings, announcements and achievements at Orbit School.',
-    category: 'Featured',
-    image_url: '/hero_campus.png',
-    created_at: new Date().toISOString(),
-    is_static: true
-  };
-
-  const newsItems = isLoadingNews ? [] : [staticCard, ...fetchedNews];
+  const newsItems = fetchedNews;
 
   return (
     <section className="py-20 lg:py-28 bg-background">
