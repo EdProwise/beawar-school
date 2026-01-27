@@ -78,7 +78,8 @@ class MongoDBQueryBuilder {
   // To support await
   async maybeSingle() {
     const { data, error } = await this;
-    return { data: Array.isArray(data) ? data[0] : data, error };
+    const result = Array.isArray(data) ? (data.length > 0 ? data[0] : null) : (data || null);
+    return { data: result, error };
   }
 
   async single() {
@@ -87,7 +88,8 @@ class MongoDBQueryBuilder {
     if (!data || (Array.isArray(data) && data.length === 0)) {
         return { data: null, error: { message: 'No rows found' } };
     }
-    return { data: Array.isArray(data) ? data[0] : data, error: null };
+    const result = Array.isArray(data) ? data[0] : data;
+    return { data: result || null, error: null };
   }
 
   async insert(values: any | any[]) {
@@ -211,12 +213,32 @@ export const mongodb = {
       return { error: null };
     },
   },
-  storage: {
-    from: (bucket: string) => ({
-      upload: async (path: string, file: File) => ({ data: { path }, error: { message: 'Storage migration pending.' } }),
-      getPublicUrl: (path: string) => ({ data: { publicUrl: `https://placeholder.com/${path}` } }),
-    })
-  }
+    storage: {
+      from: (bucket: string) => ({
+        upload: async (path: string, file: File) => {
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('path', path);
+
+            const response = await fetch(`${API_URL.replace('/api', '')}/api/storage/upload`, {
+              method: 'POST',
+              body: formData,
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error);
+            return { data: { path: data.data.path }, error: null };
+          } catch (error: any) {
+            return { data: null, error: { message: error.message } };
+          }
+        },
+        getPublicUrl: (path: string) => {
+          const baseUrl = API_URL.replace('/api', '');
+          return { data: { publicUrl: `${baseUrl}/uploads/${path}` } };
+        },
+      })
+    }
+
 };
 
 export const supabase = mongodb;
