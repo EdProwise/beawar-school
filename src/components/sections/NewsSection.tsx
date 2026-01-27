@@ -7,18 +7,29 @@ export function NewsSection() {
   const { data: newsItems = [], isLoading } = useNewsEvents(3);
   const { data: upcomingEvents = [] } = useUpcomingEvents();
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
-  const formatEventDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return {
-      month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-      day: date.getDate().toString(),
+    const formatDate = (dateStr: string | null | undefined) => {
+      if (!dateStr) return "N/A";
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return "N/A";
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     };
-  };
+
+    const formatEventDate = (dateStr: string | null | undefined) => {
+      if (!dateStr) return { month: "N/A", day: "--" };
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return { month: "N/A", day: "--" };
+      return {
+        month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
+        day: date.getDate().toString(),
+      };
+    };
+
+    const stripHtml = (html: string | null | undefined) => {
+      if (!html) return "";
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      return doc.body.textContent || "";
+    };
+
 
   return (
     <section className="py-20 lg:py-28 bg-background">
@@ -76,14 +87,15 @@ export function NewsSection() {
                       <Calendar className="w-4 h-4" />
                       {formatDate(item.created_at)}
                     </div>
-                    <h3 className="font-heading text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4 flex-1">
-                      {item.excerpt}
-                    </p>
-                    <Link
-                      to={`/news/${item.slug}`}
+                      <h3 className="font-heading text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h3>
+                      <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-2">
+                        {stripHtml(item.excerpt)}
+                      </p>
+                      <Link
+                        to={`/news/${item.slug}`}
+
                       className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
                     >
                       Read More <ArrowRight className="w-4 h-4" />

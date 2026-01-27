@@ -5,6 +5,7 @@ import Admissions from "./pages/Admissions";
 import Facilities from "./pages/Facilities";
 import Gallery from "./pages/Gallery";
 import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
 import Students from "./pages/Students";
 import Teachers from "./pages/Teachers";
@@ -67,13 +68,19 @@ export const routers = [
       name: 'gallery',
       element: <Gallery />,
     },
-    {
-      path: "/news",
-      name: 'news',
-      element: <News />,
-    },
-    {
-      path: "/contact",
+      {
+        path: "/news",
+        name: 'news',
+        element: <News />,
+      },
+      {
+        path: "/news/:slug",
+        name: 'news-detail',
+        element: <NewsDetail />,
+      },
+      {
+        path: "/contact",
+
       name: 'contact',
       element: <Contact />,
     },

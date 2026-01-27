@@ -84,6 +84,25 @@ export function useNewsEvents(limit?: number) {
   });
 }
 
+export function useNewsBySlug(slug: string | undefined) {
+  return useQuery({
+    queryKey: ["news-event", slug],
+    queryFn: async () => {
+      if (!slug) return null;
+      const { data, error } = await supabase
+        .from("news_events")
+        .select("*")
+        .eq("slug", slug)
+        .eq("is_published", true)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data as NewsEvent | null;
+    },
+    enabled: !!slug,
+  });
+}
+
 export function useFeaturedNews() {
   return useQuery({
     queryKey: ["featured-news"],
