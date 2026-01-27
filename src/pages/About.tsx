@@ -63,16 +63,29 @@ const About = () => {
                   <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
                     Our Story
                   </span>
-                  <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-                    {about?.main_heading || "A Legacy of Educational Excellence"}
-                  </h2>
-                  <p className="text-muted-foreground mb-4">
-                    {about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
-                  </p>
-                  {about?.history_text && (
-                    <p className="text-muted-foreground mb-6">{about.history_text}</p>
-                  )}
-                  <div className="flex items-center gap-8">
+                    <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
+                      {about?.main_heading || "A Legacy of Educational Excellence"}
+                    </h2>
+                    <div className="space-y-4 mb-6">
+                      {about?.main_description ? (
+                        about.main_description.split('\n').filter(p => p.trim() !== '').map((para, index) => (
+                          <p key={index} className="text-muted-foreground">
+                            {para}
+                          </p>
+                        ))
+                      ) : (
+                        <p className="text-muted-foreground">
+                          {`Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
+                        </p>
+                      )}
+                      
+                      {about?.history_text && about.history_text.split('\n').filter(p => p.trim() !== '').map((para, index) => (
+                        <p key={index} className="text-muted-foreground">
+                          {para}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-8">
                     <div>
                       <p className="font-heading text-4xl font-bold text-primary">{yearsOfExcellence}+</p>
                       <p className="text-muted-foreground text-sm">Years of Excellence</p>
@@ -106,24 +119,36 @@ const About = () => {
                 <div className="w-14 h-14 rounded-xl bg-primary-light flex items-center justify-center mb-6">
                   <Target className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
-                  {about?.mission_title || "Our Mission"}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {about?.mission_text || "To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world while fostering a love for lifelong learning."}
-                </p>
-              </div>
-              <div className="bg-card p-8 rounded-2xl border border-border">
-                <div className="w-14 h-14 rounded-xl bg-accent-light flex items-center justify-center mb-6">
-                  <Eye className="w-7 h-7 text-accent-dark" />
+                  <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
+                    {about?.mission_title || "Our Mission"}
+                  </h3>
+                  <div className="text-muted-foreground leading-relaxed space-y-3">
+                    {about?.mission_text ? (
+                      about.mission_text.split('\n').filter(p => p.trim() !== '').map((para, index) => (
+                        <p key={index}>{para}</p>
+                      ))
+                    ) : (
+                      <p>To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world while fostering a love for lifelong learning.</p>
+                    )}
+                  </div>
                 </div>
-                <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
-                  {about?.vision_title || "Our Vision"}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {about?.vision_text || "To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society through innovation and excellence."}
-                </p>
-              </div>
+                <div className="bg-card p-8 rounded-2xl border border-border">
+                  <div className="w-14 h-14 rounded-xl bg-accent-light flex items-center justify-center mb-6">
+                    <Eye className="w-7 h-7 text-accent-dark" />
+                  </div>
+                  <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
+                    {about?.vision_title || "Our Vision"}
+                  </h3>
+                  <div className="text-muted-foreground leading-relaxed space-y-3">
+                    {about?.vision_text ? (
+                      about.vision_text.split('\n').filter(p => p.trim() !== '').map((para, index) => (
+                        <p key={index}>{para}</p>
+                      ))
+                    ) : (
+                      <p>To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society through innovation and excellence.</p>
+                    )}
+                  </div>
+                </div>
             </div>
           </div>
         </section>
