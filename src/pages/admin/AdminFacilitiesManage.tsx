@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import AdminLayout from "@/components/admin/AdminLayout";
+import { FileUpload } from "@/components/admin/FileUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -259,9 +260,21 @@ export default function AdminFacilities() {
               Campus Video Settings
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="campus_video">Campus Video URL (YouTube or Direct Video Link)</Label>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <Label>Upload Campus Video</Label>
+                <FileUpload
+                  accept="video"
+                  onUpload={(url) => {
+                    setCampusVideoUrl(url);
+                    updateSettingsMutation.mutate(url);
+                  }}
+                  currentUrl={campusVideoUrl}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="campus_video">Campus Video URL (YouTube or Direct Video Link)</Label>
               <div className="flex gap-2">
                 <Input
                   id="campus_video"
