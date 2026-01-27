@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNewsEvents } from "@/hooks/use-school-data";
 
 export function NewsSection() {
-  const { data: newsItems = [], isLoading } = useNewsEvents(4);
+  const { data: fetchedNews = [], isLoading } = useNewsEvents(3);
 
   const formatDate = (dateStr: string | null | undefined) => {
     if (!dateStr) return "N/A";
@@ -18,6 +18,19 @@ export function NewsSection() {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
   };
+
+  const staticCard = {
+    id: 'static-latest',
+    title: 'Latest News & Events',
+    slug: '',
+    excerpt: 'Stay updated with all the latest happenings, announcements and achievements at Orbit School.',
+    category: 'Featured',
+    image_url: '/hero_campus.png',
+    created_at: new Date().toISOString(),
+    is_static: true
+  };
+
+  const newsItems = isLoading ? [] : [staticCard, ...fetchedNews];
 
   return (
     <section className="py-20 lg:py-28 bg-background">
@@ -80,7 +93,7 @@ export function NewsSection() {
                     {stripHtml(item.excerpt)}
                   </p>
                   <Link
-                    to={`/news/${item.slug}`}
+                    to={item.slug ? `/news/${item.slug}` : "/news"}
                     className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark transition-colors mt-auto"
                   >
                     Read More <ArrowRight className="w-4 h-4" />
