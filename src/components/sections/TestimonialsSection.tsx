@@ -19,59 +19,74 @@ export function TestimonialsSection() {
     );
   }
 
-  // Only take first 9 testimonials as requested
-  const limitedTestimonials = testimonials.slice(0, 9);
+    // Only take first 9 testimonials as requested
+    const limitedTestimonials = testimonials.slice(0, 9);
 
-  return (
-    <section className="py-20 lg:py-28 bg-secondary/50 relative overflow-hidden">
-      {/* Background Decoration */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+    // Distribute testimonials into two rows
+    let firstRow: Testimonial[] = [];
+    let secondRow: Testimonial[] = [];
 
-      <div className="container relative mb-16">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto">
-          <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
-            Testimonials
-          </span>
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            What Our <span className="text-gradient-primary">Community</span> Says
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            Hear from parents and students about their experience at Orbit School
-          </p>
+    if (limitedTestimonials.length <= 3) {
+      firstRow = limitedTestimonials;
+    } else {
+      const midPoint = Math.ceil(limitedTestimonials.length / 2);
+      firstRow = limitedTestimonials.slice(0, midPoint);
+      secondRow = limitedTestimonials.slice(midPoint);
+    }
+
+    return (
+      <section className="py-20 lg:py-28 bg-secondary/50 relative overflow-hidden">
+        {/* Background Decoration */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+
+        <div className="container relative mb-16">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
+              Testimonials
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              What Our <span className="text-gradient-primary">Community</span> Says
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Hear from parents and students about their experience at Orbit School
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Testimonials Marquee */}
-      <div className="flex flex-col gap-8">
-        {/* First Row: 1-5 */}
-        <MarqueeRow 
-          items={limitedTestimonials.slice(0, 5)} 
-          direction="right" 
-          speed={40} 
-        />
-        
-        {/* Second Row: 6-9 */}
-        <MarqueeRow 
-          items={limitedTestimonials.slice(5, 9)} 
-          direction="right" 
-          speed={30} 
-        />
-      </div>
-    </section>
-  );
-}
+        {/* Testimonials Marquee */}
+        <div className="flex flex-col gap-8">
+          {firstRow.length > 0 && (
+            <MarqueeRow 
+              items={firstRow} 
+              direction="right" 
+              speed={40} 
+            />
+          )}
+          
+          {secondRow.length > 0 && (
+            <MarqueeRow 
+              items={secondRow} 
+              direction="left" 
+              speed={30} 
+            />
+          )}
+        </div>
+      </section>
+    );
+  }
 
-interface MarqueeRowProps {
-  items: Testimonial[];
-  direction: "left" | "right";
-  speed: number;
-}
+  interface MarqueeRowProps {
+    items: Testimonial[];
+    direction: "left" | "right";
+    speed: number;
+  }
 
-function MarqueeRow({ items, direction, speed }: MarqueeRowProps) {
-  // Double the items for a seamless loop
-  const duplicatedItems = [...items, ...items, ...items];
+  function MarqueeRow({ items, direction, speed }: MarqueeRowProps) {
+    // Double the items for a seamless loop
+    const duplicatedItems = [...items, ...items];
+
 
   return (
     <div className="flex overflow-hidden select-none">
