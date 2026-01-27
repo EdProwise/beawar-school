@@ -135,39 +135,47 @@ const Admissions = () => {
         <section id="inquiry" className="py-20 bg-secondary/30">
           <div className="container">
             <div className="max-w-4xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-12 items-center">
-                  <div>
-                    <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-                      Get Started
-                    </span>
-                    <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-                      {settings.inquiry_title || "Submit Your Inquiry"}
-                    </h2>
-                    <p className="text-muted-foreground mb-8">
-                      {settings.inquiry_description || "Take the first step towards giving your child an exceptional education. Fill out the form and our admissions team will get in touch within 24 hours."}
-                    </p>
-                    <div className="space-y-4">
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                      <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
+                        {settings.inquiry_badge || "Get Started"}
+                      </span>
+                      <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
+                        {settings.inquiry_title || "Submit Your Inquiry"}
+                      </h2>
+                      <p className="text-muted-foreground mb-8">
+                        {settings.inquiry_description || "Take the first step towards giving your child an exceptional education. Fill out the form and our admissions team will get in touch within 24 hours."}
+                      </p>
+                      <div className="space-y-4">
 
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-accent-foreground" />
-                      </div>
-                      <span className="text-foreground">Quick response within 24 hours</span>
+                      {(settings.inquiry_feature_1 || (!settings.inquiry_feature_1 && !settings.inquiry_feature_2 && !settings.inquiry_feature_3)) && (
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-accent-foreground" />
+                          </div>
+                          <span className="text-foreground">{settings.inquiry_feature_1 || "Quick response within 24 hours"}</span>
+                        </div>
+                      )}
+                      
+                      {settings.inquiry_feature_2 && (
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-accent-foreground" />
+                          </div>
+                          <span className="text-foreground">{settings.inquiry_feature_2}</span>
+                        </div>
+                      )}
+
+                      {settings.inquiry_feature_3 && (
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-accent-foreground" />
+                          </div>
+                          <span className="text-foreground">{settings.inquiry_feature_3}</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-accent-foreground" />
-                      </div>
-                      <span className="text-foreground">Personalized campus tour</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-accent-foreground" />
-                      </div>
-                      <span className="text-foreground">Meet our faculty and staff</span>
-                    </div>
-                  </div>
-                  </div>
 
                   {settings.use_custom_inquiry_html === 'true' && settings.inquiry_html ? (
                     <div className="bg-card rounded-2xl p-4 shadow-elegant border border-border overflow-hidden">

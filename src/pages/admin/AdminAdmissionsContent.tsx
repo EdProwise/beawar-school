@@ -18,36 +18,44 @@ export default function AdminAdmissionsContent() {
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Settings Form State
-  const [inquiryForm, setInquiryForm] = useState({
-    inquiry_title: "",
-    inquiry_description: "",
-    inquiry_html: "",
-    use_custom_inquiry_html: false,
-  });
+    // Settings Form State
+    const [inquiryForm, setInquiryForm] = useState({
+      inquiry_title: "",
+      inquiry_description: "",
+      inquiry_badge: "",
+      inquiry_feature_1: "",
+      inquiry_feature_2: "",
+      inquiry_feature_3: "",
+      inquiry_html: "",
+      use_custom_inquiry_html: false,
+    });
 
-  // Settings State
-  const { data: settings = {}, isLoading: settingsLoading } = useQuery({
-    queryKey: ["admin-admission-settings"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("admission_settings").select("*");
-      if (error) throw error;
-      const settingsMap = data.reduce((acc: any, curr: any) => {
-        acc[curr.key] = curr.value;
-        return acc;
-      }, {});
-      
-      // Sync form state when data is loaded
-      setInquiryForm({
-        inquiry_title: settingsMap.inquiry_title || "Submit Your Inquiry",
-        inquiry_description: settingsMap.inquiry_description || "",
-        inquiry_html: settingsMap.inquiry_html || "",
-        use_custom_inquiry_html: settingsMap.use_custom_inquiry_html === 'true',
-      });
-      
-      return settingsMap;
-    },
-  });
+    // Settings State
+    const { data: settings = {}, isLoading: settingsLoading } = useQuery({
+      queryKey: ["admin-admission-settings"],
+      queryFn: async () => {
+        const { data, error } = await supabase.from("admission_settings").select("*");
+        if (error) throw error;
+        const settingsMap = data.reduce((acc: any, curr: any) => {
+          acc[curr.key] = curr.value;
+          return acc;
+        }, {});
+        
+        // Sync form state when data is loaded
+        setInquiryForm({
+          inquiry_title: settingsMap.inquiry_title || "Submit Your Inquiry",
+          inquiry_description: settingsMap.inquiry_description || "",
+          inquiry_badge: settingsMap.inquiry_badge || "Get Started",
+          inquiry_feature_1: settingsMap.inquiry_feature_1 || "Quick response within 24 hours",
+          inquiry_feature_2: settingsMap.inquiry_feature_2 || "Personalized campus tour",
+          inquiry_feature_3: settingsMap.inquiry_feature_3 || "Meet our faculty and staff",
+          inquiry_html: settingsMap.inquiry_html || "",
+          use_custom_inquiry_html: settingsMap.use_custom_inquiry_html === 'true',
+        });
+        
+        return settingsMap;
+      },
+    });
 
   const saveSettingsMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -256,29 +264,70 @@ export default function AdminAdmissionsContent() {
               Customize the "Submit Your Inquiry" section on the admissions page.
             </p>
 
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="inquiry_title">Section Title</Label>
-                <Input
-                  id="inquiry_title"
-                  value={inquiryForm.inquiry_title}
-                  onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_title: e.target.value })}
-                  placeholder="e.g., Submit Your Inquiry"
-                />
-              </div>
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="inquiry_badge">Badge Text</Label>
+                    <Input
+                      id="inquiry_badge"
+                      value={inquiryForm.inquiry_badge}
+                      onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_badge: e.target.value })}
+                      placeholder="e.g., Get Started"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="inquiry_title">Section Title</Label>
+                    <Input
+                      id="inquiry_title"
+                      value={inquiryForm.inquiry_title}
+                      onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_title: e.target.value })}
+                      placeholder="e.g., Submit Your Inquiry"
+                    />
+                  </div>
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="inquiry_description">Section Description</Label>
-                <Textarea
-                  id="inquiry_description"
-                  value={inquiryForm.inquiry_description}
-                  onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_description: e.target.value })}
-                  placeholder="Enter section description..."
-                  rows={3}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="inquiry_description">Section Description</Label>
+                  <Textarea
+                    id="inquiry_description"
+                    value={inquiryForm.inquiry_description}
+                    onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_description: e.target.value })}
+                    placeholder="Enter section description..."
+                    rows={3}
+                  />
+                </div>
 
-              <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg border border-border">
+                <div className="space-y-4 pt-4 border-t border-border">
+                  <Label className="text-sm font-medium">Features / Key Points</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">1</div>
+                      <Input
+                        value={inquiryForm.inquiry_feature_1}
+                        onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_feature_1: e.target.value })}
+                        placeholder="Feature 1"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">2</div>
+                      <Input
+                        value={inquiryForm.inquiry_feature_2}
+                        onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_feature_2: e.target.value })}
+                        placeholder="Feature 2"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">3</div>
+                      <Input
+                        value={inquiryForm.inquiry_feature_3}
+                        onChange={(e) => setInquiryForm({ ...inquiryForm, inquiry_feature_3: e.target.value })}
+                        placeholder="Feature 3"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-lg border border-border">
                 <div className="space-y-0.5">
                   <Label className="text-base">Use External Code (HTML)</Label>
                   <p className="text-sm text-muted-foreground">
