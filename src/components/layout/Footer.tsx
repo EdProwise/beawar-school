@@ -29,7 +29,6 @@ const academicLinks = [
   { name: "Primary School", path: "/academics#primary" },
   { name: "Secondary School", path: "/academics#secondary" },
   { name: "Higher Secondary", path: "/academics#higher-secondary" },
-  { name: "Extracurriculars", path: "/academics#extracurriculars" },
 ];
 
 const resourceLinks = [
@@ -69,14 +68,22 @@ export function Footer() {
           <div className="space-y-6">
             <Link to="/" className="inline-block">
               <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-[#2a2638] flex items-center justify-center">
-                  <GraduationCap className="w-6 h-6 text-[#00d4ff]" />
-                </div>
-                  <span className="text-2xl font-bold tracking-tight">
-                    {schoolName}
-                  </span>
-                </div>
-              </Link>
+                {settings?.logo_url ? (
+                  <img 
+                    src={settings.logo_url} 
+                    alt={schoolName} 
+                    className="w-10 h-10 object-contain" 
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-[#2a2638] flex items-center justify-center">
+                    <GraduationCap className="w-6 h-6 text-[#00d4ff]" />
+                  </div>
+                )}
+                <span className="text-2xl font-bold tracking-tight">
+                  {schoolName}
+                </span>
+              </div>
+            </Link>
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
                 {footerText}
               </p>
