@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, GraduationCap, Award, Baby, Lightbulb, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAcademicPrograms } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -67,21 +68,21 @@ export function AcademicsSection() {
                   <h3 className="font-heading text-xl font-semibold text-foreground mb-1">
                     {program.title}
                   </h3>
-                  {program.subtitle && (
-                    <p className="text-accent font-medium text-sm mb-3">
-                      {program.subtitle}
-                    </p>
-                  )}
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {program.description}
-                  </p>
-                  <Link
-                    to="/academics"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    Learn More <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+                    {program.subtitle && (
+                      <p className="text-accent font-medium text-sm mb-3">
+                        {program.subtitle}
+                      </p>
+                    )}
+                    <div className="flex-grow">
+                      <FormattedContent content={program.description || ""} className="text-sm" />
+                    </div>
+                    <Link
+                      to="/academics"
+                      className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      Learn More <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
               );
             })}
           </div>

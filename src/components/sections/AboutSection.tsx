@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Award, Users, Globe, Building, Star, Target, Heart, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAboutContent, useHighlightCards } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -20,50 +21,49 @@ export function AboutSection() {
       <div className="container relative">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
-          <div>
-            <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
-              {about?.section_title || "About Us"}
-            </span>
-            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-              {about?.main_heading || "Welcome to Our School"}
-            </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              {about?.main_description || "We provide quality education for all students."}
-            </p>
+            <div>
+              <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
+                {about?.section_title || "About Us"}
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+                {about?.main_heading || "Welcome to Our School"}
+              </h2>
+              <div className="mb-6">
+                <FormattedContent 
+                  content={about?.main_description || "We provide quality education for all students."} 
+                  className="text-lg"
+                />
+              </div>
 
-            {/* Mission & Vision */}
-            <div className="space-y-4 mb-8">
-              {about?.mission_text && (
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-accent-light flex items-center justify-center shrink-0">
-                    <Target className="w-6 h-6 text-accent-dark" />
+              {/* Mission & Vision */}
+              <div className="space-y-4 mb-8">
+                {about?.mission_text && (
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-accent-light flex items-center justify-center shrink-0">
+                      <Target className="w-6 h-6 text-accent-dark" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-semibold text-foreground mb-1">
+                        {about?.mission_title || "Our Mission"}
+                      </h3>
+                      <FormattedContent content={about.mission_text} className="text-sm" />
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-foreground mb-1">
-                      {about?.mission_title || "Our Mission"}
-                    </h3>
-                    <p className="text-muted-foreground text-sm">
-                      {about.mission_text}
-                    </p>
+                )}
+                {about?.vision_text && (
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center shrink-0">
+                      <Lightbulb className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-semibold text-foreground mb-1">
+                        {about?.vision_title || "Our Vision"}
+                      </h3>
+                      <FormattedContent content={about.vision_text} className="text-sm" />
+                    </div>
                   </div>
-                </div>
-              )}
-              {about?.vision_text && (
-                <div className="flex gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center shrink-0">
-                    <Lightbulb className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-semibold text-foreground mb-1">
-                      {about?.vision_title || "Our Vision"}
-                    </h3>
-                    <p className="text-muted-foreground text-sm">
-                      {about.vision_text}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
             <Button variant="default" size="lg" asChild>
               <Link to="/about">

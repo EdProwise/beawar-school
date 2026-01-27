@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, Star, Shield, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, any> = {
@@ -63,20 +64,16 @@ const About = () => {
                   <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
                     Our Story
                   </span>
-                    <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
-                      {about?.main_heading || "A Legacy of Educational Excellence"}
-                    </h2>
-                      <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:leading-relaxed mb-6">
-                        {about?.main_description ? (
-                          <div dangerouslySetInnerHTML={{ __html: about.main_description }} />
-                        ) : (
-                          <p>
-                            {`Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
-                          </p>
-                        )}
+                      <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
+                        {about?.main_heading || "A Legacy of Educational Excellence"}
+                      </h2>
+                      <div className="mb-6">
+                        <FormattedContent 
+                          content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`} 
+                        />
                         
                         {about?.history_text && (
-                          <div dangerouslySetInnerHTML={{ __html: about.history_text }} />
+                          <FormattedContent content={about.history_text} className="mt-4" />
                         )}
                       </div>
 
@@ -122,75 +119,68 @@ const About = () => {
                     </div>
                     <span className="text-6xl font-bold text-primary/5 select-none">01</span>
                   </div>
-                  <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors">
-                    {about?.mission_title || "Our Mission"}
-                  </h3>
-                  <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:text-lg prose-p:leading-relaxed flex-grow">
-                    {about?.mission_text ? (
-                      <div dangerouslySetInnerHTML={{ __html: about.mission_text }} />
-                    ) : (
-                      <p>To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world while fostering a love for lifelong learning.</p>
-                    )}
+                    <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors">
+                      {about?.mission_title || "Our Mission"}
+                    </h3>
+                    <div className="flex-grow">
+                      <FormattedContent 
+                        content={about?.mission_text || "To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world while fostering a love for lifelong learning."} 
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Vision Card */}
-              <div className="group relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                      <Eye className="w-10 h-10 text-accent-dark" />
-                    </div>
-                    <span className="text-6xl font-bold text-accent-dark/5 select-none">02</span>
-                  </div>
-                  <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors">
-                    {about?.vision_title || "Our Vision"}
-                  </h3>
-                  <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:text-lg prose-p:leading-relaxed flex-grow">
-                    {about?.vision_text ? (
-                      <div dangerouslySetInnerHTML={{ __html: about.vision_text }} />
-                    ) : (
-                      <p>To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society through innovation and excellence.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Core Values */}
-        <section className="py-20 bg-background">
-          <div className="container">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
-                Core Values
-              </span>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-                The Pillars of Our Education
-              </h2>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {coreValues.map((value, index) => {
-                const IconComponent = iconMap[value.icon_name || "Award"] || Award;
-                return (
-                  <div key={value.id} className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-medium transition-all">
-                    <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="w-8 h-8 text-primary" />
-                    </div>
-                    <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{value.title}</h3>
-                      <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:text-sm prose-p:leading-relaxed">
-                        <div dangerouslySetInnerHTML={{ __html: value.description || "" }} />
+                {/* Vision Card */}
+                <div className="group relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                    <div className="flex items-start justify-between mb-8">
+                      <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <Eye className="w-10 h-10 text-accent-dark" />
                       </div>
-
+                      <span className="text-6xl font-bold text-accent-dark/5 select-none">02</span>
+                    </div>
+                    <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors">
+                      {about?.vision_title || "Our Vision"}
+                    </h3>
+                    <div className="flex-grow">
+                      <FormattedContent 
+                        content={about?.vision_text || "To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society through innovation and excellence."} 
+                      />
+                    </div>
                   </div>
-                );
-              })}
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          {/* Core Values */}
+          <section className="py-20 bg-background">
+            <div className="container">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
+                  Core Values
+                </span>
+                <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                  The Pillars of Our Education
+                </h2>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {coreValues.map((value, index) => {
+                  const IconComponent = iconMap[value.icon_name || "Award"] || Award;
+                  return (
+                    <div key={value.id} className="text-center p-6 rounded-2xl bg-card border border-border hover:shadow-medium transition-all">
+                      <div className="w-16 h-16 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">
+                        <IconComponent className="w-8 h-8 text-primary" />
+                      </div>
+                      <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{value.title}</h3>
+                      <FormattedContent content={value.description || ""} />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
 
         {/* Timeline */}
         <section className="py-20 bg-primary relative overflow-hidden">
