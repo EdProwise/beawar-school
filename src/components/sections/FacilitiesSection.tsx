@@ -59,9 +59,9 @@ export function FacilitiesSection() {
             ))}
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayFacilities.map((facility) => {
-              const IconComponent = iconMap[facility.icon_name || "Building"] || Building;
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayFacilities.slice(0, 6).map((facility) => {
+                const IconComponent = iconMap[facility.icon_name || "Building"] || Building;
               return (
                 <div
                   key={facility.id}
