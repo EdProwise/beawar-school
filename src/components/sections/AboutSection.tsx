@@ -3,6 +3,7 @@ import { ArrowRight, Award, Users, Globe, Building, Star, Target, Heart, Lightbu
 import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAboutContent, useHighlightCards } from "@/hooks/use-school-data";
+import { CampusCTA } from "./CampusCTA";
 
 const iconMap: Record<string, React.ElementType> = {
   Award, Users, Globe, Building, Star, Target, Heart, Lightbulb
@@ -28,18 +29,21 @@ export function AboutSection() {
               <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
                 {about?.main_heading || "Welcome to Our School"}
               </h2>
-              <div className="mb-6">
-                <FormattedContent 
-                  content={
-                    about?.main_description 
-                      ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 2).join('\n')
-                      : "We provide quality education for all students."
-                  } 
-                  className="text-lg"
-                />
-              </div>
+                <div className="mb-6">
+                  <FormattedContent 
+                    content={
+                      about?.main_description 
+                        ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 2).join('\n')
+                        : "We provide quality education for all students."
+                    } 
+                    className="text-lg"
+                  />
+                </div>
 
-              {/* Mission & Vision */}
+                <CampusCTA />
+
+                {/* Mission & Vision */}
+
               <div className="space-y-4 mb-8">
                 {about?.mission_text && (
                   <div className="flex gap-4">
