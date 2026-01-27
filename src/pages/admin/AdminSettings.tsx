@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Palette } from "lucide-react";
+import { Loader2, Save, Palette, ExternalLink } from "lucide-react";
 import { FileUpload } from "@/components/admin/FileUpload";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Preset color themes
 const colorPresets = [
@@ -26,18 +27,30 @@ export default function AdminSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: settings, isLoading } = useQuery({
-    queryKey: ["admin-site-settings"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("site_settings")
-        .select("*")
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
+    const { data: settings, isLoading } = useQuery({
+      queryKey: ["admin-site-settings"],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from("site_settings")
+          .select("*")
+          .limit(1)
+          .maybeSingle();
+        if (error) throw error;
+        return data;
+      },
+    });
+
+    const { data: portals = [] } = useQuery({
+      queryKey: ["admin-portals-list"],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from("portal_content")
+          .select("portal_type, page_title, login_url");
+        if (error) throw error;
+        return data;
+      },
+    });
+
 
   const [formData, setFormData] = useState({
     school_name: "",
@@ -283,27 +296,59 @@ export default function AdminSettings() {
                   />
                 </div>
               </div>
-              <div className="space-y-4 p-4 border border-border rounded-lg">
-                <h3 className="font-medium text-foreground">Secondary Button (Portal)</h3>
-                <div>
-                  <Label htmlFor="cta_secondary_text">Button Text</Label>
-                  <Input
-                    id="cta_secondary_text"
-                    value={formData.cta_secondary_text}
-                    onChange={(e) => setFormData({ ...formData, cta_secondary_text: e.target.value })}
-                    placeholder="Portal"
-                  />
+                <div className="space-y-4 p-4 border border-border rounded-lg">
+                  <h3 className="font-medium text-foreground">Secondary Button (Portal)</h3>
+                  <div>
+                    <Label htmlFor="cta_secondary_text">Button Text</Label>
+                    <Input
+                      id="cta_secondary_text"
+                      value={formData.cta_secondary_text}
+                      onChange={(e) => setFormData({ ...formData, cta_secondary_text: e.target.value })}
+                      placeholder="Portal"
+                    />
+                  </div>
+                  <div>
+                    <Label>Select Portal Link</Label>
+                    <Select
+                      value={formData.cta_secondary_link}
+                      onValueChange={(value) => setFormData({ ...formData, cta_secondary_link: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a portal or enter custom link" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="/students">Internal Student Portal (/students)</SelectItem>
+                        <SelectItem value="/teachers">Internal Teacher Portal (/teachers)</SelectItem>
+                        <SelectItem value="/parents">Internal Parent Portal (/parents)</SelectItem>
+                        {portals.map((portal: any) => (
+                          portal.login_url && (
+                            <SelectItem key={portal.portal_type} value={portal.login_url}>
+                              External {portal.page_title} Portal
+                            </SelectItem>
+                          )
+                        ))}
+                        <SelectItem value="custom">Custom Link (Type below)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="cta_secondary_link">Custom Button Link</Label>
+                    <div className="relative">
+                      <Input
+                        id="cta_secondary_link"
+                        value={formData.cta_secondary_link}
+                        onChange={(e) => setFormData({ ...formData, cta_secondary_link: e.target.value })}
+                        placeholder="/students or https://..."
+                        className="pr-10"
+                      />
+                      <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      You can enter internal routes (e.g., /students) or external URLs (e.g., https://portal.com)
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="cta_secondary_link">Button Link</Label>
-                  <Input
-                    id="cta_secondary_link"
-                    value={formData.cta_secondary_link}
-                    onChange={(e) => setFormData({ ...formData, cta_secondary_link: e.target.value })}
-                    placeholder="/students"
-                  />
-                </div>
-              </div>
+
             </div>
           </div>
 

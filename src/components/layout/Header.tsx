@@ -31,6 +31,35 @@ export function Header() {
   const schoolName = settings?.school_name || "Orbit School";
   const tagline = settings?.tagline || "Excellence in Education";
 
+  const isExternalLink = (url: string) => {
+    return url.startsWith('http') || url.startsWith('https') || url.startsWith('mailto:') || url.startsWith('tel:');
+  };
+
+  const renderCTAButton = (link: string | null | undefined, text: string, icon?: React.ReactNode, variant: any = "default", className?: string) => {
+    const url = link || "#";
+    const external = isExternalLink(url);
+
+    if (external) {
+      return (
+        <Button variant={variant} size="sm" className={className} asChild>
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {icon}
+            {text}
+          </a>
+        </Button>
+      );
+    }
+
+    return (
+      <Button variant={variant} size="sm" className={className} asChild>
+        <Link to={url}>
+          {icon}
+          {text}
+        </Link>
+      </Button>
+    );
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -132,40 +161,34 @@ export function Header() {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-3">
-            {user && (
-              <Button
-                variant={isScrolled ? "ghost" : "hero"}
-                size="sm"
-                className="hidden sm:flex"
-                asChild
-              >
-                <Link to="/admin/dashboard">
-                  <Settings className="w-4 h-4" />
-                  Admin
-                </Link>
-              </Button>
-            )}
-            <Button
-              variant={isScrolled ? "outline" : "hero"}
-              size="sm"
-              className="hidden sm:flex"
-              asChild
-            >
-              <Link to={settings?.cta_secondary_link || "/students"}>
-                <User className="w-4 h-4" />
-                {settings?.cta_secondary_text || "Portal"}
-              </Link>
-            </Button>
-            <Button
-              variant={isScrolled ? "default" : "hero-gold"}
-              size="sm"
-              asChild
-            >
-              <Link to={settings?.cta_primary_link || "/admissions"}>
-                {settings?.cta_primary_text || "Apply Now"}
-              </Link>
-            </Button>
+            <div className="flex items-center gap-3">
+              {user && (
+                <Button
+                  variant={isScrolled ? "ghost" : "hero"}
+                  size="sm"
+                  className="hidden sm:flex"
+                  asChild
+                >
+                  <Link to="/admin/dashboard">
+                    <Settings className="w-4 h-4" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
+              {renderCTAButton(
+                settings?.cta_secondary_link || "/students",
+                settings?.cta_secondary_text || "Portal",
+                <User className="w-4 h-4" />,
+                isScrolled ? "outline" : "hero",
+                "hidden sm:flex"
+              )}
+              {renderCTAButton(
+                settings?.cta_primary_link || "/admissions",
+                settings?.cta_primary_text || "Apply Now",
+                null,
+                isScrolled ? "default" : "hero-gold"
+              )}
+
 
             {/* Mobile Menu Toggle */}
             <button

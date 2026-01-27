@@ -345,6 +345,12 @@ export interface SiteSettings {
   primary_color: string | null;
   accent_color: string | null;
   campus_video_url: string | null;
+  cta_primary_text: string | null;
+  cta_primary_link: string | null;
+  cta_secondary_text: string | null;
+  cta_secondary_link: string | null;
+  office_hours_weekday: string | null;
+  office_hours_weekend: string | null;
 }
 
 export function useSiteSettings() {
