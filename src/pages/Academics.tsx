@@ -114,26 +114,26 @@ const defaultPrograms = [
                   const isEven = index % 2 === 0;
 
                   return (
-                    <div 
-                      key={program.id} 
-                      id={program.title.toLowerCase().replace(/\s+/g, '-')}
-                      className={`grid lg:grid-cols-2 gap-12 items-center ${isEven ? '' : 'lg:flex-row-reverse'}`}
-                    >
-                      <div className={isEven ? '' : 'lg:order-2'}>
+                      <div 
+                        key={program.id} 
+                        id={program.title.toLowerCase().replace(/\s+/g, '-')}
+                        className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${isEven ? '' : 'lg:flex-row-reverse'}`}
+                      >
+                        <div className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}>
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center">
                             <IconComponent className="w-6 h-6 text-primary" />
                           </div>
                           <span className="text-accent font-medium">{program.subtitle || program.grade_range}</span>
                         </div>
-                        <h3 className="font-heading text-3xl font-bold text-foreground mb-4">
-                          {program.title}
-                        </h3>
-                          <div className="prose prose-slate max-w-none prose-p:text-muted-foreground mb-6 leading-relaxed">
-                            {program.description ? (
-                              <div dangerouslySetInnerHTML={{ __html: program.description }} />
-                            ) : null}
-                          </div>
+                          <h3 className="font-heading text-3xl font-bold text-foreground mb-4 text-balance">
+                            {program.title}
+                          </h3>
+                            <div className="prose prose-slate max-w-none prose-p:text-muted-foreground mb-6 leading-relaxed [hyphens:none] [word-break:normal] overflow-wrap-anywhere">
+                              {program.description ? (
+                                <div dangerouslySetInnerHTML={{ __html: program.description }} />
+                              ) : null}
+                            </div>
 
                         <Button asChild>
                           <Link to="/admissions">
