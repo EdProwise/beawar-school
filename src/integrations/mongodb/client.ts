@@ -162,3 +162,5 @@ export const mongodb = {
     })
   }
 };
+
+export const supabase = mongodb;

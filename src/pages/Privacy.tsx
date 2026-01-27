@@ -1,7 +1,7 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useQuery } from "@tanstack/react-query";
-import { mongodb as supabase } from "@/integrations/mongodb/client";
+import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, Shield } from "lucide-react";
 
 interface Section {
