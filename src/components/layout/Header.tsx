@@ -40,7 +40,12 @@ export function Header({ variant = "transparent" }: HeaderProps) {
   const tagline = settings?.tagline || "Excellence in Education";
 
   const isExternalLink = (url: string) => {
-    return url.startsWith('http') || url.startsWith('https') || url.startsWith('mailto:') || url.startsWith('tel:');
+    if (!url) return false;
+    return url.startsWith('http://') || 
+           url.startsWith('https://') || 
+           url.startsWith('//') || 
+           url.startsWith('mailto:') || 
+           url.startsWith('tel:');
   };
 
   const renderCTAButton = (link: string | null | undefined, text: string, icon?: React.ReactNode, btnVariant: any = "default", className?: string) => {
