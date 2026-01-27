@@ -1,35 +1,23 @@
 import { Link } from "react-router-dom";
-import { Calendar, ArrowRight, Clock } from "lucide-react";
+import { Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNewsEvents, useUpcomingEvents } from "@/hooks/use-school-data";
+import { useNewsEvents } from "@/hooks/use-school-data";
 
 export function NewsSection() {
-  const { data: newsItems = [], isLoading } = useNewsEvents(3);
-  const { data: upcomingEvents = [] } = useUpcomingEvents();
+  const { data: newsItems = [], isLoading } = useNewsEvents(4);
 
-    const formatDate = (dateStr: string | null | undefined) => {
-      if (!dateStr) return "N/A";
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) return "N/A";
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    };
+  const formatDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return "N/A";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "N/A";
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
 
-    const formatEventDate = (dateStr: string | null | undefined) => {
-      if (!dateStr) return { month: "N/A", day: "--" };
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) return { month: "N/A", day: "--" };
-      return {
-        month: date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase(),
-        day: date.getDate().toString(),
-      };
-    };
-
-    const stripHtml = (html: string | null | undefined) => {
-      if (!html) return "";
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      return doc.body.textContent || "";
-    };
-
+  const stripHtml = (html: string | null | undefined) => {
+    if (!html) return "";
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  };
 
   return (
     <section className="py-20 lg:py-28 bg-background">
@@ -47,115 +35,64 @@ export function NewsSection() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* News Cards */}
-          <div className="lg:col-span-2 space-y-6">
-            {isLoading ? (
-              Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-card rounded-xl p-6 animate-pulse flex">
-                  <div className="w-1/3 h-32 bg-secondary rounded-lg" />
-                  <div className="flex-1 pl-4 space-y-2">
-                    <div className="h-4 bg-secondary rounded w-1/4" />
-                    <div className="h-6 bg-secondary rounded w-3/4" />
-                    <div className="h-4 bg-secondary rounded w-1/2" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-card rounded-2xl p-6 animate-pulse border border-border">
+                <div className="aspect-video bg-secondary rounded-lg mb-4" />
+                <div className="space-y-3">
+                  <div className="h-4 bg-secondary rounded w-1/4" />
+                  <div className="h-6 bg-secondary rounded w-3/4" />
+                  <div className="h-4 bg-secondary rounded w-1/2" />
+                </div>
+              </div>
+            ))
+          ) : newsItems.length > 0 ? (
+            newsItems.map((item) => (
+              <article
+                key={item.id}
+                className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-strong transition-all duration-300 flex flex-col"
+              >
+                {/* Image */}
+                <div className="relative aspect-video overflow-hidden">
+                  <img
+                    src={item.image_url || "/classroom.png"}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1 bg-accent text-accent-foreground text-xs font-semibold rounded-full capitalize">
+                      {item.category}
+                    </span>
                   </div>
                 </div>
-              ))
-            ) : newsItems.length > 0 ? (
-              newsItems.map((item) => (
-                <article
-                  key={item.id}
-                  className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-strong transition-all duration-300 flex flex-col sm:flex-row"
-                >
-                  {/* Image */}
-                  <div className="relative sm:w-1/3 h-48 sm:h-auto overflow-hidden">
-                    <img
-                      src={item.image_url || "/classroom.png"}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 bg-accent text-accent-foreground text-xs font-semibold rounded-full capitalize">
-                        {item.category}
-                      </span>
-                    </div>
+
+                {/* Content */}
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
+                    <Calendar className="w-4 h-4" />
+                    {formatDate(item.created_at)}
                   </div>
-
-                  {/* Content */}
-                  <div className="p-6 flex-1 flex flex-col">
-                    <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
-                      <Calendar className="w-4 h-4" />
-                      {formatDate(item.created_at)}
-                    </div>
-                      <h3 className="font-heading text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                        {item.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-2">
-                        {stripHtml(item.excerpt)}
-                      </p>
-                      <Link
-                        to={`/news/${item.slug}`}
-
-                      className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
-                    >
-                      Read More <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </article>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">No news articles available.</p>
-              </div>
-            )}
-          </div>
-
-          {/* Upcoming Events Sidebar */}
-          <div>
-            <div className="bg-card rounded-2xl border border-border p-6 sticky top-24">
-              <h3 className="font-heading text-xl font-semibold text-foreground mb-6 pb-4 border-b border-border">
-                Upcoming Events
-              </h3>
-              <div className="space-y-4">
-                {upcomingEvents.length > 0 ? (
-                  upcomingEvents.slice(0, 3).map((event) => {
-                    const { month, day } = formatEventDate(event.event_date || event.created_at);
-                    return (
-                      <div
-                        key={event.id}
-                        className="flex gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors"
-                      >
-                        <div className="flex-shrink-0">
-                          <div className="w-14 h-14 rounded-xl bg-primary text-primary-foreground flex flex-col items-center justify-center">
-                            <span className="text-xs font-medium">{month}</span>
-                            <span className="text-lg font-bold">{day}</span>
-                          </div>
-                        </div>
-                        <div>
-                          <h4 className="font-semibold text-foreground mb-1">
-                            {event.title}
-                          </h4>
-                          {event.event_time && (
-                            <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                              <Clock className="w-3 h-3" />
-                              {event.event_time}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-muted-foreground text-sm text-center py-4">
-                    No upcoming events scheduled.
+                  <h3 className="font-heading text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm mb-4 flex-1 line-clamp-3">
+                    {stripHtml(item.excerpt)}
                   </p>
-                )}
-              </div>
-              <Button variant="outline" className="w-full mt-6" asChild>
-                <Link to="/news">View All Events</Link>
-              </Button>
+                  <Link
+                    to={`/news/${item.slug}`}
+                    className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark transition-colors mt-auto"
+                  >
+                    Read More <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </article>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">No news articles available.</p>
             </div>
-          </div>
+          )}
         </div>
 
         {/* CTA */}
