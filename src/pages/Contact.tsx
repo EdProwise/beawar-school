@@ -103,94 +103,94 @@ const Contact = () => {
           </div>
         </section>
 
-        {/* Contact Form & Map */}
-        <section className="py-20 bg-background">
-          <div className="container">
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Form */}
-              <div className="bg-card rounded-2xl p-8 border border-border shadow-medium">
-                  <h2 className="font-heading text-2xl font-bold text-foreground mb-6">
-                    Submit your enquiry
-                  </h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Full Name *</label>
+          {/* Contact Form & Map */}
+          <section className="py-20 bg-background" id="enquiry">
+            <div className="container">
+              <div className="grid lg:grid-cols-2 gap-12 items-start">
+                {/* Form */}
+                <div className="bg-white rounded-[2rem] p-10 border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                    <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-8">
+                      Submit your enquiry
+                    </h2>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-[#1A1A1A]">Full Name *</label>
+                        <input
+                          type="text"
+                          name="full_name"
+                          value={formData.full_name}
+                          onChange={handleChange}
+                          className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[#9CA3AF]"
+                          placeholder="Your name"
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-semibold text-[#1A1A1A]">Phone Number</label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[#9CA3AF]"
+                          placeholder="Your phone"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-[#1A1A1A]">Email Address *</label>
                       <input
-                        type="text"
-                        name="full_name"
-                        value={formData.full_name}
+                        type="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                        placeholder="Your name"
+                        className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[#9CA3AF]"
+                        placeholder="your@email.com"
                         required
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">Phone Number</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-[#1A1A1A]">Subject *</label>
+                      <select
+                        name="subject"
+                        value={formData.subject}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                        placeholder="Your phone"
+                        className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer"
+                        required
+                      >
+                        <option value="">Select a subject</option>
+                        <option value="admissions">Admissions Inquiry</option>
+                        <option value="academics">Academic Programs</option>
+                        <option value="facilities">Campus & Facilities</option>
+                        <option value="fees">Fee Structure</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-[#1A1A1A]">Message *</label>
+                      <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        rows={5}
+                        className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none placeholder:text-[#9CA3AF]"
+                        placeholder="How can we help you?"
+                        required
                       />
                     </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Email Address *</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                      placeholder="your@email.com"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Subject *</label>
-                    <select
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                      required
-                    >
-                      <option value="">Select a subject</option>
-                      <option value="admissions">Admissions Inquiry</option>
-                      <option value="academics">Academic Programs</option>
-                      <option value="facilities">Campus & Facilities</option>
-                      <option value="fees">Fee Structure</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">Message *</label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      rows={5}
-                      className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
-                      placeholder="How can we help you?"
-                      required
-                    />
-                  </div>
-                  <Button type="submit" size="lg" className="w-full" disabled={submitMutation.isPending}>
-                    {submitMutation.isPending ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <>
+                    <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary-dark text-white rounded-xl py-7 text-lg font-semibold shadow-lg shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]" disabled={submitMutation.isPending}>
+                      {submitMutation.isPending ? (
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                      ) : (
+                        <div className="flex items-center justify-center gap-2">
                           <Send className="w-5 h-5" />
-                          Submit your enquiry
-                        </>
-                    )}
-                  </Button>
-                </form>
-              </div>
+                          <span>Submit your enquiry</span>
+                        </div>
+                      )}
+                    </Button>
+                  </form>
+                </div>
 
               {/* Map */}
               <div className="space-y-8">

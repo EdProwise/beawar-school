@@ -43,29 +43,47 @@ export default function AdminLegalPages() {
   const [forms, setForms] = useState<{ [key: string]: LegalPage }>({});
 
   useEffect(() => {
+    const formData: { [key: string]: LegalPage } = {
+      privacy: {
+        id: "privacy",
+        page_type: "privacy",
+        page_title: "Privacy Policy",
+        last_updated: "",
+        content: "",
+        sections: [],
+      },
+      terms: {
+        id: "terms",
+        page_type: "terms",
+        page_title: "Terms & Conditions",
+        last_updated: "",
+        content: "",
+        sections: [],
+      },
+    };
+
     if (pages.length > 0) {
-      const formData: { [key: string]: LegalPage } = {};
       pages.forEach((page) => {
         formData[page.page_type] = { 
           ...page, 
           sections: Array.isArray(page.sections) ? page.sections : [] 
         };
       });
-      setForms(formData);
     }
+    setForms(formData);
   }, [pages]);
 
   const updateMutation = useMutation({
     mutationFn: async ({ type, data }: { type: string; data: Partial<LegalPage> }) => {
       const { error } = await supabase
         .from("legal_pages")
-        .update({
+        .upsert({
+          page_type: type,
           page_title: data.page_title,
           last_updated: data.last_updated,
           content: data.content,
           sections: data.sections,
-        })
-        .eq("page_type", type);
+        }, { onConflict: "page_type" });
       if (error) throw error;
     },
     onSuccess: () => {
