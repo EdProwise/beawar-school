@@ -6,49 +6,60 @@ import {
   Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSiteSettings } from "@/hooks/use-school-data";
+import { 
+  useSiteSettings, 
+  useExtracurricularCategories, 
+  useExtracurricularHighlights 
+} from "@/hooks/use-school-data";
 
 const iconMap: Record<string, React.ElementType> = {
   Music, Trophy, Camera, Palette, Globe, Heart, Rocket, Star, Shield, Zap, BookOpen, Users, Award, Clock, Target
 };
 
-const activityCategories = [
+// Fallback data if DB is empty
+const defaultCategories = [
   {
     title: "Sports & Athletics",
-    icon: Trophy,
+    icon_name: "Trophy",
     description: "From football and basketball to swimming and track & field, our sports programs foster teamwork, discipline, and physical fitness.",
     activities: ["Football", "Basketball", "Cricket", "Swimming", "Athletics", "Martial Arts"]
   },
   {
     title: "Performing Arts",
-    icon: Music,
+    icon_name: "Music",
     description: "Express your creativity through our music, dance, and drama programs, featuring regular performances and workshops.",
     activities: ["Classical Dance", "Contemporary Dance", "Instrumental Music", "Vocal Music", "Theater & Drama", "Public Speaking"]
   },
   {
     title: "Visual Arts & Design",
-    icon: Palette,
+    icon_name: "Palette",
     description: "Nurture your artistic talents through painting, sculpture, digital design, and various craft workshops.",
     activities: ["Painting & Sketching", "Pottery & Sculpture", "Graphic Design", "Photography", "Craft & Origami", "Fashion Club"]
   },
   {
     title: "Clubs & Societies",
-    icon: Globe,
+    icon_name: "Globe",
     description: "Join specialized clubs to explore interests in science, technology, environment, and social service.",
     activities: ["Coding & Robotics", "Science Club", "Eco-Warriors", "Debate Society", "Literary Club", "Interact Club"]
   }
 ];
 
-const highlights = [
-  { icon: Rocket, title: "Holistic Growth", description: "Developing skills beyond the classroom for a well-rounded personality." },
-  { icon: Star, title: "Expert Coaching", description: "Guidance from professional coaches and industry experts." },
-  { icon: Shield, title: "Safe Environment", description: "All activities are conducted in a safe and supervised environment." },
-  { icon: Zap, title: "State-of-the-art Equipment", description: "Access to professional-grade equipment and facilities." },
+const defaultHighlights = [
+  { icon_name: "Rocket", title: "Holistic Growth", description: "Developing skills beyond the classroom for a well-rounded personality." },
+  { icon_name: "Star", title: "Expert Coaching", description: "Guidance from professional coaches and industry experts." },
+  { icon_name: "Shield", title: "Safe Environment", description: "All activities are conducted in a safe and supervised environment." },
+  { icon_name: "Zap", title: "State-of-the-art Equipment", description: "Access to professional-grade equipment and facilities." },
 ];
 
 export function Extracurricular() {
   const { data: settings } = useSiteSettings();
+  const { data: dbCategories, isLoading: loadingCats } = useExtracurricularCategories();
+  const { data: dbHighlights, isLoading: loadingHighs } = useExtracurricularHighlights();
+  
   const schoolName = settings?.school_name || "Orbit School";
+
+  const categories = dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories;
+  const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
 
   return (
     <div className="min-h-screen">
@@ -85,8 +96,8 @@ export function Extracurricular() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              {activityCategories.map((category, index) => {
-                const IconComponent = category.icon;
+              {categories.map((category, index) => {
+                const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
                 return (
                   <div key={index} className="bg-card p-8 rounded-2xl border border-border hover:shadow-strong transition-all group">
                     <div className="w-16 h-16 rounded-2xl bg-primary-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -95,7 +106,7 @@ export function Extracurricular() {
                     <h3 className="font-heading text-2xl font-bold text-foreground mb-4">{category.title}</h3>
                     <p className="text-muted-foreground mb-6">{category.description}</p>
                     <div className="flex flex-wrap gap-2">
-                      {category.activities.map((activity, idx) => (
+                      {category.activities?.map((activity, idx) => (
                         <span key={idx} className="px-3 py-1 bg-secondary text-foreground text-sm rounded-full">
                           {activity}
                         </span>
@@ -113,7 +124,7 @@ export function Extracurricular() {
           <div className="container">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {highlights.map((item, index) => {
-                const IconComponent = item.icon;
+                const IconComponent = iconMap[item.icon_name || "Star"] || Star;
                 return (
                   <div key={index} className="bg-card p-6 rounded-2xl border border-border text-center hover:shadow-medium transition-all">
                     <div className="w-14 h-14 rounded-full bg-primary-light flex items-center justify-center mx-auto mb-4">

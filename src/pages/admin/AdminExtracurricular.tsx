@@ -1,0 +1,383 @@
+import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/mongodb/client";
+import AdminLayout from "@/components/admin/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Loader2, Save, Plus, Trash2, Zap, Star, Trophy, Music, Palette, Globe, 
+  Rocket, Shield, Award, Clock, Target, Heart, Camera, BookOpen, Users
+} from "lucide-react";
+import { 
+  useExtracurricularCategories, 
+  useExtracurricularHighlights,
+  type ExtracurricularCategory,
+  type ExtracurricularHighlight
+} from "@/hooks/use-school-data";
+
+const iconOptions = [
+  { name: "Trophy", icon: Trophy },
+  { name: "Music", icon: Music },
+  { name: "Palette", icon: Palette },
+  { name: "Globe", icon: Globe },
+  { name: "Rocket", icon: Rocket },
+  { name: "Star", icon: Star },
+  { name: "Shield", icon: Shield },
+  { name: "Zap", icon: Zap },
+  { name: "Award", icon: Award },
+  { name: "Clock", icon: Clock },
+  { name: "Target", icon: Target },
+  { name: "Heart", icon: Heart },
+  { name: "Camera", icon: Camera },
+  { name: "BookOpen", icon: BookOpen },
+  { name: "Users", icon: Users },
+];
+
+export default function AdminExtracurricular() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const { data: categories, isLoading: loadingCats } = useExtracurricularCategories();
+  const { data: highlights, isLoading: loadingHighs } = useExtracurricularHighlights();
+  
+  const [localCategories, setLocalCategories] = useState<ExtracurricularCategory[]>([]);
+  const [localHighlights, setLocalHighlights] = useState<ExtracurricularHighlight[]>([]);
+
+  useEffect(() => {
+    if (categories) setLocalCategories(categories);
+  }, [categories]);
+
+  useEffect(() => {
+    if (highlights) setLocalHighlights(highlights);
+  }, [highlights]);
+
+  const categoryMutation = useMutation({
+    mutationFn: async (values: ExtracurricularCategory[]) => {
+      const { data: currentDbItems } = await supabase.from("extracurricular_categories").select("id");
+      const dbIds = currentDbItems?.map(item => item.id) || [];
+      const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
+      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
+
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase.from("extracurricular_categories").delete().in("id", toDelete);
+        if (delError) throw delError;
+      }
+
+      for (const val of values) {
+        const payload = { ...val };
+        if (payload.id.startsWith("temp-")) {
+          const { id, ...rest } = payload;
+          const { error: insError } = await supabase.from("extracurricular_categories").insert([rest]);
+          if (insError) throw insError;
+        } else {
+          const { error: updError } = await supabase.from("extracurricular_categories").update(payload).eq("id", val.id);
+          if (updError) throw updError;
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["extracurricular-categories"] });
+      toast({ title: "Categories updated successfully" });
+    },
+    onError: (error) => {
+      console.error("Error saving categories:", error);
+      toast({ title: "Error saving categories", variant: "destructive" });
+    }
+  });
+
+  const highlightMutation = useMutation({
+    mutationFn: async (values: ExtracurricularHighlight[]) => {
+      const { data: currentDbItems } = await supabase.from("extracurricular_highlights").select("id");
+      const dbIds = currentDbItems?.map(item => item.id) || [];
+      const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
+      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
+
+      if (toDelete.length > 0) {
+        const { error: delError } = await supabase.from("extracurricular_highlights").delete().in("id", toDelete);
+        if (delError) throw delError;
+      }
+
+      for (const val of values) {
+        if (val.id.startsWith("temp-")) {
+          const { id, ...rest } = val;
+          const { error: insError } = await supabase.from("extracurricular_highlights").insert([rest]);
+          if (insError) throw insError;
+        } else {
+          const { error: updError } = await supabase.from("extracurricular_highlights").update(val).eq("id", val.id);
+          if (updError) throw updError;
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["extracurricular-highlights"] });
+      toast({ title: "Highlights updated successfully" });
+    },
+    onError: (error) => {
+      console.error("Error saving highlights:", error);
+      toast({ title: "Error saving highlights", variant: "destructive" });
+    }
+  });
+
+  const handleAddCategory = () => {
+    const newVal: ExtracurricularCategory = {
+      id: `temp-${Date.now()}`,
+      title: "New Category",
+      description: "",
+      icon_name: "Trophy",
+      activities: [],
+      is_active: true,
+      sort_order: localCategories.length,
+    };
+    setLocalCategories([...localCategories, newVal]);
+  };
+
+  const handleUpdateCategory = (id: string, updates: Partial<ExtracurricularCategory>) => {
+    setLocalCategories(localCategories.map(c => c.id === id ? { ...c, ...updates } : c));
+  };
+
+  const handleRemoveCategory = (id: string) => {
+    setLocalCategories(localCategories.filter(c => c.id !== id));
+  };
+
+  const handleAddHighlight = () => {
+    const newVal: ExtracurricularHighlight = {
+      id: `temp-${Date.now()}`,
+      title: "New Highlight",
+      description: "",
+      icon_name: "Star",
+      is_active: true,
+      sort_order: localHighlights.length,
+    };
+    setLocalHighlights([...localHighlights, newVal]);
+  };
+
+  const handleUpdateHighlight = (id: string, updates: Partial<ExtracurricularHighlight>) => {
+    setLocalHighlights(localHighlights.map(h => h.id === id ? { ...h, ...updates } : h));
+  };
+
+  const handleRemoveHighlight = (id: string) => {
+    setLocalHighlights(localHighlights.filter(h => h.id !== id));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    categoryMutation.mutate(localCategories);
+    highlightMutation.mutate(localHighlights);
+  };
+
+  if (loadingCats || loadingHighs) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  return (
+    <AdminLayout>
+      <div className="max-w-5xl pb-20">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground">Extracurricular Content</h1>
+          <p className="text-muted-foreground">Manage activity categories and program highlights</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <Tabs defaultValue="categories" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 max-w-md mb-8">
+              <TabsTrigger value="categories">Activity Categories</TabsTrigger>
+              <TabsTrigger value="highlights">Program Highlights</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="categories" className="space-y-6">
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-primary" />
+                    Activity Categories
+                  </h2>
+                  <Button type="button" variant="outline" size="sm" onClick={handleAddCategory}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Category
+                  </Button>
+                </div>
+
+                <div className="space-y-6">
+                  {localCategories.map((cat) => (
+                    <div key={cat.id} className="p-5 bg-background rounded-lg border border-border relative group">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCategory(cat.id)}
+                        className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <Label>Category Title</Label>
+                            <Input
+                              value={cat.title}
+                              onChange={(e) => handleUpdateCategory(cat.id, { title: e.target.value })}
+                              placeholder="e.g., Sports & Athletics"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 block">Icon</Label>
+                            <div className="flex flex-wrap gap-2">
+                              {iconOptions.map((opt) => (
+                                <button
+                                  key={opt.name}
+                                  type="button"
+                                  onClick={() => handleUpdateCategory(cat.id, { icon_name: opt.name })}
+                                  className={`p-2 rounded-md border transition-all ${
+                                    cat.icon_name === opt.name 
+                                      ? "bg-primary text-primary-foreground border-primary" 
+                                      : "bg-card border-border hover:border-primary"
+                                  }`}
+                                  title={opt.name}
+                                >
+                                  <opt.icon className="w-4 h-4" />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <Label>Activities (comma separated)</Label>
+                            <Input
+                              value={cat.activities?.join(", ") || ""}
+                              onChange={(e) => handleUpdateCategory(cat.id, { 
+                                activities: e.target.value.split(",").map(s => s.trim()).filter(s => s !== "") 
+                              })}
+                              placeholder="e.g., Football, Basketball, Swimming"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Description</Label>
+                          <Textarea
+                            value={cat.description || ""}
+                            onChange={(e) => handleUpdateCategory(cat.id, { description: e.target.value })}
+                            rows={8}
+                            placeholder="Describe this activity category..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {localCategories.length === 0 && (
+                    <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+                      <Trophy className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                      <p className="text-muted-foreground">No categories added yet. Click "Add Category" to start.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="highlights" className="space-y-6">
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold flex items-center gap-2">
+                    <Star className="w-5 h-5 text-primary" />
+                    Program Highlights
+                  </h2>
+                  <Button type="button" variant="outline" size="sm" onClick={handleAddHighlight}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Highlight
+                  </Button>
+                </div>
+
+                <div className="space-y-6">
+                  {localHighlights.map((high) => (
+                    <div key={high.id} className="p-5 bg-background rounded-lg border border-border relative group">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveHighlight(high.id)}
+                        className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <Label>Highlight Title</Label>
+                            <Input
+                              value={high.title}
+                              onChange={(e) => handleUpdateHighlight(high.id, { title: e.target.value })}
+                              placeholder="e.g., Holistic Growth"
+                            />
+                          </div>
+                          <div>
+                            <Label className="mb-2 block">Icon</Label>
+                            <div className="flex flex-wrap gap-2">
+                              {iconOptions.map((opt) => (
+                                <button
+                                  key={opt.name}
+                                  type="button"
+                                  onClick={() => handleUpdateHighlight(high.id, { icon_name: opt.name })}
+                                  className={`p-2 rounded-md border transition-all ${
+                                    high.icon_name === opt.name 
+                                      ? "bg-primary text-primary-foreground border-primary" 
+                                      : "bg-card border-border hover:border-primary"
+                                  }`}
+                                  title={opt.name}
+                                >
+                                  <opt.icon className="w-4 h-4" />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <Label>Description</Label>
+                          <Textarea
+                            value={high.description || ""}
+                            onChange={(e) => handleUpdateHighlight(high.id, { description: e.target.value })}
+                            rows={5}
+                            placeholder="Briefly describe this highlight..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {localHighlights.length === 0 && (
+                    <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+                      <Star className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                      <p className="text-muted-foreground">No highlights added yet. Click "Add Highlight" to start.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <div className="flex justify-end sticky bottom-8 py-4 bg-background/80 backdrop-blur-sm border-t border-border mt-12 z-10">
+            <Button
+              type="submit"
+              size="lg"
+              className="px-12"
+              disabled={categoryMutation.isPending || highlightMutation.isPending}
+            >
+              {(categoryMutation.isPending || highlightMutation.isPending) ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save All Changes
+            </Button>
+          </div>
+        </form>
+      </div>
+    </AdminLayout>
+  );
+}

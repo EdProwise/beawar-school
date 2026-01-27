@@ -32,6 +32,7 @@ import AdminFacilitiesManage from "./pages/admin/AdminFacilitiesManage";
 import AdminPrograms from "./pages/admin/AdminPrograms";
 import AdminAbout from "./pages/admin/AdminAbout";
 import AdminAcademics from "./pages/admin/AdminAcademics";
+import AdminExtracurricular from "./pages/admin/AdminExtracurricular";
 import AdminHighlights from "./pages/admin/AdminHighlights";
 import AdminAdmissionsContent from "./pages/admin/AdminAdmissionsContent";
 import AdminLegalPages from "./pages/admin/AdminLegalPages";
@@ -190,13 +191,19 @@ export const routers = [
         name: 'admin-about',
         element: <AdminAbout />,
       },
-      {
-        path: "/admin/academics",
-        name: 'admin-academics',
-        element: <AdminAcademics />,
-      },
-      {
-        path: "/admin/highlights",
+        {
+          path: "/admin/academics",
+          name: 'admin-academics',
+          element: <AdminAcademics />,
+        },
+        {
+          path: "/admin/extracurricular",
+          name: 'admin-extracurricular',
+          element: <AdminExtracurricular />,
+        },
+        {
+          path: "/admin/highlights",
+
         name: 'admin-highlights',
         element: <AdminHighlights />,
       },

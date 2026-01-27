@@ -22,9 +22,11 @@ import {
   Star,
   FileText,
     ClipboardList,
-    Shield,
-    FolderOpen
-  } from "lucide-react";
+      Shield,
+      FolderOpen,
+      Zap
+    } from "lucide-react";
+
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -45,9 +47,11 @@ const navItems: NavItem[] = [
   { name: "Admission Inquiries", path: "/admin/admissions", icon: Users },
   { name: "Contact Message", path: "/admin/contacts", icon: Mail },
   { name: "About Content", path: "/admin/about", icon: Info },
-  { name: "Academic", path: "/admin/programs", icon: BookOpen },
-    { name: "Academic Content", path: "/admin/academics", icon: FileText },
-    { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
+    { name: "Academic", path: "/admin/programs", icon: BookOpen },
+      { name: "Academic Content", path: "/admin/academics", icon: FileText },
+      { name: "Extracurricular Content", path: "/admin/extracurricular", icon: Zap },
+      { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
+
     { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
     { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },

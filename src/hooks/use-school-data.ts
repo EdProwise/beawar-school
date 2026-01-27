@@ -608,3 +608,54 @@ export function useAcademicExcellence() {
     },
   });
 }
+
+// Extracurricular Categories
+export interface ExtracurricularCategory {
+  id: string;
+  title: string;
+  description: string | null;
+  icon_name: string | null;
+  activities: string[] | null;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export function useExtracurricularCategories() {
+  return useQuery({
+    queryKey: ["extracurricular-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("extracurricular_categories")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as ExtracurricularCategory[];
+    },
+  });
+}
+
+// Extracurricular Highlights
+export interface ExtracurricularHighlight {
+  id: string;
+  title: string;
+  description: string | null;
+  icon_name: string | null;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export function useExtracurricularHighlights() {
+  return useQuery({
+    queryKey: ["extracurricular-highlights"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("extracurricular_highlights")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as ExtracurricularHighlight[];
+    },
+  });
+}
