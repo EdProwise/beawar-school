@@ -1,6 +1,7 @@
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Academics from "./pages/Academics";
+import Extracurricular from "./pages/Extracurricular";
 import Admissions from "./pages/Admissions";
 import Facilities from "./pages/Facilities";
 import Gallery from "./pages/Gallery";
@@ -53,13 +54,18 @@ export const routers = [
       element: <Academics />,
     },
     {
+      path: "/extracurricular",
+      name: 'extracurricular',
+      element: <Extracurricular />,
+    },
+    {
       path: "/admissions",
       name: 'admissions',
       element: <Admissions />,
     },
     {
-      path: "/facilities",
-      name: 'facilities',
+      path: "/infrastructure",
+      name: 'infrastructure',
       element: <Facilities />,
     },
     {

@@ -33,17 +33,17 @@ export function FacilitiesSection() {
 
       <div className="container relative">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
-            Facilities
-          </span>
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            World-Class <span className="text-gradient-gold">Infrastructure</span>
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            State-of-the-art facilities designed to support comprehensive learning
-          </p>
-        </div>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
+              Infrastructure
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              World-Class <span className="text-gradient-gold">Infrastructure</span>
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              State-of-the-art infrastructure designed to support comprehensive learning
+            </p>
+          </div>
 
         {/* Facilities Grid */}
         {isLoading ? (
@@ -100,8 +100,8 @@ export function FacilitiesSection() {
         {/* CTA */}
         <div className="text-center mt-12">
           <Button variant="gold" size="lg" asChild>
-            <Link to="/facilities">
-              Explore All Facilities
+            <Link to="/infrastructure">
+              Explore All Infrastructure
             </Link>
           </Button>
         </div>
