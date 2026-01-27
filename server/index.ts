@@ -150,6 +150,13 @@ app.get('/api/:table', async (req, res) => {
         } else if (key.endsWith('_neq')) {
           const field = key.replace('_neq', '');
           mongoFilter[field] = { ...mongoFilter[field], $ne: val };
+        } else if (key.endsWith('_in')) {
+          const field = key.replace('_in', '');
+          try {
+            mongoFilter[field] = { ...mongoFilter[field], $in: JSON.parse(val as string) };
+          } catch (e) {
+            mongoFilter[field] = val;
+          }
         } else {
           mongoFilter[key] = val;
         }
@@ -214,6 +221,37 @@ app.patch('/api/:table/:id', async (req, res) => {
     );
     
     res.json(updatedItem);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/:table', async (req, res) => {
+  try {
+    const { table } = req.params;
+    const { ...filters } = req.query;
+    const Model = getModel(table);
+    
+    const mongoFilter: any = {};
+    Object.keys(filters).forEach(key => {
+      let val = filters[key] as any;
+      if (val === 'true') val = true;
+      if (val === 'false') val = false;
+
+      if (key.endsWith('_in')) {
+        const field = key.replace('_in', '');
+        try {
+          mongoFilter[field] = { $in: JSON.parse(val as string) };
+        } catch (e) {
+          mongoFilter[field] = val;
+        }
+      } else {
+        mongoFilter[key] = val;
+      }
+    });
+
+    await Model.deleteMany(mongoFilter);
+    res.json({ message: 'Deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

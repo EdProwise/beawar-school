@@ -4,6 +4,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 class MongoDBQueryBuilder {
   private table: string;
   private params: URLSearchParams;
+  private method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'UPSERT' = 'GET';
+  private body: any = null;
 
   constructor(table: string) {
     this.table = table;
@@ -40,6 +42,11 @@ class MongoDBQueryBuilder {
     return this;
   }
 
+  in(field: string, values: any[]) {
+    this.params.set(`${field}_in`, JSON.stringify(values));
+    return this;
+  }
+
   order(field: string, { ascending = true } = {}) {
     this.params.set('sort', field);
     this.params.set('order', ascending ? 'asc' : 'desc');
@@ -52,28 +59,71 @@ class MongoDBQueryBuilder {
   }
 
   async then(onfulfilled?: (value: any) => any) {
-    const url = new URL(`${API_URL}/${this.table}`);
-    this.params.forEach((value, key) => url.searchParams.append(key, value));
-    
-      try {
-        const response = await fetch(url.toString());
-        let data = await response.json();
-        
-        // Map _id to id for consistency with Supabase/Frontend expectations
-        const mapId = (obj: any) => {
-          if (!obj || typeof obj !== 'object') return obj;
-          if (Array.isArray(obj)) return obj.map(mapId);
-          
-          const newObj = { ...obj };
-          if (newObj._id && !newObj.id) {
-            newObj.id = newObj._id.toString();
-          }
-          return newObj;
-        };
+    try {
+      let response;
+      let url = new URL(`${API_URL}/${this.table}`);
+      this.params.forEach((value, key) => url.searchParams.append(key, value));
 
-        data = mapId(data);
+      if (this.method === 'GET') {
+        response = await fetch(url.toString());
+      } else if (this.method === 'POST') {
+        response = await fetch(url.toString(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Array.isArray(this.body) ? this.body[0] : this.body),
+        });
+      } else if (this.method === 'PATCH' || this.method === 'DELETE') {
+        const reservedParams = ['select', 'count', 'sort', 'order', 'limit', 'head'];
+        const field = Array.from(this.params.keys()).find(k => !k.includes('_') && !reservedParams.includes(k));
+        const value = field ? this.params.get(field) : null;
+
+        if (!value && this.method === 'PATCH') {
+          return onfulfilled ? onfulfilled({ data: null, error: { message: 'Update requires an eq() filter (usually id)' } }) : { data: null, error: { message: 'Update requires an eq() filter (usually id)' } };
+        }
         
-        let result;
+        // For DELETE, if no ID is provided but we have other filters (like 'in'), we handle it differently
+        // But for simplicity with our current server, we expect an ID or handle bulk deletes differently.
+        // Let's support bulk delete if 'in' is present.
+        const inFilter = Array.from(this.params.keys()).find(k => k.endsWith('_in'));
+        
+        if (this.method === 'DELETE' && !value && inFilter) {
+           // Bulk delete via query params
+           response = await fetch(url.toString(), { method: 'DELETE' });
+        } else {
+           const idUrl = value ? `${API_URL}/${this.table}/${value}` : url.toString();
+           response = await fetch(idUrl, {
+             method: this.method,
+             headers: this.method === 'PATCH' ? { 'Content-Type': 'application/json' } : {},
+             body: this.method === 'PATCH' ? JSON.stringify(this.body) : undefined,
+           });
+        }
+      } else if (this.method === 'UPSERT') {
+        response = await fetch(`${API_URL}/${this.table}/upsert`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: this.body }),
+        });
+      } else {
+        throw new Error(`Unsupported method: ${this.method}`);
+      }
+
+      let data = await response.json();
+      
+      // Map _id to id for consistency with Supabase/Frontend expectations
+      const mapId = (obj: any) => {
+        if (!obj || typeof obj !== 'object') return obj;
+        if (Array.isArray(obj)) return obj.map(mapId);
+        
+        const newObj = { ...obj };
+        if (newObj._id && !newObj.id) {
+          newObj.id = newObj._id.toString();
+        }
+        return newObj;
+      };
+
+      data = mapId(data);
+      
+      let result;
       if (this.params.get('head') === 'true') {
         result = { count: data.count, error: response.ok ? null : { message: data.error } };
       } else if (this.params.get('count') === 'exact') {
@@ -106,58 +156,29 @@ class MongoDBQueryBuilder {
     return { data: result || null, error: null };
   }
 
-  async insert(values: any | any[]) {
-    const response = await fetch(`${API_URL}/${this.table}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Array.isArray(values) ? values[0] : values),
-    });
-    const data = await response.json();
-    return { data, error: response.ok ? null : { message: data.error } };
+  insert(values: any | any[]) {
+    this.method = 'POST';
+    this.body = values;
+    return this;
   }
 
-  async update(values: any) {
-    const reservedParams = ['select', 'count', 'sort', 'order', 'limit', 'head'];
-    const field = Array.from(this.params.keys()).find(k => !k.includes('_') && !reservedParams.includes(k));
-    const value = field ? this.params.get(field) : null;
-    
-    if (!value) {
-       return { data: null, error: { message: 'Update requires an eq() filter (usually id)' } };
-    }
-
-    const response = await fetch(`${API_URL}/${this.table}/${value}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(values),
-    });
-    const data = await response.json();
-    return { data, error: response.ok ? null : { message: data.error } };
+  update(values: any) {
+    this.method = 'PATCH';
+    // Remove id and _id from body to avoid MongoDB update errors
+    const { id, _id, ...rest } = values;
+    this.body = rest;
+    return this;
   }
 
-  async delete() {
-    const reservedParams = ['select', 'count', 'sort', 'order', 'limit', 'head'];
-    const field = Array.from(this.params.keys()).find(k => !k.includes('_') && !reservedParams.includes(k));
-    const value = field ? this.params.get(field) : null;
-    
-    if (!value) {
-       return { data: null, error: { message: 'Delete requires an eq() filter (usually id)' } };
-    }
-
-    const response = await fetch(`${API_URL}/${this.table}/${value}`, {
-      method: 'DELETE',
-    });
-    const data = await response.json();
-    return { data, error: response.ok ? null : { message: data.error } };
+  delete() {
+    this.method = 'DELETE';
+    return this;
   }
 
-  async upsert(values: any) {
-    const response = await fetch(`${API_URL}/${this.table}/upsert`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ data: values }),
-    });
-    const data = await response.json();
-    return { data, error: response.ok ? null : { message: data.error } };
+  upsert(values: any) {
+    this.method = 'UPSERT';
+    this.body = values;
+    return this;
   }
 }
 
