@@ -274,80 +274,112 @@ export default function AdminSettings() {
             <p className="text-sm text-muted-foreground mb-6">
               Customize the buttons that appear in the website header
             </p>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-4 p-4 border border-border rounded-lg">
-                <h3 className="font-medium text-foreground">Primary Button (Gold)</h3>
-                <div>
-                  <Label htmlFor="cta_primary_text">Button Text</Label>
-                  <Input
-                    id="cta_primary_text"
-                    value={formData.cta_primary_text}
-                    onChange={(e) => setFormData({ ...formData, cta_primary_text: e.target.value })}
-                    placeholder="Apply Now"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="cta_primary_link">Button Link</Label>
-                  <Input
-                    id="cta_primary_link"
-                    value={formData.cta_primary_link}
-                    onChange={(e) => setFormData({ ...formData, cta_primary_link: e.target.value })}
-                    placeholder="/admissions"
-                  />
-                </div>
-              </div>
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4 p-4 border border-border rounded-lg">
-                  <h3 className="font-medium text-foreground">Secondary Button (Portal)</h3>
+                  <h3 className="font-medium text-foreground">Primary Button (Gold)</h3>
                   <div>
-                    <Label htmlFor="cta_secondary_text">Button Text</Label>
+                    <Label htmlFor="cta_primary_text">Button Text</Label>
                     <Input
-                      id="cta_secondary_text"
-                      value={formData.cta_secondary_text}
-                      onChange={(e) => setFormData({ ...formData, cta_secondary_text: e.target.value })}
-                      placeholder="Portal"
+                      id="cta_primary_text"
+                      value={formData.cta_primary_text}
+                      onChange={(e) => setFormData({ ...formData, cta_primary_text: e.target.value })}
+                      placeholder="Apply Now"
                     />
                   </div>
                   <div>
-                    <Label>Select Portal Link</Label>
+                    <Label>Select Primary Link</Label>
                     <Select
-                      value={formData.cta_secondary_link}
-                      onValueChange={(value) => setFormData({ ...formData, cta_secondary_link: value })}
+                      value={["/admissions", "/contact", "/about"].includes(formData.cta_primary_link) ? formData.cta_primary_link : "custom"}
+                      onValueChange={(value) => {
+                        if (value !== "custom") {
+                          setFormData({ ...formData, cta_primary_link: value });
+                        }
+                      }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a portal or enter custom link" />
+                        <SelectValue placeholder="Select a page or enter custom link" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="/students">Internal Student Portal (/students)</SelectItem>
-                        <SelectItem value="/teachers">Internal Teacher Portal (/teachers)</SelectItem>
-                        <SelectItem value="/parents">Internal Parent Portal (/parents)</SelectItem>
-                        {portals.map((portal: any) => (
-                          portal.login_url && (
-                            <SelectItem key={portal.portal_type} value={portal.login_url}>
-                              External {portal.page_title} Portal
-                            </SelectItem>
-                          )
-                        ))}
+                        <SelectItem value="/admissions">Admissions (/admissions)</SelectItem>
+                        <SelectItem value="/contact">Contact (/contact)</SelectItem>
+                        <SelectItem value="/about">About (/about)</SelectItem>
                         <SelectItem value="custom">Custom Link (Type below)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="cta_secondary_link">Custom Button Link</Label>
+                    <Label htmlFor="cta_primary_link">Button Link</Label>
                     <div className="relative">
                       <Input
-                        id="cta_secondary_link"
-                        value={formData.cta_secondary_link}
-                        onChange={(e) => setFormData({ ...formData, cta_secondary_link: e.target.value })}
-                        placeholder="/students or https://..."
+                        id="cta_primary_link"
+                        value={formData.cta_primary_link}
+                        onChange={(e) => setFormData({ ...formData, cta_primary_link: e.target.value })}
+                        placeholder="/admissions or https://..."
                         className="pr-10"
                       />
                       <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-1">
-                      You can enter internal routes (e.g., /students) or external URLs (e.g., https://portal.com)
+                      You can enter internal routes (e.g., /admissions) or external URLs (e.g., https://school.com)
                     </p>
                   </div>
                 </div>
+                  <div className="space-y-4 p-4 border border-border rounded-lg">
+                    <h3 className="font-medium text-foreground">Secondary Button (Portal)</h3>
+                    <div>
+                      <Label htmlFor="cta_secondary_text">Button Text</Label>
+                      <Input
+                        id="cta_secondary_text"
+                        value={formData.cta_secondary_text}
+                        onChange={(e) => setFormData({ ...formData, cta_secondary_text: e.target.value })}
+                        placeholder="Portal"
+                      />
+                    </div>
+                    <div>
+                      <Label>Select Portal Link</Label>
+                      <Select
+                        value={["/students", "/teachers", "/parents", ...portals.map((p: any) => p.login_url)].includes(formData.cta_secondary_link) ? formData.cta_secondary_link : "custom"}
+                        onValueChange={(value) => {
+                          if (value !== "custom") {
+                            setFormData({ ...formData, cta_secondary_link: value });
+                          }
+                        }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a portal or enter custom link" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="/students">Internal Student Portal (/students)</SelectItem>
+                          <SelectItem value="/teachers">Internal Teacher Portal (/teachers)</SelectItem>
+                          <SelectItem value="/parents">Internal Parent Portal (/parents)</SelectItem>
+                          {portals.map((portal: any) => (
+                            portal.login_url && (
+                              <SelectItem key={portal.portal_type} value={portal.login_url}>
+                                External {portal.page_title} Portal
+                              </SelectItem>
+                            )
+                          ))}
+                          <SelectItem value="custom">Custom Link (Type below)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="cta_secondary_link">Custom Button Link</Label>
+                      <div className="relative">
+                        <Input
+                          id="cta_secondary_link"
+                          value={formData.cta_secondary_link}
+                          onChange={(e) => setFormData({ ...formData, cta_secondary_link: e.target.value })}
+                          placeholder="/students or https://..."
+                          className="pr-10"
+                        />
+                        <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        You can enter internal routes (e.g., /students) or external URLs (e.g., https://portal.com)
+                      </p>
+                    </div>
+                  </div>
 
             </div>
           </div>
