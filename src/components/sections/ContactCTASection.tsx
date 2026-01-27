@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Phone, Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubmitAdmissionInquiry, useSiteSettings } from "@/hooks/use-school-data";
+import { useSubmitAdmissionInquiry, useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
 
 export function ContactCTASection() {
   const { data: settings } = useSiteSettings();
+  const { data: admissionSettings = {} } = useAdmissionSettings();
   const [formData, setFormData] = useState({
     parent_name: "",
     phone: "",
@@ -97,98 +98,112 @@ export function ContactCTASection() {
 
           {/* Right Content - Quick Inquiry Form */}
           <div className="bg-card rounded-2xl p-8 shadow-strong">
-            <h3 className="font-heading text-xl font-bold text-foreground mb-6">
-              Quick Inquiry
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Parent Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="parent_name"
-                    value={formData.parent_name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                    placeholder="Your name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                    placeholder="Your phone"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                  placeholder="Your email"
-                  required
+            {admissionSettings.use_custom_inquiry_html === 'true' && admissionSettings.inquiry_html ? (
+              <>
+                <h3 className="font-heading text-xl font-bold text-foreground mb-6">
+                  {admissionSettings.inquiry_title || "Quick Inquiry"}
+                </h3>
+                <div 
+                  dangerouslySetInnerHTML={{ __html: admissionSettings.inquiry_html }} 
+                  className="w-full flex justify-center"
                 />
-              </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Grade Applying For *
-                  </label>
-                  <input
-                    type="text"
-                    name="grade_applying"
-                    value={formData.grade_applying}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                    placeholder="e.g. Grade 5"
-                    required
-                  />
-                </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Message
-                </label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
-                  placeholder="Your message..."
-                />
-              </div>
-              <Button 
-                type="submit" 
-                variant="gold" 
-                size="lg" 
-                className="w-full"
-                disabled={submitMutation.isPending}
-              >
-                {submitMutation.isPending ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    Submit Inquiry
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </Button>
-            </form>
+              </>
+            ) : (
+              <>
+                <h3 className="font-heading text-xl font-bold text-foreground mb-6">
+                  Quick Inquiry
+                </h3>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Parent Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="parent_name"
+                        value={formData.parent_name}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        placeholder="Your name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        Phone Number *
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                        placeholder="Your phone"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                      placeholder="Your email"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Grade Applying For *
+                    </label>
+                    <input
+                      type="text"
+                      name="grade_applying"
+                      value={formData.grade_applying}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                      placeholder="e.g. Grade 5"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      rows={3}
+                      className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none"
+                      placeholder="Your message..."
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    variant="gold" 
+                    size="lg" 
+                    className="w-full"
+                    disabled={submitMutation.isPending}
+                  >
+                    {submitMutation.isPending ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        Submit Inquiry
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </div>
