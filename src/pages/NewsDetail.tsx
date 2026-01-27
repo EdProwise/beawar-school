@@ -55,8 +55,8 @@ export function NewsDetail() {
             </Link>
           </Button>
 
-          <article>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
+            <article className="break-words overflow-hidden">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-6">
               <span className="px-3 py-1 bg-primary-light text-primary rounded-full font-medium capitalize">
                 {news.category}
               </span>
@@ -75,7 +75,7 @@ export function NewsDetail() {
               )}
             </div>
 
-            <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
+            <h1 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight break-words">
               {news.title}
             </h1>
 
@@ -90,7 +90,7 @@ export function NewsDetail() {
             )}
 
             <div 
-              className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:text-muted-foreground prose-p:leading-relaxed prose-img:rounded-xl"
+              className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:text-muted-foreground prose-p:leading-relaxed prose-img:rounded-xl break-words"
               dangerouslySetInnerHTML={{ __html: news.content || "" }}
             />
 
