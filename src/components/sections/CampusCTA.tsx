@@ -10,15 +10,20 @@ const getYouTubeEmbedUrl = (url: string) => {
   return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}` : null;
 };
 
-export function CampusCTA() {
+interface CampusCTAProps {
+  className?: string;
+  isNested?: boolean;
+}
+
+export function CampusCTA({ className, isNested }: CampusCTAProps) {
   const { data: settings } = useSiteSettings();
   const campusVideoEmbedUrl = settings?.campus_video_url ? getYouTubeEmbedUrl(settings.campus_video_url) : null;
 
   return (
-    <div className="bg-card rounded-3xl p-6 lg:p-8 border border-border my-8">
-      <div className="grid lg:grid-cols-2 gap-8 items-center">
+    <div className={`bg-card rounded-3xl border border-border ${isNested ? 'p-5 lg:p-6' : 'p-6 lg:p-8'} ${className}`}>
+      <div className={`grid gap-8 items-center ${isNested ? 'grid-cols-1' : 'lg:grid-cols-2'}`}>
         <div>
-          <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-4">
+          <h2 className={`font-heading font-bold text-foreground mb-4 ${isNested ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'}`}>
             Want to See Our Campus?
           </h2>
           <p className="text-muted-foreground mb-6 text-sm">
@@ -37,7 +42,7 @@ export function CampusCTA() {
             </Button>
           </div>
         </div>
-        <div className="relative aspect-video rounded-2xl overflow-hidden shadow-medium bg-muted group">
+        <div className={`relative aspect-video rounded-2xl overflow-hidden shadow-medium bg-muted group ${isNested ? 'max-w-md' : ''}`}>
           {campusVideoEmbedUrl ? (
             <iframe
               src={campusVideoEmbedUrl}

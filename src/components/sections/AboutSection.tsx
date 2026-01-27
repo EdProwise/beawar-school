@@ -40,15 +40,19 @@ export function AboutSection() {
               />
             </div>
 
-            <Button variant="default" size="lg" asChild>
-              <Link to="/about">
-                Know More
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Link>
-            </Button>
-          </div>
+              <Button variant="default" size="lg" asChild>
+                <Link to="/about">
+                  Know More
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Link>
+              </Button>
 
-          {/* Right Content - Highlight Cards */}
+                <div className="mt-12">
+                  <CampusCTA isNested className="lg:max-w-xl" />
+                </div>
+            </div>
+
+            {/* Right Content - Highlight Cards */}
           <div className="relative">
             <div className="grid sm:grid-cols-2 gap-4">
               {highlights.length > 0 ? (
@@ -115,12 +119,10 @@ export function AboutSection() {
                 <p className="text-primary-foreground/80 text-sm">Years of Excellence</p>
               </div>
             )}
+            </div>
           </div>
-        </div>
-
-        <CampusCTA />
-
-        {/* Mission & Vision */}
+  
+          {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mt-12">
           {about?.mission_text && (
             <div className="flex gap-4 p-8 rounded-3xl bg-accent-light/30 border border-accent/10">
