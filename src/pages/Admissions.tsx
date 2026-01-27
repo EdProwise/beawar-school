@@ -20,6 +20,63 @@ const iconMap: { [key: string]: any } = {
   CheckCircle,
 };
 
+const stepColors = [
+  {
+    bg: "bg-indigo-50",
+    iconBg: "bg-indigo-600",
+    text: "text-indigo-600",
+    border: "border-indigo-100",
+    hover: "group-hover:border-indigo-300",
+    accent: "bg-indigo-600",
+    shadow: "hover:shadow-indigo-100",
+  },
+  {
+    bg: "bg-rose-50",
+    iconBg: "bg-rose-600",
+    text: "text-rose-600",
+    border: "border-rose-100",
+    hover: "group-hover:border-rose-300",
+    accent: "bg-rose-600",
+    shadow: "hover:shadow-rose-100",
+  },
+  {
+    bg: "bg-amber-50",
+    iconBg: "bg-amber-600",
+    text: "text-amber-600",
+    border: "border-amber-100",
+    hover: "group-hover:border-amber-300",
+    accent: "bg-amber-600",
+    shadow: "hover:shadow-amber-100",
+  },
+  {
+    bg: "bg-emerald-50",
+    iconBg: "bg-emerald-600",
+    text: "text-emerald-600",
+    border: "border-emerald-100",
+    hover: "group-hover:border-emerald-300",
+    accent: "bg-emerald-600",
+    shadow: "hover:shadow-emerald-100",
+  },
+  {
+    bg: "bg-purple-50",
+    iconBg: "bg-purple-600",
+    text: "text-purple-600",
+    border: "border-purple-100",
+    hover: "group-hover:border-purple-300",
+    accent: "bg-purple-600",
+    shadow: "hover:shadow-purple-100",
+  },
+  {
+    bg: "bg-sky-50",
+    iconBg: "bg-sky-600",
+    text: "text-sky-600",
+    border: "border-sky-100",
+    hover: "group-hover:border-sky-300",
+    accent: "bg-sky-600",
+    shadow: "hover:shadow-sky-100",
+  },
+];
+
 const Admissions = () => {
   const [formData, setFormData] = useState({
     parent_name: "",
@@ -102,31 +159,43 @@ const Admissions = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {steps.map((step: any) => {
-                  const IconComponent = iconMap[step.icon_name] || CheckCircle;
-                  return (
-                    <div
-                      key={step.id}
-                      className="group bg-card rounded-2xl p-6 border border-border hover:border-primary/30 hover:shadow-elegant transition-all duration-300"
-                    >
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg shrink-0">
-                          {step.step_number}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-heading text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {steps.map((step: any, index: number) => {
+                    const IconComponent = iconMap[step.icon_name] || CheckCircle;
+                    const color = stepColors[index % stepColors.length];
+                    return (
+                      <div
+                        key={step.id}
+                        className={`group relative bg-card rounded-[2rem] p-8 border ${color.border} ${color.hover} transition-all duration-500 hover:-translate-y-2 shadow-sm ${color.shadow} overflow-hidden`}
+                      >
+                        {/* Decorative Background Element */}
+                        <div className={`absolute -right-8 -bottom-8 w-32 h-32 rounded-full opacity-5 ${color.accent} blur-3xl group-hover:opacity-10 transition-opacity duration-500`} />
+                        
+                        <div className="relative z-10">
+                          <div className="flex items-center justify-between mb-6">
+                            <div className={`w-14 h-14 rounded-2xl ${color.iconBg} flex items-center justify-center text-white shadow-lg transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                              <IconComponent className="w-7 h-7" />
+                            </div>
+                            <span className={`text-4xl font-bold opacity-10 ${color.text} font-heading group-hover:opacity-20 transition-opacity`}>
+                              {String(step.step_number).padStart(2, '0')}
+                            </span>
+                          </div>
+                          
+                          <h3 className={`font-heading text-xl font-bold text-foreground mb-3 transition-colors`}>
                             {step.title}
                           </h3>
-                          <p className="text-muted-foreground text-sm">
+                          
+                          <p className="text-muted-foreground leading-relaxed">
                             {step.description}
                           </p>
+
+                          {/* Animated accent line */}
+                          <div className={`absolute bottom-0 left-0 h-1 w-0 ${color.accent} transition-all duration-500 group-hover:w-full`} />
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
             )}
           </div>
         </section>
