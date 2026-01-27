@@ -1,21 +1,21 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { MapPin, Phone, Mail, Clock, Send, Facebook, Twitter, Instagram, Youtube, Loader2 } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, Facebook, Twitter, Instagram, Youtube, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubmitContact, useSiteSettings } from "@/hooks/use-school-data";
+import { useSubmitAdmissionInquiry, useSiteSettings } from "@/hooks/use-school-data";
 
 const Contact = () => {
   const { data: settings } = useSiteSettings();
   const [formData, setFormData] = useState({
-    full_name: "",
+    parent_name: "",
     phone: "",
     email: "",
-    subject: "",
+    grade_applying: "",
     message: "",
   });
   
-  const submitMutation = useSubmitContact();
+  const submitMutation = useSubmitAdmissionInquiry();
 
   const schoolName = settings?.school_name || "Orbit School";
   const address = settings?.address || "123 Education Lane, Academic District, City 12345";
@@ -57,7 +57,7 @@ const Contact = () => {
     e.preventDefault();
     submitMutation.mutate(formData, {
       onSuccess: () => {
-        setFormData({ full_name: "", phone: "", email: "", subject: "", message: "" });
+        setFormData({ parent_name: "", phone: "", email: "", grade_applying: "", message: "" });
       },
     });
   };
@@ -73,13 +73,13 @@ const Contact = () => {
           </div>
             <div className="container relative text-center">
               <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
-                Submit your enquiry
+                Admission Inquiry
               </span>
               <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-                Submit your enquiry
+                Admission Inquiry
               </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              We'd love to hear from you. Reach out for admissions inquiries, general questions, or to schedule a campus tour.
+              Begin your child's journey to excellence. Fill out the form below and our admissions team will get in touch with you.
             </p>
           </div>
         </section>
@@ -110,7 +110,7 @@ const Contact = () => {
                 {/* Form */}
                 <div className="bg-white rounded-[2rem] p-10 border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
                     <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-8">
-                      Submit your enquiry
+                      Submit Admission Inquiry
                     </h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid sm:grid-cols-2 gap-6">
@@ -118,16 +118,16 @@ const Contact = () => {
                         <label className="text-sm font-semibold text-[#1A1A1A]">Full Name *</label>
                         <input
                           type="text"
-                          name="full_name"
-                          value={formData.full_name}
+                          name="parent_name"
+                          value={formData.parent_name}
                           onChange={handleChange}
                           className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[#9CA3AF]"
-                          placeholder="Your name"
+                          placeholder="Parent's name"
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#1A1A1A]">Phone Number</label>
+                        <label className="text-sm font-semibold text-[#1A1A1A]">Phone Number *</label>
                         <input
                           type="tel"
                           name="phone"
@@ -135,6 +135,7 @@ const Contact = () => {
                           onChange={handleChange}
                           className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[#9CA3AF]"
                           placeholder="Your phone"
+                          required
                         />
                       </div>
                     </div>
@@ -151,24 +152,19 @@ const Contact = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-semibold text-[#1A1A1A]">Subject *</label>
-                      <select
-                        name="subject"
-                        value={formData.subject}
+                      <label className="text-sm font-semibold text-[#1A1A1A]">Grade Applying For *</label>
+                      <input
+                        type="text"
+                        name="grade_applying"
+                        value={formData.grade_applying}
                         onChange={handleChange}
-                        className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none cursor-pointer"
+                        className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[#9CA3AF]"
+                        placeholder="e.g. Grade 5"
                         required
-                      >
-                        <option value="">Select a subject</option>
-                        <option value="admissions">Admissions Inquiry</option>
-                        <option value="academics">Academic Programs</option>
-                        <option value="facilities">Campus & Facilities</option>
-                        <option value="fees">Fee Structure</option>
-                        <option value="other">Other</option>
-                      </select>
+                      />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-semibold text-[#1A1A1A]">Message *</label>
+                      <label className="text-sm font-semibold text-[#1A1A1A]">Message</label>
                       <textarea
                         name="message"
                         value={formData.message}
@@ -176,7 +172,6 @@ const Contact = () => {
                         rows={5}
                         className="w-full px-5 py-4 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none placeholder:text-[#9CA3AF]"
                         placeholder="How can we help you?"
-                        required
                       />
                     </div>
                     <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary-dark text-white rounded-xl py-7 text-lg font-semibold shadow-lg shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]" disabled={submitMutation.isPending}>
@@ -185,7 +180,7 @@ const Contact = () => {
                       ) : (
                         <div className="flex items-center justify-center gap-2">
                           <Send className="w-5 h-5" />
-                          <span>Submit your enquiry</span>
+                          <span>Submit Admission Inquiry</span>
                         </div>
                       )}
                     </Button>
