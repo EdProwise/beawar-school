@@ -6,6 +6,7 @@ import {
   Users, Award, Clock, Target, Baby, GraduationCap, Lightbulb, BookOpen, Loader2 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAcademicPrograms, useSiteSettings, useAcademicExcellence } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, React.ElementType> = {
