@@ -27,7 +27,7 @@ const Privacy = () => {
 
     return (
       <div className="min-h-screen bg-white">
-        <Header />
+        <Header variant="light" />
         <main>
           {/* Hero Section */}
           <section className="relative pt-32 pb-20 bg-[#F9FAFB] overflow-hidden">

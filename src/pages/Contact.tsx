@@ -78,7 +78,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
-      <Header />
+      <Header variant="light" />
       <main className="overflow-hidden">
         {/* Premium Hero Section with Animated Background */}
         <section className="relative pt-32 pb-40 overflow-hidden">
