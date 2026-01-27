@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Phone, Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubmitAdmissionInquiry } from "@/hooks/use-school-data";
+import { useSubmitAdmissionInquiry, useSiteSettings } from "@/hooks/use-school-data";
 
 export function ContactCTASection() {
+  const { data: settings } = useSiteSettings();
   const [formData, setFormData] = useState({
     parent_name: "",
     phone: "",
@@ -63,20 +64,20 @@ export function ContactCTASection() {
                 <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center">
                   <Phone className="w-5 h-5 text-accent-foreground" />
                 </div>
-                <div>
-                  <p className="text-primary-foreground/60 text-xs">Call Us</p>
-                  <p className="text-primary-foreground font-medium">+1 234 567 8900</p>
+                  <div>
+                    <p className="text-primary-foreground/60 text-xs">Call Us</p>
+                    <p className="text-primary-foreground font-medium">{settings?.phone || "+1 234 567 8900"}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-3 p-4 rounded-xl bg-primary-foreground/10 backdrop-blur-sm">
-                <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center">
-                  <Mail className="w-5 h-5 text-accent-foreground" />
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-primary-foreground/10 backdrop-blur-sm">
+                  <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-accent-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-primary-foreground/60 text-xs">Email Us</p>
+                    <p className="text-primary-foreground font-medium">{settings?.email || "info@orbitschool.edu"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-primary-foreground/60 text-xs">Email Us</p>
-                  <p className="text-primary-foreground font-medium">info@orbitschool.edu</p>
-                </div>
-              </div>
             </div>
 
             <div className="flex flex-wrap gap-4">
