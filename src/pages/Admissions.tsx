@@ -203,8 +203,8 @@ const Admissions = () => {
         {/* Inquiry Form */}
         <section id="inquiry" className="py-20 bg-secondary/30">
           <div className="container">
-            <div className="max-w-4xl mx-auto">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="max-w-6xl mx-auto">
+                <div className="grid lg:grid-cols-[40%_60%] gap-12 items-center">
                     <div>
                       <span className="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
                         {settings.inquiry_badge || "Get Started"}
