@@ -194,6 +194,7 @@ function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProp
     title: item?.title || "",
     category: item?.category || "campus",
     image_url: item?.image_url || "",
+    image_urls: [] as string[], // Added for multiple uploads
     description: item?.description || "",
     sort_order: item?.sort_order || 0,
     is_published: item?.is_published ?? true,
@@ -216,17 +217,39 @@ function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProp
 
     try {
       if (item) {
-        const { error } = await supabase.from("gallery_items").update(formData).eq("id", item.id);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { image_urls, ...submitData } = formData;
+        const { error } = await supabase.from("gallery_items").update(submitData).eq("id", item.id);
         if (error) throw error;
         toast({ title: "Updated", description: "Gallery item updated successfully" });
       } else {
-        const { error } = await supabase.from("gallery_items").insert([formData]);
-        if (error) throw error;
-        toast({ title: "Created", description: "Gallery item created successfully" });
+        if (formData.image_urls.length > 0) {
+          // Bulk upload
+          const itemsToInsert = formData.image_urls.map((url, index) => ({
+            title: formData.image_urls.length > 1 ? `${formData.title} (${index + 1})` : formData.title,
+            category: formData.category,
+            image_url: url,
+            description: formData.description,
+            sort_order: formData.sort_order + index,
+            is_published: formData.is_published,
+          }));
+          const { error } = await supabase.from("gallery_items").insert(itemsToInsert);
+          if (error) throw error;
+          toast({ title: "Created", description: `${formData.image_urls.length} gallery items created successfully` });
+        } else if (formData.image_url) {
+          // Single upload via URL
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { image_urls, ...submitData } = formData;
+          const { error } = await supabase.from("gallery_items").insert([submitData]);
+          if (error) throw error;
+          toast({ title: "Created", description: "Gallery item created successfully" });
+        } else {
+          throw new Error("Please upload at least one image or provide a URL");
+        }
       }
       onSuccess();
-    } catch {
-      toast({ title: "Error", description: "Failed to save", variant: "destructive" });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to save", variant: "destructive" });
     } finally {
       setIsLoading(false);
     }
@@ -235,10 +258,10 @@ function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProp
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-card rounded-2xl shadow-strong w-full max-w-md">
-        <div className="p-6 border-b border-border">
+      <div className="relative bg-card rounded-2xl shadow-strong w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-border sticky top-0 bg-card z-10">
           <h2 className="font-heading text-xl font-bold text-foreground">
-            {item ? "Edit Image" : "Add Image"}
+            {item ? "Edit Image" : "Add Image(s)"}
           </h2>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -252,6 +275,7 @@ function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProp
               className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
               required
             />
+            {!item && <p className="text-xs text-muted-foreground mt-1">If uploading multiple, this will be the base title.</p>}
           </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Category *</label>
@@ -279,21 +303,27 @@ function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProp
             </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Image *</label>
+            <label className="block text-sm font-medium text-foreground mb-2">Image(s) *</label>
             <FileUpload
               accept="image"
+              multiple={!item}
               currentUrl={formData.image_url}
               onUpload={(url) => setFormData({ ...formData, image_url: url })}
+              onMultiUpload={(urls) => setFormData({ ...formData, image_urls: urls })}
             />
-            <p className="text-xs text-muted-foreground mt-2">Or enter URL manually:</p>
-            <input
-              type="url"
-              name="image_url"
-              value={formData.image_url}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none mt-1"
-              placeholder="/sports.png or https://..."
-            />
+            {(!item || !formData.image_url) && (
+              <>
+                <p className="text-xs text-muted-foreground mt-2">Or enter URL manually (single):</p>
+                <input
+                  type="url"
+                  name="image_url"
+                  value={formData.image_url}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none mt-1"
+                  placeholder="/sports.png or https://..."
+                />
+              </>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-foreground mb-2">Description</label>

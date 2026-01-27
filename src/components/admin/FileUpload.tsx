@@ -6,14 +6,24 @@ import { useToast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
   onUpload: (url: string) => void;
+  onMultiUpload?: (urls: string[]) => void;
   accept?: "image" | "video" | "document" | "all";
   currentUrl?: string;
   className?: string;
+  multiple?: boolean;
 }
 
-export function FileUpload({ onUpload, accept = "image", currentUrl, className }: FileUploadProps) {
+export function FileUpload({ 
+  onUpload, 
+  onMultiUpload,
+  accept = "image", 
+  currentUrl, 
+  className,
+  multiple = false
+}: FileUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentUrl || null);
+  const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -45,42 +55,54 @@ export function FileUpload({ onUpload, accept = "image", currentUrl, className }
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
     setUploading(true);
+    const uploadedUrls: string[] = [];
 
     try {
-      const bucket = getBucket(file.type);
-      const fileType = getFileType(file.type);
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      for (const file of files) {
+        const bucket = getBucket(file.type);
+        const fileType = getFileType(file.type);
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-      // Upload to Supabase Storage
-      const { error: uploadError } = await supabase.storage
-        .from(bucket)
-        .upload(fileName, file);
+        // Upload to Supabase Storage
+        const { error: uploadError } = await supabase.storage
+          .from(bucket)
+          .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
+        if (uploadError) throw uploadError;
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from(bucket)
-        .getPublicUrl(fileName);
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from(bucket)
+          .getPublicUrl(fileName);
 
-      // Save to media library
-      await supabase.from("media_library").insert({
-        file_name: fileName,
-        original_name: file.name,
-        file_type: fileType,
-        file_url: publicUrl,
-        file_size: file.size,
-        mime_type: file.type,
-      });
+        // Save to media library
+        await supabase.from("media_library").insert({
+          file_name: fileName,
+          original_name: file.name,
+          file_type: fileType,
+          file_url: publicUrl,
+          file_size: file.size,
+          mime_type: file.type,
+        });
 
-      setPreview(publicUrl);
-      onUpload(publicUrl);
-      toast({ title: "File uploaded successfully!" });
+        uploadedUrls.push(publicUrl);
+      }
+
+      if (multiple) {
+        setPreviews([...previews, ...uploadedUrls]);
+        if (onMultiUpload) onMultiUpload(uploadedUrls);
+        toast({ title: `${files.length} file(s) uploaded successfully!` });
+      } else {
+        const url = uploadedUrls[0];
+        setPreview(url);
+        onUpload(url);
+        toast({ title: "File uploaded successfully!" });
+      }
     } catch (error) {
       console.error("Upload error:", error);
       toast({ title: "Upload failed", variant: "destructive" });
@@ -95,6 +117,13 @@ export function FileUpload({ onUpload, accept = "image", currentUrl, className }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const handleRemoveMulti = (index: number) => {
+    const newPreviews = [...previews];
+    newPreviews.splice(index, 1);
+    setPreviews(newPreviews);
+    if (onMultiUpload) onMultiUpload(newPreviews);
   };
 
   const getIcon = () => {
@@ -117,9 +146,31 @@ export function FileUpload({ onUpload, accept = "image", currentUrl, className }
         onChange={handleUpload}
         className="hidden"
         disabled={uploading}
+        multiple={multiple}
       />
 
-      {preview ? (
+      {multiple && previews.length > 0 && (
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {previews.map((url, index) => (
+            <div key={index} className="relative group aspect-square">
+              <img
+                src={url}
+                alt={`Preview ${index}`}
+                className="w-full h-full object-cover rounded-lg border border-border"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemoveMulti(index)}
+                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {preview && !multiple ? (
         <div className="relative group">
           {accept === "image" || (preview && preview.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) ? (
             <img
@@ -176,7 +227,7 @@ export function FileUpload({ onUpload, accept = "image", currentUrl, className }
             <>
               {getIcon()}
               <span className="text-sm text-muted-foreground">
-                Click to upload {accept === "all" ? "file" : accept}
+                Click to upload {accept === "all" ? "file" : accept}{multiple ? "s" : ""}
               </span>
               <span className="text-xs text-muted-foreground/70">
                 {accept === "image" && "JPG, PNG, GIF, WebP, SVG"}
