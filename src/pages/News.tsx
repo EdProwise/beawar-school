@@ -106,9 +106,9 @@ const News = () => {
                           <span className="px-3 py-1 bg-primary-light text-primary rounded-full font-medium capitalize">
                             {featured.category}
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" /> {formatDate(featured.created_at)}
-                          </span>
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-4 h-4" /> {formatDate(featured.event_date || featured.created_at)}
+                            </span>
                         </div>
                           <h2 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                             {featured.title}
@@ -140,11 +140,11 @@ const News = () => {
                               </span>
                             </div>
                           </div>
-                          <div className="p-5 flex-1">
-                            <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
-                              <Calendar className="w-4 h-4" />
-                              {formatDate(item.created_at)}
-                            </div>
+                            <div className="p-5 flex-1">
+                              <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+                                <Calendar className="w-4 h-4" />
+                                {formatDate(item.event_date || item.created_at)}
+                              </div>
                               <h3 className="font-heading text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
                                 {item.title}
                               </h3>

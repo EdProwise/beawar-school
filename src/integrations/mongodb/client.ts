@@ -113,16 +113,22 @@ class MongoDBQueryBuilder {
       let data = await response.json();
       
       // Map _id to id for consistency with Supabase/Frontend expectations
-      const mapId = (obj: any) => {
-        if (!obj || typeof obj !== 'object') return obj;
-        if (Array.isArray(obj)) return obj.map(mapId);
-        
-        const newObj = { ...obj };
-        if (newObj._id && !newObj.id) {
-          newObj.id = newObj._id.toString();
-        }
-        return newObj;
-      };
+        const mapId = (obj: any) => {
+          if (!obj || typeof obj !== 'object') return obj;
+          if (Array.isArray(obj)) return obj.map(mapId);
+          
+          const newObj = { ...obj };
+          if (newObj._id && !newObj.id) {
+            newObj.id = newObj._id.toString();
+          }
+          if (newObj.createdAt && !newObj.created_at) {
+            newObj.created_at = newObj.createdAt;
+          }
+          if (newObj.updatedAt && !newObj.updated_at) {
+            newObj.updated_at = newObj.updatedAt;
+          }
+          return newObj;
+        };
 
       data = mapId(data);
       
