@@ -30,7 +30,11 @@ export function AboutSection() {
               </h2>
               <div className="mb-6">
                 <FormattedContent 
-                  content={about?.main_description || "We provide quality education for all students."} 
+                  content={
+                    about?.main_description 
+                      ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 2).join('\n')
+                      : "We provide quality education for all students."
+                  } 
                   className="text-lg"
                 />
               </div>
@@ -67,7 +71,7 @@ export function AboutSection() {
 
             <Button variant="default" size="lg" asChild>
               <Link to="/about">
-                Learn More About Us
+                Know More
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </Button>

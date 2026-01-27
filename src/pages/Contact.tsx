@@ -76,7 +76,7 @@ const Contact = () => {
               Contact Us
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Get In Touch
+              Submit your enquiry
             </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
               We'd love to hear from you. Reach out for admissions inquiries, general questions, or to schedule a campus tour.
@@ -109,9 +109,9 @@ const Contact = () => {
             <div className="grid lg:grid-cols-2 gap-12">
               {/* Form */}
               <div className="bg-card rounded-2xl p-8 border border-border shadow-medium">
-                <h2 className="font-heading text-2xl font-bold text-foreground mb-6">
-                  Send Us a Message
-                </h2>
+                  <h2 className="font-heading text-2xl font-bold text-foreground mb-6">
+                    Submit your enquiry
+                  </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
@@ -184,9 +184,9 @@ const Contact = () => {
                       <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
                       <>
-                        <Send className="w-5 h-5" />
-                        Send Message
-                      </>
+                          <Send className="w-5 h-5" />
+                          Submit your enquiry
+                        </>
                     )}
                   </Button>
                 </form>
