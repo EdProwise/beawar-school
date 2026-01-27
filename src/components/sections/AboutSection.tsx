@@ -20,63 +20,30 @@ export function AboutSection() {
       <div className="absolute bottom-0 left-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
       <div className="container relative">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-16">
           {/* Left Content */}
-            <div>
-              <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
-                {about?.section_title || "About Us"}
-              </span>
-              <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-                {about?.main_heading || "Welcome to Our School"}
-              </h2>
-                <div className="mb-6">
-                  <FormattedContent 
-                    content={
-                      about?.main_description 
-                        ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 2).join('\n')
-                        : "We provide quality education for all students."
-                    } 
-                    className="text-lg"
-                  />
-                </div>
-
-                <CampusCTA />
-
-                {/* Mission & Vision */}
-
-              <div className="space-y-4 mb-8">
-                {about?.mission_text && (
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-accent-light flex items-center justify-center shrink-0">
-                      <Target className="w-6 h-6 text-accent-dark" />
-                    </div>
-                    <div>
-                      <h3 className="font-heading font-semibold text-foreground mb-1">
-                        {about?.mission_title || "Our Mission"}
-                      </h3>
-                      <FormattedContent content={about.mission_text} className="text-sm" />
-                    </div>
-                  </div>
-                )}
-                {about?.vision_text && (
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center shrink-0">
-                      <Lightbulb className="w-6 h-6 text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-heading font-semibold text-foreground mb-1">
-                        {about?.vision_title || "Our Vision"}
-                      </h3>
-                      <FormattedContent content={about.vision_text} className="text-sm" />
-                    </div>
-                  </div>
-                )}
-              </div>
+          <div>
+            <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
+              {about?.section_title || "About Us"}
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+              {about?.main_heading || "Welcome to Our School"}
+            </h2>
+            <div className="mb-8">
+              <FormattedContent 
+                content={
+                  about?.main_description 
+                    ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 1).join('\n')
+                    : "We provide quality education for all students."
+                } 
+                className="text-lg text-muted-foreground"
+              />
+            </div>
 
             <Button variant="default" size="lg" asChild>
               <Link to="/about">
                 Know More
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
           </div>
@@ -149,6 +116,38 @@ export function AboutSection() {
               </div>
             )}
           </div>
+        </div>
+
+        <CampusCTA />
+
+        {/* Mission & Vision */}
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mt-12">
+          {about?.mission_text && (
+            <div className="flex gap-4 p-8 rounded-3xl bg-accent-light/30 border border-accent/10">
+              <div className="w-14 h-14 rounded-2xl bg-accent-light flex items-center justify-center shrink-0">
+                <Target className="w-7 h-7 text-accent-dark" />
+              </div>
+              <div>
+                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">
+                  {about?.mission_title || "Our Mission"}
+                </h3>
+                <FormattedContent content={about.mission_text} className="text-muted-foreground" />
+              </div>
+            </div>
+          )}
+          {about?.vision_text && (
+            <div className="flex gap-4 p-8 rounded-3xl bg-primary-light/30 border border-primary/10">
+              <div className="w-14 h-14 rounded-2xl bg-primary-light flex items-center justify-center shrink-0">
+                <Lightbulb className="w-7 h-7 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">
+                  {about?.vision_title || "Our Vision"}
+                </h3>
+                <FormattedContent content={about.vision_text} className="text-muted-foreground" />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
