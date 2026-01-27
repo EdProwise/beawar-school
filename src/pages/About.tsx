@@ -66,25 +66,20 @@ const About = () => {
                     <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
                       {about?.main_heading || "A Legacy of Educational Excellence"}
                     </h2>
-                    <div className="space-y-4 mb-6">
-                      {about?.main_description ? (
-                        about.main_description.split('\n').filter(p => p.trim() !== '').map((para, index) => (
-                          <p key={index} className="text-muted-foreground">
-                            {para}
+                      <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:leading-relaxed mb-6">
+                        {about?.main_description ? (
+                          <div dangerouslySetInnerHTML={{ __html: about.main_description }} />
+                        ) : (
+                          <p>
+                            {`Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
                           </p>
-                        ))
-                      ) : (
-                        <p className="text-muted-foreground">
-                          {`Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
-                        </p>
-                      )}
-                      
-                      {about?.history_text && about.history_text.split('\n').filter(p => p.trim() !== '').map((para, index) => (
-                        <p key={index} className="text-muted-foreground">
-                          {para}
-                        </p>
-                      ))}
-                    </div>
+                        )}
+                        
+                        {about?.history_text && (
+                          <div dangerouslySetInnerHTML={{ __html: about.history_text }} />
+                        )}
+                      </div>
+
                     <div className="flex items-center gap-8">
                     <div>
                       <p className="font-heading text-4xl font-bold text-primary">{yearsOfExcellence}+</p>
@@ -112,43 +107,56 @@ const About = () => {
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-20 bg-secondary/50">
-          <div className="container">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-card p-8 rounded-2xl border border-border">
-                <div className="w-14 h-14 rounded-xl bg-primary-light flex items-center justify-center mb-6">
-                  <Target className="w-7 h-7 text-primary" />
-                </div>
-                  <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
+        <section className="py-24 bg-gradient-to-br from-secondary/30 via-background to-secondary/30 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(var(--primary-rgb),0.05),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(var(--accent-rgb),0.05),transparent_50%)]" />
+          
+          <div className="container relative">
+            <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+              {/* Mission Card */}
+              <div className="group relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                      <Target className="w-10 h-10 text-primary" />
+                    </div>
+                    <span className="text-6xl font-bold text-primary/5 select-none">01</span>
+                  </div>
+                  <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors">
                     {about?.mission_title || "Our Mission"}
                   </h3>
-                  <div className="text-muted-foreground leading-relaxed space-y-3">
+                  <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:text-lg prose-p:leading-relaxed flex-grow">
                     {about?.mission_text ? (
-                      about.mission_text.split('\n').filter(p => p.trim() !== '').map((para, index) => (
-                        <p key={index}>{para}</p>
-                      ))
+                      <div dangerouslySetInnerHTML={{ __html: about.mission_text }} />
                     ) : (
                       <p>To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world while fostering a love for lifelong learning.</p>
                     )}
                   </div>
                 </div>
-                <div className="bg-card p-8 rounded-2xl border border-border">
-                  <div className="w-14 h-14 rounded-xl bg-accent-light flex items-center justify-center mb-6">
-                    <Eye className="w-7 h-7 text-accent-dark" />
+              </div>
+
+              {/* Vision Card */}
+              <div className="group relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                      <Eye className="w-10 h-10 text-accent-dark" />
+                    </div>
+                    <span className="text-6xl font-bold text-accent-dark/5 select-none">02</span>
                   </div>
-                  <h3 className="font-heading text-2xl font-bold text-foreground mb-4">
+                  <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors">
                     {about?.vision_title || "Our Vision"}
                   </h3>
-                  <div className="text-muted-foreground leading-relaxed space-y-3">
+                  <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:text-lg prose-p:leading-relaxed flex-grow">
                     {about?.vision_text ? (
-                      about.vision_text.split('\n').filter(p => p.trim() !== '').map((para, index) => (
-                        <p key={index}>{para}</p>
-                      ))
+                      <div dangerouslySetInnerHTML={{ __html: about.vision_text }} />
                     ) : (
                       <p>To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society through innovation and excellence.</p>
                     )}
                   </div>
                 </div>
+              </div>
             </div>
           </div>
         </section>
@@ -173,7 +181,10 @@ const About = () => {
                       <IconComponent className="w-8 h-8 text-primary" />
                     </div>
                     <h3 className="font-heading text-xl font-semibold text-foreground mb-2">{value.title}</h3>
-                    <p className="text-muted-foreground text-sm">{value.description}</p>
+                      <div className="prose prose-slate max-w-none prose-p:text-muted-foreground prose-p:text-sm prose-p:leading-relaxed">
+                        <div dangerouslySetInnerHTML={{ __html: value.description || "" }} />
+                      </div>
+
                   </div>
                 );
               })}

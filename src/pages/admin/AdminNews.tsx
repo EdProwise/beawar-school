@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { supabase } from "@/integrations/mongodb/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -314,26 +315,21 @@ function NewsModal({ item, onClose, onSuccess }: NewsModalProps) {
               />
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Excerpt</label>
-            <textarea
-              name="excerpt"
-              value={formData.excerpt}
-              onChange={handleChange}
-              rows={2}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none resize-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Content</label>
-            <textarea
-              name="content"
-              value={formData.content}
-              onChange={handleChange}
-              rows={4}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none resize-none"
-            />
-          </div>
+            <div>
+              <RichTextEditor
+                label="Excerpt"
+                value={formData.excerpt}
+                onChange={(content) => setFormData({ ...formData, excerpt: content })}
+              />
+            </div>
+            <div>
+              <RichTextEditor
+                label="Content"
+                value={formData.content}
+                onChange={(content) => setFormData({ ...formData, content: content })}
+              />
+            </div>
+
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Category *</label>

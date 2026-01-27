@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/mongodb/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, Plus, Trash2, Award, Heart, Users, GraduationCap, Star, Shield, Target, Lightbulb, CheckCircle } from "lucide-react";
 import { useCoreValues, useMilestones, useHighlightCards, type CoreValue, type Milestone, type HighlightCard } from "@/hooks/use-school-data";
@@ -322,22 +322,18 @@ export default function AdminAbout() {
                 />
               </div>
               <div>
-                <Label htmlFor="main_description">Main Description</Label>
-                <Textarea
-                  id="main_description"
+                <RichTextEditor
+                  label="Main Description"
                   value={formData.main_description}
-                  onChange={(e) => setFormData({ ...formData, main_description: e.target.value })}
-                  rows={4}
+                  onChange={(content) => setFormData({ ...formData, main_description: content })}
                   placeholder="Describe your school's story..."
                 />
               </div>
               <div>
-                <Label htmlFor="history_text">History (Optional)</Label>
-                <Textarea
-                  id="history_text"
+                <RichTextEditor
+                  label="History (Optional)"
                   value={formData.history_text}
-                  onChange={(e) => setFormData({ ...formData, history_text: e.target.value })}
-                  rows={3}
+                  onChange={(content) => setFormData({ ...formData, history_text: content })}
                   placeholder="Additional history or background information..."
                 />
               </div>
@@ -355,56 +351,53 @@ export default function AdminAbout() {
 
           {/* Mission & Vision */}
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Target className="w-5 h-5 text-primary" />
-                Mission
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="mission_title">Mission Title</Label>
-                  <Input
-                    id="mission_title"
-                    value={formData.mission_title}
-                    onChange={(e) => setFormData({ ...formData, mission_title: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="mission_text">Mission Statement</Label>
-                  <Textarea
-                    id="mission_text"
-                    value={formData.mission_text}
-                    onChange={(e) => setFormData({ ...formData, mission_text: e.target.value })}
-                    rows={4}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <Shield className="w-5 h-5 text-accent-dark" />
-                Vision
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="vision_title">Vision Title</Label>
-                  <Input
-                    id="vision_title"
-                    value={formData.vision_title}
-                    onChange={(e) => setFormData({ ...formData, vision_title: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="vision_text">Vision Statement</Label>
-                  <Textarea
-                    id="vision_text"
-                    value={formData.vision_text}
-                    onChange={(e) => setFormData({ ...formData, vision_text: e.target.value })}
-                    rows={4}
-                  />
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <Target className="w-5 h-5 text-primary" />
+                  Mission
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="mission_title">Mission Title</Label>
+                    <Input
+                      id="mission_title"
+                      value={formData.mission_title}
+                      onChange={(e) => setFormData({ ...formData, mission_title: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <RichTextEditor
+                      label="Mission Statement"
+                      value={formData.mission_text}
+                      onChange={(content) => setFormData({ ...formData, mission_text: content })}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-accent-dark" />
+                  Vision
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="vision_title">Vision Title</Label>
+                    <Input
+                      id="vision_title"
+                      value={formData.vision_title}
+                      onChange={(e) => setFormData({ ...formData, vision_title: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <RichTextEditor
+                      label="Vision Statement"
+                      value={formData.vision_text}
+                      onChange={(content) => setFormData({ ...formData, vision_text: content })}
+                    />
+                  </div>
+                </div>
+              </div>
+
           </div>
 
           {/* Core Values */}
@@ -454,14 +447,14 @@ export default function AdminAbout() {
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <Label>Description</Label>
-                      <Textarea
-                        value={value.description || ""}
-                        onChange={(e) => handleUpdateCoreValue(value.id, { description: e.target.value })}
-                        rows={4}
-                      />
-                    </div>
+                      <div className="flex-1">
+                        <RichTextEditor
+                          label="Description"
+                          value={value.description || ""}
+                          onChange={(content) => handleUpdateCoreValue(value.id, { description: content })}
+                        />
+                      </div>
+
                   </div>
                 </div>
               ))}

@@ -54,23 +54,20 @@ const Privacy = () => {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <div className="prose prose-lg max-w-none">
-                {page?.content && (
-                  <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                    {page.content}
-                  </p>
-                )}
+                <div className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-li:text-muted-foreground">
+                  {page?.content && (
+                    <div className="mb-8" dangerouslySetInnerHTML={{ __html: page.content }} />
+                  )}
 
-                {sections.map((section, index) => (
-                  <div key={index} className="mb-8">
-                    <h2 className="font-heading text-2xl font-bold text-foreground mb-4">
-                      {index + 1}. {section.title}
-                    </h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {section.content}
-                    </p>
-                  </div>
-                ))}
+                  {sections.map((section, index) => (
+                    <div key={index} className="mb-8">
+                      <h2 className="font-heading text-2xl font-bold text-foreground mb-4">
+                        {index + 1}. {section.title}
+                      </h2>
+                      <div dangerouslySetInnerHTML={{ __html: section.content }} />
+                    </div>
+                  ))}
+
 
                 {sections.length === 0 && !page?.content && (
                   <p className="text-center text-muted-foreground py-12">

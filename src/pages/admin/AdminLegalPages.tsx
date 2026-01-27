@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/mongodb/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
@@ -165,15 +165,15 @@ export default function AdminLegalPages() {
                         placeholder="December 2024"
                       />
                     </div>
-                    <div className="md:col-span-2">
-                      <Label>Introduction Text</Label>
-                      <Textarea
-                        value={form.content || ""}
-                        onChange={(e) => updateForm(type, "content", e.target.value)}
-                        rows={3}
-                        placeholder="Brief introduction to this policy..."
-                      />
-                    </div>
+                      <div className="md:col-span-2">
+                        <RichTextEditor
+                          label="Introduction Text"
+                          value={form.content || ""}
+                          onChange={(content) => updateForm(type, "content", content)}
+                          placeholder="Brief introduction to this policy..."
+                        />
+                      </div>
+
                   </div>
                 </div>
 
@@ -213,15 +213,15 @@ export default function AdminLegalPages() {
                               placeholder="e.g., Information We Collect"
                             />
                           </div>
-                          <div>
-                            <Label>Section Content</Label>
-                            <Textarea
-                              value={section.content}
-                              onChange={(e) => updateSection(type, index, "content", e.target.value)}
-                              rows={4}
-                              placeholder="Describe this section..."
-                            />
-                          </div>
+                            <div>
+                              <RichTextEditor
+                                label="Section Content"
+                                value={section.content}
+                                onChange={(content) => updateSection(type, index, "content", content)}
+                                placeholder="Describe this section..."
+                              />
+                            </div>
+
                         </div>
                       </div>
                     ))}

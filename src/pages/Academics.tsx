@@ -129,9 +129,12 @@ const defaultPrograms = [
                         <h3 className="font-heading text-3xl font-bold text-foreground mb-4">
                           {program.title}
                         </h3>
-                        <p className="text-muted-foreground mb-6 leading-relaxed">
-                          {program.description}
-                        </p>
+                          <div className="prose prose-slate max-w-none prose-p:text-muted-foreground mb-6 leading-relaxed">
+                            {program.description ? (
+                              <div dangerouslySetInnerHTML={{ __html: program.description }} />
+                            ) : null}
+                          </div>
+
                         <Button asChild>
                           <Link to="/admissions">
                             Apply for {program.title}

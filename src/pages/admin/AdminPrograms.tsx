@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/mongodb/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -185,15 +185,14 @@ export default function AdminPrograms() {
                   placeholder="e.g., Nursery - KG"
                 />
               </div>
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                />
-              </div>
+                <div>
+                  <RichTextEditor
+                    label="Description"
+                    value={formData.description}
+                    onChange={(content) => setFormData({ ...formData, description: content })}
+                  />
+                </div>
+
               <div>
                 <Label>Icon</Label>
                 <Select
