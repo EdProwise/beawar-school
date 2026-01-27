@@ -25,31 +25,60 @@ app.use('/uploads', express.static(uploadsDir));
 // Configure Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-    filename: (req, file, cb) => {
-      if (req.body.path) {
-        cb(null, req.body.path);
-      } else {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
+    try {
+      // In multer, req.body might not be populated yet unless fields are before files
+      // and even then it depends on the setup. 
+      // We'll fallback to a safer default if path is missing.
+      const rawPath = req.body.path || '';
+      const uploadPath = rawPath ? path.dirname(rawPath) : '.';
+      const dest = path.resolve(process.cwd(), 'uploads', uploadPath);
+      
+      if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, { recursive: true });
       }
+      cb(null, dest);
+    } catch (err: any) {
+      cb(err, '');
     }
+  },
+  filename: (req, file, cb) => {
+    const rawPath = req.body.path || '';
+    if (rawPath) {
+      cb(null, path.basename(rawPath));
+    } else {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+  }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 // Storage Upload Route
-app.post('/api/storage/upload', upload.single('file'), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+app.post('/api/storage/upload', (req, res, next) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) {
+      console.error('Multer error:', err);
+      return res.status(500).json({ error: err.message });
     }
-    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    res.json({ data: { path: req.file.filename, url: fileUrl } });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
+    
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+      
+      // Calculate relative path for URL
+      const relativePath = path.relative(path.join(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/');
+      const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${relativePath}`;
+      
+      res.json({ data: { path: relativePath, url: fileUrl } });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
 });
 
 // Storage Delete Route
@@ -286,6 +315,12 @@ app.post('/api/:table/upsert', async (req, res) => {
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err.message || 'Internal Server Error' });
 });
 
 app.listen(PORT, () => {

@@ -250,23 +250,30 @@ export const mongodb = {
   },
     storage: {
       from: (bucket: string) => ({
-        upload: async (path: string, file: File) => {
-          try {
-            const formData = new FormData();
-            formData.append('path', path);
-            formData.append('file', file);
+          upload: async (path: string, file: File) => {
+            try {
+              const formData = new FormData();
+              formData.append('path', path);
+              formData.append('file', file);
 
-            const response = await fetch(`${API_URL.replace('/api', '')}/api/storage/upload`, {
-              method: 'POST',
-              body: formData,
-            });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error);
-            return { data: { path: data.data.path }, error: null };
-          } catch (error: any) {
-            return { data: null, error: { message: error.message } };
-          }
-        },
+              const response = await fetch(`${API_URL.replace('/api', '')}/api/storage/upload`, {
+                method: 'POST',
+                body: formData,
+              });
+              
+              const contentType = response.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Upload failed');
+                return { data: { path: data.data.path }, error: null };
+              } else {
+                const text = await response.text();
+                throw new Error(`Server returned non-JSON response: ${text.substring(0, 100)}`);
+              }
+            } catch (error: any) {
+              return { data: null, error: { message: error.message } };
+            }
+          },
           getPublicUrl: (path: string) => {
             const baseUrl = API_URL.replace('/api', '');
             return { data: { publicUrl: `${baseUrl}/uploads/${path}` } };

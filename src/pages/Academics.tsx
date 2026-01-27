@@ -129,11 +129,11 @@ const defaultPrograms = [
                           <h3 className="font-heading text-3xl font-bold text-foreground mb-4 text-balance">
                             {program.title}
                           </h3>
-                            <div className="prose prose-slate max-w-none prose-p:text-muted-foreground mb-6 leading-relaxed [hyphens:none] [word-break:normal] overflow-wrap-anywhere">
-                              {program.description ? (
-                                <div dangerouslySetInnerHTML={{ __html: program.description }} />
-                              ) : null}
-                            </div>
+                              <div className="prose prose-slate max-w-none prose-p:text-muted-foreground mb-6 leading-relaxed break-words whitespace-normal">
+                                {program.description ? (
+                                  <div dangerouslySetInnerHTML={{ __html: program.description }} />
+                                ) : null}
+                              </div>
 
                         <Button asChild>
                           <Link to="/admissions">
