@@ -55,17 +55,17 @@ const navItems: NavItem[] = [
   {
     name: "Settings",
     icon: Settings,
-    children: [
-      { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
-      { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
-      { name: "Highlights", path: "/admin/highlights", icon: Star },
-      { name: "Site Settings", path: "/admin/settings", icon: Settings },
-      { name: "Portal", path: "/admin/portals", icon: UserCircle },
-      { name: "Media Library", path: "/admin/media", icon: FolderOpen },
-      { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
-      { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
-      { name: "Legal Pages", path: "/admin/legal", icon: Shield },
-    ]
+      children: [
+        { name: "Site Settings", path: "/admin/settings", icon: Settings },
+        { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
+        { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
+        { name: "Highlights", path: "/admin/highlights", icon: Star },
+        { name: "Portal", path: "/admin/portals", icon: UserCircle },
+        { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
+        { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
+        { name: "Legal Pages", path: "/admin/legal", icon: Shield },
+        { name: "Media Library", path: "/admin/media", icon: FolderOpen },
+      ]
   },
 ];
 
