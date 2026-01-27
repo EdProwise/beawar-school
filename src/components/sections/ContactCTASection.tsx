@@ -144,24 +144,20 @@ export function ContactCTASection() {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                  Grade Applying For *
-                </label>
-                <select 
-                  name="grade_applying"
-                  value={formData.grade_applying}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                  required
-                >
-                  <option value="">Select Grade</option>
-                  <option value="Pre-Primary">Pre-Primary</option>
-                  <option value="Grade 1-5">Grade 1-5</option>
-                  <option value="Grade 6-10">Grade 6-10</option>
-                  <option value="Grade 11-12">Grade 11-12</option>
-                </select>
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Grade Applying For *
+                  </label>
+                  <input
+                    type="text"
+                    name="grade_applying"
+                    value={formData.grade_applying}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    placeholder="e.g. Grade 5"
+                    required
+                  />
+                </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Message

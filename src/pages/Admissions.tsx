@@ -229,25 +229,20 @@ const Admissions = () => {
                             placeholder="+91 98765 43210"
                           />
                         </div>
-                        <div>
-                          <label className="block text-sm font-medium text-foreground mb-2">
-                            Grade Applying For *
-                          </label>
-                          <select
-                            name="grade_applying"
-                            value={formData.grade_applying}
-                            onChange={handleChange}
-                            required
-                            className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                          >
-                            <option value="">Select Grade</option>
-                            <option value="Pre-Primary">Pre-Primary (Nursery - KG)</option>
-                            <option value="Grade 1-5">Primary (Grade 1-5)</option>
-                            <option value="Grade 6-8">Middle School (Grade 6-8)</option>
-                            <option value="Grade 9-10">Secondary (Grade 9-10)</option>
-                            <option value="Grade 11-12">Higher Secondary (Grade 11-12)</option>
-                          </select>
-                        </div>
+                          <div>
+                            <label className="block text-sm font-medium text-foreground mb-2">
+                              Grade Applying For *
+                            </label>
+                            <input
+                              type="text"
+                              name="grade_applying"
+                              value={formData.grade_applying}
+                              onChange={handleChange}
+                              required
+                              className="w-full px-4 py-3 rounded-xl border border-input bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                              placeholder="e.g. Grade 5"
+                            />
+                          </div>
                         <Button 
                           type="submit" 
                           className="w-full" 
