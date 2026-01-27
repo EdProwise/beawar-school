@@ -3,10 +3,11 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MapPin, Phone, Mail, Clock, Send, Facebook, Twitter, Instagram, Youtube, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubmitAdmissionInquiry, useSiteSettings } from "@/hooks/use-school-data";
+import { useSubmitAdmissionInquiry, useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
 
 const Contact = () => {
   const { data: settings } = useSiteSettings();
+  const { data: admissionSettings = {} } = useAdmissionSettings();
   const [formData, setFormData] = useState({
     parent_name: "",
     phone: "",
@@ -106,13 +107,24 @@ const Contact = () => {
           {/* Contact Form & Map */}
           <section className="py-20 bg-background" id="enquiry">
             <div className="container">
-              <div className="grid lg:grid-cols-2 gap-12 items-start">
-                {/* Form */}
-                <div className="bg-white rounded-[2rem] p-10 border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-                    <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-8">
-                      Submit Admission Inquiry
-                    </h2>
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid lg:grid-cols-2 gap-12 items-start">
+                  {/* Form */}
+                  {admissionSettings.use_custom_inquiry_html === 'true' && admissionSettings.inquiry_html ? (
+                    <div className="bg-white rounded-[2rem] p-10 border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+                      <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-8">
+                        {admissionSettings.inquiry_title || "Submit Admission Inquiry"}
+                      </h2>
+                      <div 
+                        dangerouslySetInnerHTML={{ __html: admissionSettings.inquiry_html }} 
+                        className="w-full flex justify-center"
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-[2rem] p-10 border border-border/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                        <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-8">
+                          Submit Admission Inquiry
+                        </h2>
+                      <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid sm:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-sm font-semibold text-[#1A1A1A]">Full Name *</label>
@@ -186,6 +198,7 @@ const Contact = () => {
                     </Button>
                   </form>
                 </div>
+              )}
 
               {/* Map */}
               <div className="space-y-8">
