@@ -22,6 +22,7 @@ interface GalleryItem {
 const AdminGallery = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+  const [prefilledCategory, setPrefilledCategory] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -31,6 +32,7 @@ const AdminGallery = () => {
       const { data, error } = await supabase
         .from("gallery_items")
         .select("*")
+        .order("category", { ascending: true })
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as GalleryItem[];
@@ -49,6 +51,16 @@ const AdminGallery = () => {
       return unique;
     },
   });
+
+  const groupedItems = items.reduce((acc, item) => {
+    if (!acc[item.category]) acc[item.category] = [];
+    acc[item.category].push(item);
+    return acc;
+  }, {} as Record<string, GalleryItem[]>);
+
+  const categoriesToShow = Object.keys(groupedItems).length > 0 
+    ? Object.keys(groupedItems).sort()
+    : ["campus", "events", "sports", "academics", "labs", "arts"];
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -76,11 +88,13 @@ const AdminGallery = () => {
 
   const handleEdit = (item: GalleryItem) => {
     setEditingItem(item);
+    setPrefilledCategory(null);
     setIsModalOpen(true);
   };
 
-  const handleAdd = () => {
+  const handleAdd = (category?: string) => {
     setEditingItem(null);
+    setPrefilledCategory(category || null);
     setIsModalOpen(true);
   };
 
@@ -99,66 +113,81 @@ const AdminGallery = () => {
           </Button>
         </div>
 
-        {/* Grid */}
+        {/* Categories and Grid */}
         {isLoading ? (
           <div className="p-12 text-center">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary" />
           </div>
-        ) : items.length === 0 ? (
-          <div className="bg-card rounded-xl border border-border p-12 text-center text-muted-foreground">
-            No gallery items yet. Click "Add Image" to create one.
-          </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="bg-card rounded-xl border border-border overflow-hidden group"
-              >
-                <div className="relative aspect-square">
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => handleEdit(item)}
-                      className="p-2 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm("Delete this image?")) {
-                          deleteMutation.mutate(item.id);
-                        }
-                      }}
-                      className="p-2 rounded-lg bg-white/20 hover:bg-destructive text-white transition-colors"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
+          <div className="space-y-12">
+            {categoriesToShow.map((category) => (
+              <div key={category} className="space-y-4">
+                <div className="flex items-center justify-between border-b border-border pb-2">
+                  <h2 className="text-xl font-bold capitalize">{category}</h2>
+                  <Button variant="outline" size="sm" onClick={() => handleAdd(category)}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Images to {category}
+                  </Button>
                 </div>
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="font-medium text-foreground truncate">{item.title}</p>
-                      <p className="text-sm text-muted-foreground capitalize">{item.category}</p>
-                    </div>
-                    <button
-                      onClick={() => togglePublishMutation.mutate({ id: item.id, is_published: !item.is_published })}
-                      className={cn(
-                        "p-1.5 rounded-lg transition-colors",
-                        item.is_published
-                          ? "text-green-600 hover:bg-green-50"
-                          : "text-muted-foreground hover:bg-secondary"
-                      )}
-                    >
-                      {item.is_published ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                    </button>
+                
+                {(!groupedItems[category] || groupedItems[category].length === 0) ? (
+                  <div className="bg-card rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">
+                    No images in this category.
                   </div>
-                </div>
+                ) : (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {groupedItems[category].map((item) => (
+                      <div
+                        key={item.id}
+                        className="bg-card rounded-xl border border-border overflow-hidden group"
+                      >
+                        <div className="relative aspect-square">
+                          <img
+                            src={item.image_url}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => handleEdit(item)}
+                              className="p-2 rounded-lg bg-white/20 hover:bg-white/30 text-white transition-colors"
+                            >
+                              <Pencil className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm("Delete this image?")) {
+                                  deleteMutation.mutate(item.id);
+                                }
+                              }}
+                              className="p-2 rounded-lg bg-white/20 hover:bg-destructive text-white transition-colors"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-medium text-foreground truncate">{item.title}</p>
+                            </div>
+                            <button
+                              onClick={() => togglePublishMutation.mutate({ id: item.id, is_published: !item.is_published })}
+                              className={cn(
+                                "p-1.5 rounded-lg transition-colors",
+                                item.is_published
+                                  ? "text-green-600 hover:bg-green-50"
+                                  : "text-muted-foreground hover:bg-secondary"
+                              )}
+                            >
+                              {item.is_published ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -169,6 +198,7 @@ const AdminGallery = () => {
       {isModalOpen && (
         <GalleryModal
           item={editingItem}
+          initialCategory={prefilledCategory}
           categories={existingCategories}
           onClose={() => setIsModalOpen(false)}
           onSuccess={() => {
@@ -184,15 +214,16 @@ const AdminGallery = () => {
 
 interface GalleryModalProps {
   item: GalleryItem | null;
+  initialCategory: string | null;
   categories: string[];
   onClose: () => void;
   onSuccess: () => void;
 }
 
-function GalleryModal({ item, categories, onClose, onSuccess }: GalleryModalProps) {
+function GalleryModal({ item, initialCategory, categories, onClose, onSuccess }: GalleryModalProps) {
   const [formData, setFormData] = useState({
     title: item?.title || "",
-    category: item?.category || "campus",
+    category: item?.category || initialCategory || "campus",
     image_url: item?.image_url || "",
     image_urls: [] as string[], // Added for multiple uploads
     description: item?.description || "",
