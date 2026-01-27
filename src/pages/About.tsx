@@ -1,10 +1,10 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, Star, Shield, Lightbulb } from "lucide-react";
+import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, Star, Shield, Lightbulb, Calendar, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
-import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones } from "@/hooks/use-school-data";
+import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones, useStatistics } from "@/hooks/use-school-data";
 
 const iconMap: Record<string, any> = {
   Award,
@@ -16,6 +16,8 @@ const iconMap: Record<string, any> = {
   Target,
   Lightbulb,
   CheckCircle,
+  Calendar,
+  TrendingUp,
 };
 
 const About = () => {
@@ -24,6 +26,7 @@ const About = () => {
   const { data: highlights = [] } = useHighlightCards();
   const { data: coreValues = [] } = useCoreValues();
   const { data: milestones = [] } = useMilestones();
+  const { data: statistics = [] } = useStatistics();
 
   const schoolName = settings?.school_name || "Orbit School";
   const yearsOfExcellence = about?.years_of_excellence || 25;
@@ -77,16 +80,29 @@ const About = () => {
                         )}
                       </div>
 
-                    <div className="flex items-center gap-8">
-                    <div>
-                      <p className="font-heading text-4xl font-bold text-primary">{yearsOfExcellence}+</p>
-                      <p className="text-muted-foreground text-sm">Years of Excellence</p>
-                    </div>
-                    <div>
-                      <p className="font-heading text-4xl font-bold text-accent-dark">1500+</p>
-                      <p className="text-muted-foreground text-sm">Students Enrolled</p>
-                    </div>
-                  </div>
+                        <div className="flex flex-wrap items-center gap-8">
+                          {statistics.length > 0 ? (
+                            statistics.map((stat) => (
+                              <div key={stat.id}>
+                                <p className="font-heading text-4xl font-bold text-primary">
+                                  {stat.value}{stat.suffix}
+                                </p>
+                                <p className="text-muted-foreground text-sm">{stat.label}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              <div>
+                                <p className="font-heading text-4xl font-bold text-primary">{yearsOfExcellence}+</p>
+                                <p className="text-muted-foreground text-sm">Years of Excellence</p>
+                              </div>
+                              <div>
+                                <p className="font-heading text-4xl font-bold text-accent-dark">1500+</p>
+                                <p className="text-muted-foreground text-sm">Students Enrolled</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
                 </div>
                 <div className="relative">
                   <img 
