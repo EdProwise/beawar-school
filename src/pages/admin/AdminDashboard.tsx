@@ -13,7 +13,7 @@ import {
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/mongodb/client";
 import { Link } from "react-router-dom";
 
 interface StatCardProps {

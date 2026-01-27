@@ -3,14 +3,16 @@ A school management system called "Orbit School" with a frontend for the public 
 
 ## Tech Stack
 - Frontend: React, Vite, Tailwind CSS, Lucide React
-- Backend/Database: Supabase (Auth, Database)
-- Runtime: Node.js / Bun
+- Backend: Express, Node.js
+- Database: MongoDB (Mongoose)
+- Integration: Custom MongoDB client proxied via Express
 
 ## Architecture
 - `src/components/admin`: Admin-specific components including layout and sidebar.
 - `src/components/sections`: Reusable sections for the public website.
 - `src/pages/admin`: Page components for the administrative dashboard.
-- `src/integrations/supabase`: Supabase client and hooks.
+- `src/integrations/mongodb`: MongoDB client that mimics Supabase syntax.
+- `server/`: Express backend providing generic API routes for MongoDB collections.
 - `src/hooks`: Custom React hooks (e.g., `use-auth`).
 
 ## User Preferences

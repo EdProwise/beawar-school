@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Mail, Loader2, Download } from "lucide-react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/mongodb/client";
 
 interface NewsletterSubscription {
   id: string;

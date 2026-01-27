@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Mail, Phone, Loader2 } from "lucide-react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/mongodb/client";
 import { cn } from "@/lib/utils";
 
 interface AdmissionInquiry {

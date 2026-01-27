@@ -5,7 +5,7 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGalleryItems } from "@/hooks/use-school-data";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { mongodb as supabase } from "@/integrations/mongodb/client";
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");

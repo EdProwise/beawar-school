@@ -10,11 +10,18 @@ export default defineConfig(({ mode }) => {
   if (mode === 'development') {
     plugins.push(...enterDevPlugin());
   }
-  return {
-    server: {
-      host: "::",
-      port: 8080,
-    },
+    return {
+      server: {
+        host: "::",
+        port: 8080,
+        proxy: {
+          '/api': {
+            target: 'http://localhost:5000',
+            changeOrigin: true,
+          },
+        },
+      },
+
     plugins: plugins.filter(Boolean) as PluginOption[],
     resolve: {
       alias: {
