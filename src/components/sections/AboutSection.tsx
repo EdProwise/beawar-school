@@ -33,7 +33,7 @@ export function AboutSection() {
               <FormattedContent 
                 content={
                   about?.main_description 
-                    ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 1).join('\n')
+                    ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 2).join('\n\n')
                     : "We provide quality education for all students."
                 } 
                 className="text-lg text-muted-foreground"
@@ -46,10 +46,6 @@ export function AboutSection() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Link>
               </Button>
-
-                <div className="mt-12">
-                  <CampusCTA isNested className="lg:max-w-xl" />
-                </div>
             </div>
 
             {/* Right Content - Highlight Cards */}
@@ -121,37 +117,11 @@ export function AboutSection() {
             )}
             </div>
           </div>
-  
-          {/* Mission & Vision */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mt-12">
-          {about?.mission_text && (
-            <div className="flex gap-4 p-8 rounded-3xl bg-accent-light/30 border border-accent/10">
-              <div className="w-14 h-14 rounded-2xl bg-accent-light flex items-center justify-center shrink-0">
-                <Target className="w-7 h-7 text-accent-dark" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">
-                  {about?.mission_title || "Our Mission"}
-                </h3>
-                <FormattedContent content={about.mission_text} className="text-muted-foreground" />
-              </div>
-            </div>
-          )}
-          {about?.vision_text && (
-            <div className="flex gap-4 p-8 rounded-3xl bg-primary-light/30 border border-primary/10">
-              <div className="w-14 h-14 rounded-2xl bg-primary-light flex items-center justify-center shrink-0">
-                <Lightbulb className="w-7 h-7 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-heading text-xl font-semibold text-foreground mb-2">
-                  {about?.vision_title || "Our Vision"}
-                </h3>
-                <FormattedContent content={about.vision_text} className="text-muted-foreground" />
-              </div>
-            </div>
-          )}
         </div>
-      </div>
-    </section>
+        
+        <div className="mt-12">
+          <CampusCTA className="rounded-none border-x-0" />
+        </div>
+      </section>
   );
 }
