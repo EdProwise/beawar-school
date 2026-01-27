@@ -55,36 +55,51 @@ export function AcademicsSection() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayPrograms.map((program) => {
-              const IconComponent = iconMap[program.icon_name || "BookOpen"] || BookOpen;
-              return (
-                <div
-                  key={program.id}
-                  className="group bg-card rounded-2xl p-6 border border-border hover:border-primary hover:shadow-strong transition-all duration-300"
-                >
-                  <div className="w-14 h-14 rounded-xl bg-primary-light flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <IconComponent className="w-7 h-7 text-primary group-hover:text-primary-foreground" />
-                  </div>
-                  <h3 className="font-heading text-xl font-semibold text-foreground mb-1">
-                    {program.title}
-                  </h3>
-                    {program.subtitle && (
-                      <p className="text-accent font-medium text-sm mb-3">
-                        {program.subtitle}
-                      </p>
-                    )}
-                    <div className="flex-grow">
-                      <FormattedContent content={program.description || ""} className="text-sm" />
+              {displayPrograms.map((program) => {
+                const IconComponent = iconMap[program.icon_name || "BookOpen"] || BookOpen;
+                // Get only first paragraph
+                const firstParagraph = (program.description || "").split(/\n+/).filter(p => p.trim())[0] || "";
+                
+                return (
+                  <div
+                    key={program.id}
+                    className="group bg-card rounded-2xl border border-border hover:border-primary hover:shadow-strong transition-all duration-300 flex flex-col overflow-hidden"
+                  >
+                    {/* Image Section */}
+                    <div className="relative h-48 w-full overflow-hidden">
+                      <img 
+                        src={program.image_url || `https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop`} 
+                        alt={program.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute top-4 left-4 w-10 h-10 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
+                        <IconComponent className="w-5 h-5 text-primary" />
+                      </div>
                     </div>
-                    <Link
-                      to="/academics"
-                      className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      Learn More <ArrowRight className="w-4 h-4" />
-                    </Link>
+
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="font-heading text-xl font-semibold text-foreground mb-1">
+                        {program.title}
+                      </h3>
+                      {program.subtitle && (
+                        <p className="text-accent font-medium text-sm mb-3">
+                          {program.subtitle}
+                        </p>
+                      )}
+                      <div className="flex-grow">
+                        <FormattedContent content={firstParagraph} className="text-sm line-clamp-3" />
+                      </div>
+                      <Link
+                        to="/academics"
+                        className="inline-flex items-center gap-1 text-sm font-medium text-primary mt-4"
+                      >
+                        Learn More <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </div>
                   </div>
-              );
-            })}
+                );
+              })}
           </div>
         )}
 
