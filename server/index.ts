@@ -26,53 +26,64 @@ const getModel = (tableName: string) => {
 };
 
 // Generic API Routes
-app.get('/api/:table', async (req, res) => {
-  try {
-    const { table } = req.params;
-    const { select, sort, order, limit, ...filters } = req.query;
-    
-    const Model = getModel(table);
-    
-    // Build filter object
-    const mongoFilter: any = {};
-    Object.keys(filters).forEach(key => {
-      const val = filters[key];
-      if (key.endsWith('_gte')) {
-        const field = key.replace('_gte', '');
-        mongoFilter[field] = { ...mongoFilter[field], $gte: val };
-      } else if (key.endsWith('_lte')) {
-        const field = key.replace('_lte', '');
-        mongoFilter[field] = { ...mongoFilter[field], $lte: val };
-      } else if (key.endsWith('_neq')) {
-        const field = key.replace('_neq', '');
-        mongoFilter[field] = { ...mongoFilter[field], $ne: val };
-      } else {
-        mongoFilter[key] = val;
-      }
-    });
+    app.get('/api/:table', async (req, res) => {
+    try {
+      const { table } = req.params;
+      const { select, sort, order, limit, count, head, ...filters } = req.query;
+      
+      const Model = getModel(table);
+      
+      // Build filter object
+      const mongoFilter: any = {};
+      Object.keys(filters).forEach(key => {
+        const val = filters[key];
+        if (key.endsWith('_gte')) {
+          const field = key.replace('_gte', '');
+          mongoFilter[field] = { ...mongoFilter[field], $gte: val };
+        } else if (key.endsWith('_lte')) {
+          const field = key.replace('_lte', '');
+          mongoFilter[field] = { ...mongoFilter[field], $lte: val };
+        } else if (key.endsWith('_neq')) {
+          const field = key.replace('_neq', '');
+          mongoFilter[field] = { ...mongoFilter[field], $ne: val };
+        } else {
+          mongoFilter[key] = val;
+        }
+      });
 
-    let query = Model.find(mongoFilter);
-    
-    if (select && typeof select === 'string') {
-      query = query.select(select.split(',').join(' '));
+      if (head === 'true') {
+        const totalCount = await Model.countDocuments(mongoFilter);
+        return res.json({ count: totalCount });
+      }
+
+      let query = Model.find(mongoFilter);
+      
+      if (select && typeof select === 'string') {
+        query = query.select(select.split(',').join(' '));
+      }
+      
+      if (sort && typeof sort === 'string') {
+        const sortObj: any = {};
+        sortObj[sort] = order === 'desc' ? -1 : 1;
+        query = query.sort(sortObj);
+      }
+      
+      if (limit) {
+        query = query.limit(parseInt(limit as string));
+      }
+      
+      const data = await query.exec();
+      
+      if (count === 'exact') {
+        const totalCount = await Model.countDocuments(mongoFilter);
+        res.json({ data, count: totalCount });
+      } else {
+        res.json(data);
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
-    
-    if (sort && typeof sort === 'string') {
-      const sortObj: any = {};
-      sortObj[sort] = order === 'desc' ? -1 : 1;
-      query = query.sort(sortObj);
-    }
-    
-    if (limit) {
-      query = query.limit(parseInt(limit as string));
-    }
-    
-    const data = await query.exec();
-    res.json(data);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
+  });
 
 app.post('/api/:table', async (req, res) => {
   try {

@@ -10,9 +10,12 @@ class MongoDBQueryBuilder {
     this.params = new URLSearchParams();
   }
 
-  select(columns: string = '*') {
+  select(columns: string = '*', { count }: { count?: 'exact' } = {}) {
     if (columns !== '*') {
       this.params.set('select', columns);
+    }
+    if (count) {
+      this.params.set('count', count);
     }
     return this;
   }
@@ -55,7 +58,16 @@ class MongoDBQueryBuilder {
     try {
       const response = await fetch(url.toString());
       const data = await response.json();
-      const result = { data, error: response.ok ? null : { message: data.error } };
+      
+      let result;
+      if (this.params.get('head') === 'true') {
+        result = { count: data.count, error: response.ok ? null : { message: data.error } };
+      } else if (this.params.get('count') === 'exact') {
+        result = { data: data.data, count: data.count, error: response.ok ? null : { message: data.error } };
+      } else {
+        result = { data, error: response.ok ? null : { message: data.error } };
+      }
+      
       return onfulfilled ? onfulfilled(result) : result;
     } catch (error: any) {
       const result = { data: null, error: { message: error.message } };
@@ -89,7 +101,8 @@ class MongoDBQueryBuilder {
   }
 
   async update(values: any) {
-    const field = Array.from(this.params.keys()).find(k => !k.includes('_'));
+    const reservedParams = ['select', 'count', 'sort', 'order', 'limit', 'head'];
+    const field = Array.from(this.params.keys()).find(k => !k.includes('_') && !reservedParams.includes(k));
     const value = field ? this.params.get(field) : null;
     
     if (!value) {
@@ -106,7 +119,8 @@ class MongoDBQueryBuilder {
   }
 
   async delete() {
-    const field = Array.from(this.params.keys()).find(k => !k.includes('_'));
+    const reservedParams = ['select', 'count', 'sort', 'order', 'limit', 'head'];
+    const field = Array.from(this.params.keys()).find(k => !k.includes('_') && !reservedParams.includes(k));
     const value = field ? this.params.get(field) : null;
     
     if (!value) {
@@ -143,7 +157,7 @@ export const mongodb = {
   },
   storage: {
     from: (bucket: string) => ({
-      upload: async (path: string, file: File) => ({ data: { path }, error: { message: 'Storage migration pending. Please use Supabase storage or implement local storage.' } }),
+      upload: async (path: string, file: File) => ({ data: { path }, error: { message: 'Storage migration pending.' } }),
       getPublicUrl: (path: string) => ({ data: { publicUrl: `https://placeholder.com/${path}` } }),
     })
   }
