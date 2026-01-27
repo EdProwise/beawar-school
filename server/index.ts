@@ -136,9 +136,12 @@ app.get('/api/:table', async (req, res) => {
       
       // Build filter object
       const mongoFilter: any = {};
-      Object.keys(filters).forEach(key => {
-        const val = filters[key];
-        if (key.endsWith('_gte')) {
+        Object.keys(filters).forEach(key => {
+          let val = filters[key] as any;
+          if (val === 'true') val = true;
+          if (val === 'false') val = false;
+
+          if (key.endsWith('_gte')) {
           const field = key.replace('_gte', '');
           mongoFilter[field] = { ...mongoFilter[field], $gte: val };
         } else if (key.endsWith('_lte')) {

@@ -55,11 +55,25 @@ class MongoDBQueryBuilder {
     const url = new URL(`${API_URL}/${this.table}`);
     this.params.forEach((value, key) => url.searchParams.append(key, value));
     
-    try {
-      const response = await fetch(url.toString());
-      const data = await response.json();
-      
-      let result;
+      try {
+        const response = await fetch(url.toString());
+        let data = await response.json();
+        
+        // Map _id to id for consistency with Supabase/Frontend expectations
+        const mapId = (obj: any) => {
+          if (!obj || typeof obj !== 'object') return obj;
+          if (Array.isArray(obj)) return obj.map(mapId);
+          
+          const newObj = { ...obj };
+          if (newObj._id && !newObj.id) {
+            newObj.id = newObj._id.toString();
+          }
+          return newObj;
+        };
+
+        data = mapId(data);
+        
+        let result;
       if (this.params.get('head') === 'true') {
         result = { count: data.count, error: response.ok ? null : { message: data.error } };
       } else if (this.params.get('count') === 'exact') {
