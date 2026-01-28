@@ -13,6 +13,11 @@ import Teachers from "./pages/Teachers";
 import Parents from "./pages/Parents";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Curriculum from "./pages/Curriculum";
+import TeachingMethod from "./pages/TeachingMethod";
+import Results from "./pages/Results";
+import Alumni from "./pages/Alumni";
+import BeyondAcademics from "./pages/BeyondAcademics";
 import NotFound from "./pages/NotFound";
 
 // Admin Pages
@@ -38,6 +43,11 @@ import AdminScrollWords from "./pages/admin/AdminScrollWords";
 import AdminAdmissionsContent from "./pages/admin/AdminAdmissionsContent";
 import AdminLegalPages from "./pages/admin/AdminLegalPages";
 import AdminMedia from "./pages/admin/AdminMedia";
+import AdminCurriculum from "./pages/admin/AdminCurriculum";
+import AdminTeachingMethod from "./pages/admin/AdminTeachingMethod";
+import AdminResults from "./pages/admin/AdminResults";
+import AdminAlumni from "./pages/admin/AdminAlumni";
+import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
 
 export const routers = [
     {
@@ -54,6 +64,31 @@ export const routers = [
       path: "/academics",
       name: 'academics',
       element: <Academics />,
+    },
+    {
+      path: "/curriculum",
+      name: 'curriculum',
+      element: <Curriculum />,
+    },
+    {
+      path: "/teaching-method",
+      name: 'teaching-method',
+      element: <TeachingMethod />,
+    },
+    {
+      path: "/results",
+      name: 'results',
+      element: <Results />,
+    },
+    {
+      path: "/alumni",
+      name: 'alumni',
+      element: <Alumni />,
+    },
+    {
+      path: "/beyond-academics",
+      name: 'beyond-academics',
+      element: <BeyondAcademics />,
     },
     {
       path: "/extracurricular",
@@ -202,14 +237,40 @@ export const routers = [
           name: 'admin-extracurricular',
           element: <AdminExtracurricular />,
         },
-        {
-          path: "/admin/highlights",
+          {
+            path: "/admin/highlights",
 
-          name: 'admin-highlights',
-          element: <AdminHighlights />,
-        },
-        {
-          path: "/admin/scroll-words",
+            name: 'admin-highlights',
+            element: <AdminHighlights />,
+          },
+          {
+            path: "/admin/curriculum",
+            name: 'admin-curriculum',
+            element: <AdminCurriculum />,
+          },
+          {
+            path: "/admin/teaching-method",
+            name: 'admin-teaching-method',
+            element: <AdminTeachingMethod />,
+          },
+          {
+            path: "/admin/results-manage",
+            name: 'admin-results',
+            element: <AdminResults />,
+          },
+          {
+            path: "/admin/alumni-manage",
+            name: 'admin-alumni',
+            element: <AdminAlumni />,
+          },
+          {
+            path: "/admin/beyond-academics",
+            name: 'admin-beyond-academics',
+            element: <AdminBeyondAcademics />,
+          },
+          {
+            path: "/admin/scroll-words",
+
           name: 'admin-scroll-words',
           element: <AdminScrollWords />,
         },

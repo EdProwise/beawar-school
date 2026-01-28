@@ -1,0 +1,160 @@
+import { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/mongodb/client";
+import AdminLayout from "@/components/admin/AdminLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, Save, Plus, Trash2, Star } from "lucide-react";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
+
+interface TeachingMethodSection {
+  id: string;
+  title: string;
+  content: string;
+  sort_order: number;
+}
+
+export default function AdminTeachingMethod() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  const { data: methodsData, isLoading } = useQuery({
+    queryKey: ["admin-teaching-methods"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("teaching_methods").select("*").order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as TeachingMethodSection[];
+    }
+  });
+
+  const [sections, setSections] = useState<TeachingMethodSection[]>([]);
+
+  useEffect(() => {
+    if (methodsData) setSections(methodsData);
+  }, [methodsData]);
+
+  const saveMutation = useMutation({
+    mutationFn: async (values: TeachingMethodSection[]) => {
+      const { data: currentDbItems } = await supabase.from("teaching_methods").select("id");
+      const dbIds = currentDbItems?.map(item => item.id) || [];
+      const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
+      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
+
+      if (toDelete.length > 0) {
+        await supabase.from("teaching_methods").delete().in("id", toDelete);
+      }
+
+      for (const val of values) {
+        if (val.id.startsWith("temp-")) {
+          const { id, ...rest } = val;
+          await supabase.from("teaching_methods").insert([rest]);
+        } else {
+          await supabase.from("teaching_methods").update(val).eq("id", val.id);
+        }
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-teaching-methods"] });
+      queryClient.invalidateQueries({ queryKey: ["teaching-methods"] });
+      toast({ title: "Teaching methods updated successfully" });
+    },
+    onError: () => toast({ title: "Error saving changes", variant: "destructive" })
+  });
+
+  const handleAddSection = () => {
+    setSections([...sections, {
+      id: `temp-${Date.now()}`,
+      title: "New Method",
+      content: "",
+      sort_order: sections.length
+    }]);
+  };
+
+  const handleUpdateSection = (id: string, updates: Partial<TeachingMethodSection>) => {
+    setSections(sections.map(s => s.id === id ? { ...s, ...updates } : s));
+  };
+
+  const handleRemoveSection = (id: string) => {
+    setSections(sections.filter(s => s.id !== id));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    saveMutation.mutate(sections);
+  };
+
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  return (
+    <AdminLayout>
+      <div className="max-w-4xl pb-20">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Teaching Methods</h1>
+            <p className="text-muted-foreground">Manage the pedagogical approaches and methods</p>
+          </div>
+          <Button onClick={handleAddSection}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Method
+          </Button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {sections.map((section) => (
+            <div key={section.id} className="bg-card rounded-xl border border-border p-6 shadow-sm relative group">
+              <button
+                type="button"
+                onClick={() => handleRemoveSection(section.id)}
+                className="absolute top-4 right-4 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label>Method Title</Label>
+                  <Input
+                    value={section.title}
+                    onChange={(e) => handleUpdateSection(section.id, { title: e.target.value })}
+                    placeholder="e.g., Project-Based Learning"
+                  />
+                </div>
+                <div>
+                  <Label>Description</Label>
+                  <RichTextEditor
+                    content={section.content}
+                    onChange={(content) => handleUpdateSection(section.id, { content })}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {sections.length === 0 && (
+            <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
+              <Star className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+              <p className="text-muted-foreground">No methods added yet. Click "Add Method" to start.</p>
+            </div>
+          )}
+
+          <div className="flex justify-end sticky bottom-8 py-4 bg-background/80 backdrop-blur-sm border-t border-border">
+            <Button type="submit" size="lg" disabled={saveMutation.isPending}>
+              {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              Save Teaching Methods
+            </Button>
+          </div>
+        </form>
+      </div>
+    </AdminLayout>
+  );
+}
