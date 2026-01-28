@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSiteSettings } from "@/hooks/use-school-data";
 import { useAuth } from "@/hooks/use-auth";
+import { ScrollingTicker } from "./ScrollingTicker";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -24,6 +25,9 @@ const navLinks = [
 export interface HeaderProps {
   variant?: "transparent" | "solid" | "light";
 }
+
+import { HeaderProps } from "./Header";
+import { ScrollingTicker } from "./ScrollingTicker";
 
 export function Header({ variant = "transparent" }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(variant === "solid");
@@ -175,113 +179,10 @@ export function Header({ variant = "transparent" }: HeaderProps) {
                         </Link>
                       ))}
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
-
-          {/* Right Actions */}
-            <div className="flex items-center gap-3">
-              {user && (
-                <Button
-                  variant={isScrolled || isSolid ? "ghost" : isLight ? "outline" : "hero"}
-                  size="sm"
-                  className="hidden sm:flex"
-                  asChild
-                >
-                  <Link to="/admin/dashboard">
-                    <Settings className="w-4 h-4" />
-                    Admin
-                  </Link>
-                </Button>
-              )}
-              {renderCTAButton(
-                settings?.cta_secondary_link || "/students",
-                settings?.cta_secondary_text || "Portal",
-                <User className="w-4 h-4" />,
-                isScrolled || isSolid ? "outline" : isLight ? "outline" : "hero",
-                "hidden sm:flex"
-              )}
-              {renderCTAButton(
-                settings?.cta_primary_link || "/admissions",
-                settings?.cta_primary_text || "Apply Now",
-                null,
-                isScrolled || isSolid ? "default" : isLight ? "default" : "hero-gold"
-              )}
-
-
-            {/* Mobile Menu Toggle */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={cn(
-                "lg:hidden p-2 rounded-lg transition-colors",
-                isScrolled || isSolid
-                  ? "text-foreground hover:bg-secondary"
-                  : isLight
-                    ? "text-slate-700 hover:bg-slate-100"
-                    : "text-primary-foreground hover:bg-primary-foreground/10"
-              )}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className={cn(
-            "lg:hidden mt-4 pb-4 border-t border-border/50 pt-4 rounded-b-2xl",
-            !isScrolled && !isSolid && isLight ? "bg-white/90 backdrop-blur-md shadow-lg" : ""
-          )}>
-            <nav className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <div key={link.name}>
-                  <Link
-                    to={link.path}
-                    className={cn(
-                      "block px-4 py-3 rounded-lg font-medium transition-colors",
-                      isScrolled || isSolid
-                        ? location.pathname === link.path
-                          ? "text-primary bg-primary-light"
-                          : "text-foreground hover:bg-secondary"
-                        : isLight
-                          ? location.pathname === link.path
-                            ? "text-primary bg-primary/10"
-                            : "text-slate-700 hover:bg-slate-100"
-                          : location.pathname === link.path
-                            ? "text-primary-foreground bg-primary-foreground/20"
-                            : "text-primary-foreground/90 hover:bg-primary-foreground/10"
-                    )}
-                  >
-                    {link.name}
-                  </Link>
-                  {link.children && (
-                    <div className="pl-4 mt-1 space-y-1">
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.name}
-                          to={child.path}
-                          className={cn(
-                            "block px-4 py-2 rounded-lg text-sm transition-colors",
-                            isScrolled || isSolid
-                              ? "text-muted-foreground hover:text-primary hover:bg-secondary"
-                              : isLight
-                                ? "text-slate-500 hover:text-primary hover:bg-slate-100"
-                                : "text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
-                          )}
-                        >
-                          {child.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </nav>
-          </div>
-        )}
-      </div>
+      )}
+      
+      <ScrollingTicker />
     </header>
   );
 }

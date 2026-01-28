@@ -34,6 +34,7 @@ import AdminAbout from "./pages/admin/AdminAbout";
 import AdminAcademics from "./pages/admin/AdminAcademics";
 import AdminExtracurricular from "./pages/admin/AdminExtracurricular";
 import AdminHighlights from "./pages/admin/AdminHighlights";
+import AdminScrollWords from "./pages/admin/AdminScrollWords";
 import AdminAdmissionsContent from "./pages/admin/AdminAdmissionsContent";
 import AdminLegalPages from "./pages/admin/AdminLegalPages";
 import AdminMedia from "./pages/admin/AdminMedia";
@@ -204,12 +205,16 @@ export const routers = [
         {
           path: "/admin/highlights",
 
-        name: 'admin-highlights',
-        element: <AdminHighlights />,
-      },
-
-    {
-      path: "/admin/admissions-content",
+          name: 'admin-highlights',
+          element: <AdminHighlights />,
+        },
+        {
+          path: "/admin/scroll-words",
+          name: 'admin-scroll-words',
+          element: <AdminScrollWords />,
+        },
+      {
+        path: "/admin/admissions-content",
       name: 'admin-admissions-content',
       element: <AdminAdmissionsContent />,
     },
