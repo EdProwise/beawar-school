@@ -214,7 +214,7 @@ export default function AdminExtracurricular() {
     <AdminLayout>
       <div className="max-w-5xl pb-20">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Extracurricular Content</h1>
+          <h1 className="text-3xl font-bold text-foreground">Beyond Academics Content</h1>
           <p className="text-muted-foreground">Manage activity categories and program highlights</p>
         </div>
 

@@ -134,9 +134,9 @@ export function Extracurricular() {
             <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
               Life Beyond Academics
             </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Extracurricular Activities
-            </h1>
+              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
+                Beyond Academics
+              </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
               We believe in nurturing every child's unique talent through a diverse range of activities that build character, confidence, and community.
             </p>
