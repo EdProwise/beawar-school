@@ -23,11 +23,13 @@ interface AlumniProfile {
   location?: string;
   bio: string;
   is_featured: boolean;
+  is_approved?: boolean;
 }
 
 export default function Alumni() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -52,7 +54,11 @@ export default function Alumni() {
 
   const registrationMutation = useMutation({
     mutationFn: async (newData: any) => {
-      const { error } = await supabase.from("alumni_profiles").insert([{ ...newData, is_featured: false }]);
+      const { error } = await supabase.from("alumni_profiles").insert([{ 
+        ...newData, 
+        is_featured: false,
+        is_approved: false 
+      }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -60,8 +66,8 @@ export default function Alumni() {
       setIsJoinDialogOpen(false);
       setFormData({ name: "", batch: "", designation: "", company: "", location: "", bio: "", image: "" });
       toast({
-        title: "Welcome to the Network!",
-        description: "Your profile has been successfully registered.",
+        title: "Registration Submitted!",
+        description: "Your profile has been submitted for review. It will be visible once approved by the admin.",
       });
     },
     onError: (err: any) => {
@@ -73,6 +79,29 @@ export default function Alumni() {
     }
   });
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `alumni/${fileName}`;
+
+      const { data, error } = await supabase.storage.from('images').upload(filePath, file);
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+      setFormData(prev => ({ ...prev, image: publicUrl }));
+      toast({ title: "Photo uploaded successfully" });
+    } catch (error: any) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleJoinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.batch || !formData.designation) {
@@ -82,13 +111,15 @@ export default function Alumni() {
     registrationMutation.mutate(formData);
   };
 
-  const filteredProfiles = alumniProfiles?.filter(profile => 
+  const approvedProfiles = alumniProfiles?.filter(profile => profile.is_approved !== false);
+
+  const filteredProfiles = approvedProfiles?.filter(profile => 
     profile.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     profile.batch.includes(searchQuery) ||
     profile.designation.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const featuredProfiles = alumniProfiles?.filter(p => p.is_featured);
+  const featuredProfiles = approvedProfiles?.filter(p => p.is_featured);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -337,8 +368,33 @@ export default function Alumni() {
                   />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>A Short Bio / Achievement</Label>
+                <div className="space-y-2">
+                  <Label>Photo (Optional)</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-dashed border-slate-300 relative group">
+                      {formData.image ? (
+                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <Camera className="w-6 h-6 text-slate-400" />
+                      )}
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleFileUpload}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        disabled={uploading}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-slate-500 mb-2">
+                        {uploading ? "Uploading..." : "Click to upload your professional headshot"}
+                      </p>
+                      {uploading && <Loader2 className="w-4 h-4 animate-spin text-indigo-600" />}
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label>A Short Bio / Achievement</Label>
                 <Textarea 
                   value={formData.bio} 
                   onChange={e => setFormData({...formData, bio: e.target.value})} 
