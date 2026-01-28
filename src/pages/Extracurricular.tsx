@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Music, Trophy, Camera, Palette, Globe, Heart, 
-  Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ChevronRight
+  Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -12,7 +12,6 @@ import {
   useExtracurricularCategories, 
   useExtracurricularHighlights 
 } from "@/hooks/use-school-data";
-import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, React.ElementType> = {
   Music, Trophy, Camera, Palette, Globe, Heart, Rocket, Star, Shield, Zap, BookOpen, Users, Award, Clock, Target
@@ -66,159 +65,138 @@ export function Extracurricular() {
   const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
 
   return (
-    <div className="min-h-screen bg-background selection:bg-primary selection:text-primary-foreground">
+    <div className="min-h-screen bg-background">
       <Header />
       <main>
         {/* Hero Section */}
-        <section className="relative pt-32 pb-24 lg:pt-48 lg:pb-40 overflow-hidden">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.2, 1],
-                rotate: [0, 90, 0],
-                opacity: [0.1, 0.2, 0.1]
-              }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute -top-1/4 -right-1/4 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px]" 
-            />
-            <motion.div 
-              animate={{ 
-                scale: [1.2, 1, 1.2],
-                rotate: [90, 0, 90],
-                opacity: [0.1, 0.2, 0.1]
-              }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-              className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-accent/20 rounded-full blur-[100px]" 
-            />
+        <section className="relative pt-28 pb-20 lg:pt-40 lg:pb-32 bg-foreground overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.03]">
+            <div className="absolute inset-0" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }} />
           </div>
-
+          
           <div className="container relative z-10">
             <div className="max-w-4xl mx-auto text-center">
-              <motion.div
+              <motion.span
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
+                className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-white/80 text-sm font-medium tracking-wider uppercase mb-6"
               >
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold tracking-wide uppercase mb-6 border border-primary/20 backdrop-blur-sm">
-                  <Star className="w-4 h-4" />
-                  Life Beyond Academics
-                </span>
-              </motion.div>
+                Life Beyond Academics
+              </motion.span>
               
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-foreground mb-8 tracking-tight"
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 tracking-tight"
               >
-                Discover Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary-dark to-accent">Passion</span>
+                Extracurricular Activities
               </motion.h1>
               
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed"
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-10"
               >
-                We believe in nurturing every child's talent through a diverse range of activities that build character, confidence, and community.
+                We believe in nurturing every child's unique talent through a diverse range of activities that build character, confidence, and community.
               </motion.p>
               
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                className="flex flex-wrap items-center justify-center gap-6"
+                transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <Button size="lg" className="rounded-full h-14 px-8 text-lg font-semibold shadow-glow hover:shadow-strong transition-all" asChild>
-                  <Link to="/admissions">Join Our Program</Link>
+                <Button size="lg" className="rounded-full h-12 px-8 bg-white text-foreground hover:bg-white/90 font-semibold" asChild>
+                  <Link to="/admissions">
+                    Join Our Program
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Link>
                 </Button>
-                <Link to="#categories" className="group flex items-center gap-2 text-lg font-semibold text-foreground hover:text-primary transition-colors">
-                  Explore Activities
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
               </motion.div>
             </div>
           </div>
         </section>
 
-        {/* Categories Section - Alternating Layout */}
-        <section id="categories" className="py-24 lg:py-40 relative">
+        {/* Categories Section */}
+        <section className="py-20 lg:py-32">
           <div className="container">
             <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-24 lg:mb-32"
+              className="text-center mb-16"
             >
-              <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">Our Diverse Ecosystem</h2>
-              <div className="w-24 h-1.5 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">Our Programs</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Discover a world of opportunities designed to help students explore their passions and develop new skills.
+              </p>
             </motion.div>
 
-            <div className="space-y-32 lg:space-y-48">
+            <div className="grid md:grid-cols-2 gap-8">
               {categories.map((category: any, index: number) => {
-                const isEven = index % 2 === 0;
                 const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
-                
                 return (
                   <motion.div 
                     key={index}
-                    initial={{ opacity: 0, y: 40 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                    className={cn(
-                      "flex flex-col lg:items-center gap-12 lg:gap-24",
-                      isEven ? "lg:flex-row" : "lg:flex-row-reverse"
-                    )}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-500"
                   >
-                    {/* Image Column */}
-                    <div className="flex-1 relative group">
-                      <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-strong transform group-hover:scale-[1.02] transition-transform duration-700">
+                    {category.image_url && (
+                      <div className="relative h-56 overflow-hidden">
                         <img 
-                          src={category.image_url || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop"} 
+                          src={category.image_url} 
                           alt={category.title} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                              <IconComponent className="w-6 h-6 text-white" />
+                            </div>
+                            <h3 className="text-2xl font-heading font-bold text-white">
+                              {category.title}
+                            </h3>
+                          </div>
+                        </div>
                       </div>
-                      
-                      {/* Floating Decorative Element */}
-                      <div className={cn(
-                        "absolute -z-10 w-full h-full border-2 border-primary/20 rounded-3xl transform -translate-x-4 translate-y-4 group-hover:-translate-x-6 group-hover:translate-y-6 transition-transform duration-700",
-                        isEven ? "-translate-x-4" : "translate-x-4"
-                      )} />
-                    </div>
-
-                    {/* Content Column */}
-                    <div className="flex-1">
-                      <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-8 shadow-sm">
-                        <IconComponent className="w-8 h-8" />
+                    )}
+                    
+                    {!category.image_url && (
+                      <div className="p-6 pb-0">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 rounded-xl bg-foreground/5 flex items-center justify-center">
+                            <IconComponent className="w-6 h-6 text-foreground" />
+                          </div>
+                          <h3 className="text-2xl font-heading font-bold text-foreground">
+                            {category.title}
+                          </h3>
+                        </div>
                       </div>
-                      <h3 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-6 text-foreground tracking-tight">
-                        {category.title}
-                      </h3>
-                      <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
+                    )}
+                    
+                    <div className="p-6">
+                      <p className="text-muted-foreground mb-6 leading-relaxed">
                         {category.description}
                       </p>
                       
-                      <div className="flex flex-wrap gap-3 mb-12">
+                      <div className="flex flex-wrap gap-2">
                         {category.activities?.map((activity: string, idx: number) => (
                           <span 
                             key={idx} 
-                            className="px-5 py-2 rounded-full bg-secondary/50 border border-border text-foreground font-medium hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                            className="px-3 py-1.5 rounded-full bg-foreground/5 text-foreground text-sm font-medium"
                           >
                             {activity}
                           </span>
                         ))}
                       </div>
-
-                      <Button variant="outline" className="rounded-full px-8 group" asChild>
-                        <Link to="/contact">
-                          Inquire about {category.title}
-                          <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                      </Button>
                     </div>
                   </motion.div>
                 );
@@ -227,10 +205,22 @@ export function Extracurricular() {
           </div>
         </section>
 
-        {/* Highlights Section - Premium Grid */}
-        <section className="py-24 lg:py-40 bg-secondary/30 relative overflow-hidden">
-          <div className="container relative z-10">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Highlights Section */}
+        <section className="py-20 lg:py-32 bg-foreground/[0.02]">
+          <div className="container">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">Why Choose Us</h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Our commitment to excellence ensures every student receives the best opportunities to grow and succeed.
+              </p>
+            </motion.div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {highlights.map((item, index) => {
                 const IconComponent = iconMap[item.icon_name || "Star"] || Star;
                 return (
@@ -239,14 +229,14 @@ export function Extracurricular() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="group bg-card p-10 rounded-3xl border border-border/50 hover:border-primary/30 hover:shadow-strong transition-all duration-500 hover:-translate-y-2"
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="group bg-card p-8 rounded-2xl border border-border hover:border-foreground/20 transition-all duration-300"
                   >
-                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500">
-                      <IconComponent className="w-8 h-8" />
+                    <div className="w-14 h-14 rounded-xl bg-foreground/5 flex items-center justify-center mb-6 group-hover:bg-foreground group-hover:text-background transition-all duration-300">
+                      <IconComponent className="w-7 h-7" />
                     </div>
-                    <h4 className="text-2xl font-heading font-bold mb-4">{item.title}</h4>
-                    <p className="text-muted-foreground leading-relaxed">
+                    <h4 className="text-xl font-heading font-bold mb-3 text-foreground">{item.title}</h4>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
                       {item.description}
                     </p>
                   </motion.div>
@@ -256,47 +246,41 @@ export function Extracurricular() {
           </div>
         </section>
 
-        {/* CTA Section - Elegant Design */}
-        <section className="py-24 lg:py-40 relative overflow-hidden">
-          <div className="container relative z-10">
-            <div className="relative bg-primary rounded-[3rem] p-12 lg:p-24 overflow-hidden text-center">
-              {/* Background Shapes */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-primary-dark rounded-full -mr-48 -mt-48 blur-[80px] opacity-50" />
-              <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent rounded-full -ml-48 -mb-48 blur-[80px] opacity-30" />
-              
-              <div className="relative z-10 max-w-3xl mx-auto">
-                <motion.h2 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary-foreground mb-8"
-                >
-                  Ready to Shape Your Future?
-                </motion.h2>
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 }}
-                  className="text-xl text-primary-foreground/80 mb-12 leading-relaxed"
-                >
-                  Join {schoolName}'s vibrant community where every talent is celebrated and every student is empowered to excel beyond limits.
-                </motion.p>
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                  className="flex flex-wrap justify-center gap-6"
-                >
-                  <Button variant="hero-gold" size="lg" className="rounded-full h-14 px-10 text-lg shadow-xl" asChild>
-                    <Link to="/admissions">Begin Your Journey</Link>
-                  </Button>
-                  <Button variant="hero" size="lg" className="rounded-full h-14 px-10 text-lg border-white/20 hover:bg-white/10" asChild>
-                    <Link to="/contact">Request Information</Link>
-                  </Button>
-                </motion.div>
-              </div>
+        {/* CTA Section */}
+        <section className="py-20 lg:py-32">
+          <div className="container">
+            <div className="bg-foreground rounded-3xl p-10 lg:p-16 text-center">
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6"
+              >
+                Ready to Discover Your Passion?
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="text-lg text-white/70 mb-10 max-w-2xl mx-auto"
+              >
+                Join {schoolName}'s vibrant community where every talent is celebrated and every student is empowered to excel.
+              </motion.p>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="flex flex-wrap justify-center gap-4"
+              >
+                <Button size="lg" className="rounded-full h-12 px-8 bg-white text-foreground hover:bg-white/90 font-semibold" asChild>
+                  <Link to="/admissions">Apply Now</Link>
+                </Button>
+                <Button size="lg" variant="outline" className="rounded-full h-12 px-8 border-white/30 text-white hover:bg-white/10 font-semibold" asChild>
+                  <Link to="/contact">Contact Us</Link>
+                </Button>
+              </motion.div>
             </div>
           </div>
         </section>
