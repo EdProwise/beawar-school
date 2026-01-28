@@ -42,37 +42,42 @@ interface NavItem {
   children?: { name: string; path: string; icon: any }[];
 }
 
-const navItems: NavItem[] = [
+  const navItems: NavItem[] = [
   { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Admission Inquiries", path: "/admin/admissions", icon: Users },
   { name: "Contact Message", path: "/admin/contacts", icon: Mail },
   { name: "About Content", path: "/admin/about", icon: Info },
-    { name: "Academic Programs", path: "/admin/programs", icon: FileText },
-    { name: "Why Choose Us", path: "/admin/academics", icon: Star },
-    { name: "Curriculum", path: "/admin/curriculum", icon: BookOpen },
-    { name: "Teaching Method", path: "/admin/teaching-method", icon: ClipboardList },
-    { name: "Results", path: "/admin/results-manage", icon: BarChart3 },
-  { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
+  {
+    name: "Academics",
+    icon: GraduationCap,
+    children: [
+      { name: "Academic Programs", path: "/admin/programs", icon: FileText },
+      { name: "Why Choose Us", path: "/admin/academics", icon: Star },
+      { name: "Curriculum", path: "/admin/curriculum", icon: BookOpen },
+      { name: "Teaching Method", path: "/admin/teaching-method", icon: ClipboardList },
+      { name: "Results", path: "/admin/results-manage", icon: BarChart3 },
+      { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
+    ]
+  },
   { name: "Beyond Academics", path: "/admin/beyond-academics", icon: Zap },
-      { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
-      { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
-
-    { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
-    { name: "Gallery", path: "/admin/gallery", icon: Image },
+  { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
+  { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
+  { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
+  { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },
   {
     name: "Settings",
     icon: Settings,
-      children: [
-        { name: "Site Settings", path: "/admin/settings", icon: Settings },
-        { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
-        { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
-          { name: "Highlights", path: "/admin/highlights", icon: Star },
-          { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
-        { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
-        { name: "Legal Pages", path: "/admin/legal", icon: Shield },
-        { name: "Media Library", path: "/admin/media", icon: FolderOpen },
-      ]
+    children: [
+      { name: "Site Settings", path: "/admin/settings", icon: Settings },
+      { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
+      { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
+      { name: "Highlights", path: "/admin/highlights", icon: Star },
+      { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
+      { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
+      { name: "Legal Pages", path: "/admin/legal", icon: Shield },
+      { name: "Media Library", path: "/admin/media", icon: FolderOpen },
+    ]
   },
 ];
 
@@ -83,9 +88,25 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
 
-  // Keep settings open if one of its children is active
-  const isSettingsActive = navItems.find(i => i.name === "Settings")?.children?.some(c => location.pathname === c.path);
-  const [settingsOpen, setSettingsOpen] = useState(isSettingsActive);
+  // Track open state for each menu item with children
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
+    const initialState: Record<string, boolean> = {};
+    navItems.forEach(item => {
+      if (item.children) {
+        const isActive = item.children.some(c => location.pathname === c.path);
+        initialState[item.name] = isActive;
+      }
+    });
+    return initialState;
+  });
+
+  const toggleMenu = (name: string) => {
+    setOpenMenus(prev => ({
+      ...prev,
+      [name]: !prev[name]
+    }));
+  };
+
 
   const handleSignOut = async () => {
     await signOut();
@@ -126,50 +147,51 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             if (item.children) {
               const hasActiveChild = item.children.some(c => location.pathname === c.path);
               
-              return (
-                <div key={item.name} className="space-y-1">
-                  <button
-                    onClick={() => setSettingsOpen(!settingsOpen)}
-                    className={cn(
-                      "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all",
-                      hasActiveChild
-                        ? "text-primary"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                return (
+                  <div key={item.name} className="space-y-1">
+                    <button
+                      onClick={() => toggleMenu(item.name)}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium transition-all",
+                        hasActiveChild
+                          ? "text-primary bg-primary/5"
+                          : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <item.icon className="w-5 h-5" />
+                        {item.name}
+                      </div>
+                      <ChevronDown className={cn("w-4 h-4 transition-transform", openMenus[item.name] && "rotate-180")} />
+                    </button>
+                    
+                    {openMenus[item.name] && (
+                      <div className="pl-4 space-y-1">
+                        {item.children.map((child) => {
+                          const isActive = location.pathname === child.path;
+                          return (
+                            <Link
+                              key={child.path}
+                              to={child.path}
+                              onClick={() => setSidebarOpen(false)}
+                              className={cn(
+                                "flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-medium transition-all",
+                                isActive
+                                  ? "bg-primary/10 text-primary"
+                                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                              )}
+                            >
+                              <child.icon className="w-4 h-4" />
+                              {child.name}
+                            </Link>
+                          );
+                        })}
+                      </div>
                     )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <item.icon className="w-5 h-5" />
-                      {item.name}
-                    </div>
-                    <ChevronDown className={cn("w-4 h-4 transition-transform", settingsOpen && "rotate-180")} />
-                  </button>
-                  
-                  {settingsOpen && (
-                    <div className="pl-4 space-y-1">
-                      {item.children.map((child) => {
-                        const isActive = location.pathname === child.path;
-                        return (
-                          <Link
-                            key={child.path}
-                            to={child.path}
-                            onClick={() => setSidebarOpen(false)}
-                            className={cn(
-                              "flex items-center gap-3 px-4 py-2 rounded-lg text-xs font-medium transition-all",
-                              isActive
-                                ? "bg-primary/10 text-primary"
-                                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                            )}
-                          >
-                            <child.icon className="w-4 h-4" />
-                            {child.name}
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            }
+                  </div>
+                );
+              }
+
 
             const isActive = location.pathname === item.path;
             return (
