@@ -196,16 +196,15 @@ export default function AdminHighlights() {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {highlights.map((item) => (
           <div key={item.id} className="bg-card rounded-xl border border-border p-5 relative group">
-            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(item)}>
+            <div className="absolute top-2 right-2 flex gap-1 z-10">
+              <Button variant="outline" size="icon" className="h-8 w-8 bg-background/80 backdrop-blur-sm" onClick={() => handleEdit(item)}>
                 <Pencil className="w-4 h-4" />
               </Button>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
-                className="h-8 w-8 text-destructive"
+                className="h-8 w-8 text-destructive bg-background/80 backdrop-blur-sm"
                 onClick={() => deleteMutation.mutate(item.id)}
               >
                 <Trash2 className="w-4 h-4" />

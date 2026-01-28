@@ -123,7 +123,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
                           : "text-slate-700 hover:text-primary hover:bg-slate-100"
                         : location.pathname === link.path
                           ? "text-primary-foreground bg-primary-foreground/20"
-                          : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                          : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 drop-shadow-sm"
                   )}
                 >
                   {link.name}

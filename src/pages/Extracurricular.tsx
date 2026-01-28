@@ -118,14 +118,15 @@ export function Extracurricular() {
   
   const schoolName = settings?.school_name || "Orbit School";
   const categories = dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories;
-  const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
+    const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
+  
+    return (
+      <div className="min-h-screen overflow-x-hidden">
+        <Header />
+        <main>
+          {/* Hero - Removed redundant spacer to allow header overlay */}
+          <section className="pt-40 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
 
-  return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        {/* Hero */}
-        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>

@@ -269,13 +269,32 @@ app.delete('/api/:table', async (req, res) => {
 
       if (key.endsWith('_in')) {
         const field = key.replace('_in', '');
-        try {
-          mongoFilter[field] = { $in: JSON.parse(val as string) };
-        } catch (e) {
-          mongoFilter[field] = val;
+        if (field === 'id') {
+          try {
+            const ids = JSON.parse(val as string);
+            mongoFilter['$or'] = [
+              { id: { $in: ids } },
+              { _id: { $in: ids.filter((id: string) => mongoose.isValidObjectId(id)) } }
+            ];
+          } catch (e) {
+            mongoFilter[field] = val;
+          }
+        } else {
+          try {
+            mongoFilter[field] = { ...mongoFilter[field], $in: JSON.parse(val as string) };
+          } catch (e) {
+            mongoFilter[field] = val;
+          }
         }
       } else {
-        mongoFilter[key] = val;
+        if (key === 'id') {
+          mongoFilter['$or'] = [
+            { id: val },
+            { _id: mongoose.isValidObjectId(val) ? val : undefined }
+          ].filter(q => q._id !== undefined || q.id !== undefined);
+        } else {
+          mongoFilter[key] = val;
+        }
       }
     });
 

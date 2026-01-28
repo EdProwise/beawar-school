@@ -47,21 +47,24 @@ export default function AdminExtracurricular() {
   
   const [localCategories, setLocalCategories] = useState<ExtracurricularCategory[]>([]);
   const [localHighlights, setLocalHighlights] = useState<ExtracurricularHighlight[]>([]);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
-    if (categories) setLocalCategories(categories);
-  }, [categories]);
-
-  useEffect(() => {
-    if (highlights) setLocalHighlights(highlights);
-  }, [highlights]);
+    if (categories && !hasInitialized) {
+      setLocalCategories(categories);
+      if (highlights) {
+        setLocalHighlights(highlights);
+        setHasInitialized(true);
+      }
+    }
+  }, [categories, highlights, hasInitialized]);
 
   const categoryMutation = useMutation({
     mutationFn: async (values: ExtracurricularCategory[]) => {
-      const { data: currentDbItems } = await supabase.from("extracurricular_categories").select("id");
-      const dbIds = currentDbItems?.map(item => item.id) || [];
+      // Determine what to delete by comparing current query data with incoming values
+      const initialIds = categories?.map(c => c.id) || [];
       const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
-      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
+      const toDelete = initialIds.filter(id => !incomingIds.includes(id));
 
       if (toDelete.length > 0) {
         const { error: delError } = await supabase.from("extracurricular_categories").delete().in("id", toDelete);
@@ -92,10 +95,10 @@ export default function AdminExtracurricular() {
 
   const highlightMutation = useMutation({
     mutationFn: async (values: ExtracurricularHighlight[]) => {
-      const { data: currentDbItems } = await supabase.from("extracurricular_highlights").select("id");
-      const dbIds = currentDbItems?.map(item => item.id) || [];
+      // Determine what to delete by comparing current query data with incoming values
+      const initialIds = highlights?.map(h => h.id) || [];
       const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
-      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
+      const toDelete = initialIds.filter(id => !incomingIds.includes(id));
 
       if (toDelete.length > 0) {
         const { error: delError } = await supabase.from("extracurricular_highlights").delete().in("id", toDelete);
