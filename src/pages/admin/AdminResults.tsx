@@ -139,14 +139,13 @@ export default function AdminResults() {
                 </button>
                 
                 <div className="flex gap-6">
-                  <div className="w-32 shrink-0">
-                    <Label className="mb-2 block">Student Photo</Label>
-                    <FileUpload
-                      value={result.photo_url}
-                      onChange={(url) => handleUpdateResult(result.id, { photo_url: url })}
-                      folder="results"
-                    />
-                  </div>
+                    <div className="w-32 shrink-0">
+                      <Label className="mb-2 block">Student Photo</Label>
+                      <FileUpload
+                        currentUrl={result.photo_url}
+                        onUpload={(url) => handleUpdateResult(result.id, { photo_url: url })}
+                      />
+                    </div>
                   
                   <div className="flex-1 space-y-4">
                     <div className="grid grid-cols-2 gap-4">
