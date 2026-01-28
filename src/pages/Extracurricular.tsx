@@ -158,62 +158,63 @@ export function Extracurricular() {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-8">
-                {categories.map((category: any, index: number) => {
-                  const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
-                  const style = cardStyles[index % cardStyles.length];
-                  
-                  return (
-                    <div 
-                      key={index}
-                      className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
-                    >
-                      <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                      
-                      <div className="relative z-10">
-                        {category.image_url && (
-                          <div className="relative h-48 mb-6 rounded-2xl overflow-hidden">
-                            <img 
-                              src={category.image_url} 
-                              alt={category.title} 
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              ) : (
+                <div className="space-y-24">
+                  {categories.map((category: any, index: number) => {
+                    const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
+                    const isEven = index % 2 === 0;
+                    
+                    return (
+                      <div 
+                        key={index}
+                        className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
+                      >
+                        <div className={`relative z-10 min-w-0 ${isEven ? '' : 'lg:order-2'}`}>
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center">
+                              <IconComponent className="w-6 h-6 text-primary" />
+                            </div>
                           </div>
-                        )}
-                        
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
-                            <IconComponent className={`w-7 h-7 ${style.iconText}`} />
-                          </div>
-                          <h3 className="font-heading text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
+                          <h3 className="font-heading text-3xl font-bold text-foreground mb-4 text-balance">
                             {category.title}
                           </h3>
+                          <p className="text-muted-foreground mb-6 leading-relaxed text-lg">
+                            {category.description}
+                          </p>
+                          <div className="flex flex-wrap gap-2 mb-8">
+                            {category.activities?.map((activity: string, idx: number) => (
+                              <span 
+                                key={idx} 
+                                className="px-3 py-1.5 rounded-full bg-primary-light text-primary text-sm font-medium border border-primary/10"
+                              >
+                                {activity}
+                              </span>
+                            ))}
+                          </div>
+                          <Button asChild>
+                            <Link to="/admissions">
+                              Enquire for {category.title}
+                              <ArrowRight className="w-4 h-4 ml-2" />
+                            </Link>
+                          </Button>
                         </div>
-                        
-                        <p className="text-muted-foreground mb-6 leading-relaxed">
-                          {category.description}
-                        </p>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {category.activities?.map((activity: string, idx: number) => (
-                            <span 
-                              key={idx} 
-                              className={`px-3 py-1.5 rounded-full ${style.light} text-foreground text-sm font-medium border ${style.border}`}
-                            >
-                              {activity}
-                            </span>
-                          ))}
+                        <div className={`min-w-0 ${isEven ? '' : 'lg:order-1'}`}>
+                          <div className="relative">
+                            <img 
+                              src={category.image_url || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop"} 
+                              alt={category.title}
+                              className="rounded-2xl shadow-strong w-full h-[400px] object-cover"
+                            />
+                            <div className="absolute -bottom-4 -right-4 bg-accent px-6 py-3 rounded-xl shadow-strong">
+                              <p className="text-accent-foreground font-semibold">{category.title}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-
-                      <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                    );
+                  })}
+                </div>
+              )}
           </div>
         </section>
 
