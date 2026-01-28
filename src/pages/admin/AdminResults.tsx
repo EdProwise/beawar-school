@@ -39,28 +39,30 @@ export default function AdminResults() {
     if (resultsData) setResults(resultsData);
   }, [resultsData]);
 
-  const saveMutation = useMutation({
-    mutationFn: async (values: Result[]) => {
-      const itemsToUpsert = values.map(v => {
-        if (v.id.startsWith("temp-")) {
-          const { id, ...rest } = v;
-          return rest;
+    const saveMutation = useMutation({
+      mutationFn: async (values: Result[]) => {
+        // Handle deletions
+        const { data: currentDbItems } = await supabase.from("results").select("id");
+        const dbIds = currentDbItems?.map(item => item.id) || [];
+        const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
+        const toDelete = dbIds.filter(id => !incomingIds.includes(id));
+
+        if (toDelete.length > 0) {
+          await supabase.from("results").delete().in("id", toDelete);
         }
-        return v;
-      });
 
-      const { data: currentDbItems } = await supabase.from("results").select("id");
-      const dbIds = currentDbItems?.map(item => item.id) || [];
-      const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
-      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
-
-      if (toDelete.length > 0) {
-        await supabase.from("results").delete().in("id", toDelete);
-      }
-
-      const { error } = await supabase.from("results").upsert(itemsToUpsert);
-      if (error) throw error;
-    },
+        // Handle inserts and updates individually
+        for (const val of values) {
+          if (val.id.startsWith("temp-")) {
+            const { id, ...rest } = val;
+            const { error } = await supabase.from("results").insert([rest]);
+            if (error) throw error;
+          } else {
+            const { error } = await supabase.from("results").update(val).eq("id", val.id);
+            if (error) throw error;
+          }
+        }
+      },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-results"] });
       queryClient.invalidateQueries({ queryKey: ["results"] });
