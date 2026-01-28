@@ -85,29 +85,6 @@ export function useScrollWords() {
   });
 }
 
-// Scroll Words
-export interface ScrollWord {
-  id: string;
-  text: string;
-  is_active: boolean;
-  sort_order: number;
-}
-
-export function useScrollWords() {
-  return useQuery({
-    queryKey: ["scroll-words"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("scroll_words")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data as ScrollWord[];
-    },
-  });
-}
-
 // News & Events Hooks
 export function useNewsEvents(limit?: number) {
   return useQuery({
