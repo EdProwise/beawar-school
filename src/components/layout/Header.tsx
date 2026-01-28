@@ -193,9 +193,6 @@ export function Header({ variant = "transparent" }: HeaderProps) {
         {/* Scrolling Ticker integrated into header so it's fixed below menu */}
         <ScrollingTicker />
       </header>
-      
-      {/* Spacer to push content down below the fixed header + ticker */}
-      <div className="h-[104px]" /> 
     </>
   );
 }
