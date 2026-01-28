@@ -49,6 +49,8 @@ import AdminResults from "./pages/admin/AdminResults";
 import AdminAlumni from "./pages/admin/AdminAlumni";
 import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
 
+import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
+
 export const routers = [
     {
       path: "/",
@@ -243,11 +245,16 @@ export const routers = [
             name: 'admin-highlights',
             element: <AdminHighlights />,
           },
-          {
-            path: "/admin/curriculum",
-            name: 'admin-curriculum',
-            element: <AdminCurriculum />,
-          },
+            {
+              path: "/admin/curriculum-teaching",
+              name: 'admin-curriculum-teaching',
+              element: <AdminCurriculumAndTeaching />,
+            },
+            {
+              path: "/admin/curriculum",
+              name: 'admin-curriculum',
+              element: <AdminCurriculum />,
+            },
           {
             path: "/admin/teaching-method",
             name: 'admin-teaching-method',

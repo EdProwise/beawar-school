@@ -50,14 +50,13 @@ interface NavItem {
   {
     name: "Academics",
     icon: GraduationCap,
-    children: [
-      { name: "Academic Programs", path: "/admin/programs", icon: FileText },
-      { name: "Why Choose Us", path: "/admin/academics", icon: Star },
-      { name: "Curriculum", path: "/admin/curriculum", icon: BookOpen },
-      { name: "Teaching Method", path: "/admin/teaching-method", icon: ClipboardList },
-      { name: "Results", path: "/admin/results-manage", icon: BarChart3 },
-      { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
-    ]
+      children: [
+        { name: "Academic Programs", path: "/admin/programs", icon: FileText },
+        { name: "Why Choose Us", path: "/admin/academics", icon: Star },
+        { name: "Curriculum & Teaching", path: "/admin/curriculum-teaching", icon: BookOpen },
+        { name: "Results", path: "/admin/results-manage", icon: BarChart3 },
+        { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
+      ]
   },
   { name: "Beyond Academics", path: "/admin/beyond-academics", icon: Zap },
   { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
