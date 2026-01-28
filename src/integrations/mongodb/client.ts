@@ -61,7 +61,7 @@ class MongoDBQueryBuilder {
   async then(onfulfilled?: (value: any) => any) {
     try {
       let response;
-      let url = new URL(`${API_URL}/${this.table}`);
+      let url = new URL(`${API_URL}/${this.table}`, window.location.origin);
       this.params.forEach((value, key) => url.searchParams.append(key, value));
 
       if (this.method === 'GET') {
