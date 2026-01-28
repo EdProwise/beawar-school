@@ -2,8 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Loader2, GraduationCap, Search, Briefcase, Calendar, MapPin, UserPlus, Send, Camera, Sparkles } from "lucide-react";
-import { FormattedContent } from "@/components/ui/formatted-content";
+import { Loader2, Search, UserPlus, Send, Camera, Sparkles } from "lucide-react";
+import { AlumniCard } from "@/components/ui/alumni-card";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -182,42 +182,16 @@ export default function Alumni() {
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {featuredProfiles.map((profile, idx) => (
-                  <motion.div
-                    key={profile.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    viewport={{ once: true }}
-                    className="group bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500"
-                  >
-                    <div className="aspect-[4/3] relative overflow-hidden">
-                      <img 
-                        src={profile.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600"} 
-                        alt={profile.name}
-                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="absolute bottom-4 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                        <span className="text-white/90 text-sm font-medium px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                          Class of {profile.batch}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="p-8">
-                      <h3 className="text-2xl font-bold text-slate-900 mb-2">{profile.name}</h3>
-                      <p className="text-indigo-600 font-semibold mb-4 flex items-center gap-2">
-                        <Briefcase className="w-4 h-4" />
-                        {profile.designation} {profile.company && `at ${profile.company}`}
-                      </p>
-                      <p className="text-slate-600 line-clamp-3 leading-relaxed italic">
-                        "{profile.bio}"
-                      </p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {featuredProfiles.map((profile, idx) => (
+                    <AlumniCard 
+                      key={profile.id} 
+                      profile={profile} 
+                      variant="featured" 
+                      index={idx} 
+                    />
+                  ))}
+                </div>
             </div>
           </section>
         )}
@@ -243,38 +217,17 @@ export default function Alumni() {
               <div className="flex justify-center py-20">
                 <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
               </div>
-            ) : filteredProfiles && filteredProfiles.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredProfiles.map((profile) => (
-                  <motion.div 
-                    layout
-                    key={profile.id} 
-                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group"
-                  >
-                    <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mb-4 overflow-hidden border-2 border-white ring-2 ring-indigo-50 transition-transform group-hover:scale-110">
-                      {profile.image ? (
-                        <img src={profile.image} alt={profile.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <GraduationCap className="w-8 h-8" />
-                      )}
-                    </div>
-                    <h4 className="font-bold text-slate-900 mb-1">{profile.name}</h4>
-                    <p className="text-sm text-slate-500 mb-3 flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      Class of {profile.batch}
-                    </p>
-                    <div className="space-y-2">
-                      <p className="text-sm text-slate-600 font-medium line-clamp-1">{profile.designation}</p>
-                      {profile.location && (
-                        <p className="text-xs text-slate-400 flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {profile.location}
-                        </p>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+              ) : filteredProfiles && filteredProfiles.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {filteredProfiles.map((profile, idx) => (
+                    <AlumniCard 
+                      key={profile.id} 
+                      profile={profile} 
+                      variant="standard" 
+                      index={idx} 
+                    />
+                  ))}
+                </div>
             ) : (
               <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
                 <UserPlus className="w-16 h-16 text-slate-200 mx-auto mb-4" />
