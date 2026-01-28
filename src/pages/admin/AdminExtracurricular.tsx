@@ -237,16 +237,20 @@ export default function AdminExtracurricular() {
 
                 <div className="space-y-6">
                   {localCategories.map((cat) => (
-                    <div key={cat.id} className="p-5 bg-background rounded-lg border border-border relative group">
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveCategory(cat.id)}
-                        className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      
-                      <div className="grid md:grid-cols-2 gap-6">
+                      <div key={cat.id} className="p-5 bg-background rounded-lg border border-border relative group">
+                        <div className="absolute top-2 right-2 flex gap-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleRemoveCategory(cat.id)}
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                           <div>
                             <Label>Category Title</Label>
@@ -423,18 +427,22 @@ export default function AdminExtracurricular() {
                   </Button>
                 </div>
 
-                <div className="space-y-6">
-                  {localHighlights.map((high) => (
-                    <div key={high.id} className="p-5 bg-background rounded-lg border border-border relative group">
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveHighlight(high.id)}
-                        className="absolute top-2 right-2 p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      
-                      <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-6">
+                    {localHighlights.map((high) => (
+                      <div key={high.id} className="p-5 bg-background rounded-lg border border-border relative group">
+                        <div className="absolute top-2 right-2 flex gap-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleRemoveHighlight(high.id)}
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        
+                        <div className="grid md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                           <div>
                             <Label>Highlight Title</Label>
