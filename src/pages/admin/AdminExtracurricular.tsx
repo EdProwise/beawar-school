@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
     Loader2, Save, Plus, Trash2, Zap, Star, Trophy, Music, Palette, Globe, 
-    Rocket, Shield, Award, Clock, Target, Heart, Camera, BookOpen, Users, Upload, Image as ImageIcon
+    Rocket, Shield, Award, Clock, Target, Heart, Camera, BookOpen, Users, Upload, Image as ImageIcon, Video
   } from "lucide-react";
 
 import { 
@@ -131,13 +131,14 @@ export default function AdminExtracurricular() {
         icon_name: "Trophy",
         activities: [],
         image_url: null,
+        video_url: null,
         is_active: true,
         sort_order: localCategories.length,
       };
       setLocalCategories([...localCategories, newVal]);
     };
 
-    const handleImageUpload = async (id: string, file: File) => {
+    const handleFileUpload = async (id: string, file: File, field: "image_url" | "video_url") => {
       try {
         const formData = new FormData();
         formData.append("file", file);
@@ -151,13 +152,13 @@ export default function AdminExtracurricular() {
         if (!response.ok) throw new Error("Upload failed");
 
         const result = await response.json();
-        const imageUrl = result.data.url;
+        const url = result.data.url;
 
-        handleUpdateCategory(id, { image_url: imageUrl });
-        toast({ title: "Image uploaded successfully" });
+        handleUpdateCategory(id, { [field]: url });
+        toast({ title: `${field === "image_url" ? "Image" : "Video"} uploaded successfully` });
       } catch (error) {
         console.error("Upload error:", error);
-        toast({ title: "Error uploading image", variant: "destructive" });
+        toast({ title: `Error uploading ${field === "image_url" ? "image" : "video"}`, variant: "destructive" });
       }
     };
 
@@ -287,51 +288,102 @@ export default function AdminExtracurricular() {
                             </div>
                             
                             <div>
-                              <Label>Category Image</Label>
-                              <div className="mt-2 flex items-start gap-4">
-                                {cat.image_url ? (
-                                  <div className="relative w-32 h-20 rounded-md overflow-hidden border border-border">
-                                    <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover" />
-                                    <button
+                              <Label>Media Assets</Label>
+                              <div className="mt-2 grid grid-cols-2 gap-4">
+                                {/* Image Upload */}
+                                <div className="space-y-2">
+                                  <Label className="text-xs text-muted-foreground">Category Image</Label>
+                                  <div className="flex flex-col gap-2">
+                                    {cat.image_url ? (
+                                      <div className="relative aspect-video rounded-md overflow-hidden border border-border">
+                                        <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover" />
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateCategory(cat.id, { image_url: null })}
+                                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full shadow-sm"
+                                        >
+                                          <Trash2 className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <div className="aspect-video rounded-md border-2 border-dashed border-border flex items-center justify-center bg-muted/30">
+                                        <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+                                      </div>
+                                    )}
+                                    
+                                    <Input
+                                      type="file"
+                                      accept="image/*"
+                                      className="hidden"
+                                      id={`image-file-${cat.id}`}
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) handleFileUpload(cat.id, file, "image_url");
+                                      }}
+                                    />
+                                    <Button
                                       type="button"
-                                      onClick={() => handleUpdateCategory(cat.id, { image_url: null })}
-                                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full shadow-sm"
+                                      variant="outline"
+                                      size="sm"
+                                      className="w-full"
+                                      onClick={() => document.getElementById(`image-file-${cat.id}`)?.click()}
                                     >
-                                      <Trash2 className="w-3 h-3" />
-                                    </button>
+                                      <Upload className="w-4 h-4 mr-2" />
+                                      {cat.image_url ? "Change Image" : "Upload Image"}
+                                    </Button>
                                   </div>
-                                ) : (
-                                  <div className="w-32 h-20 rounded-md border-2 border-dashed border-border flex items-center justify-center bg-muted/30">
-                                    <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+                                </div>
+
+                                {/* Video Upload */}
+                                <div className="space-y-2">
+                                  <Label className="text-xs text-muted-foreground">Category Video</Label>
+                                  <div className="flex flex-col gap-2">
+                                    {cat.video_url ? (
+                                      <div className="relative aspect-video rounded-md overflow-hidden border border-border bg-black flex items-center justify-center">
+                                        <video src={cat.video_url} className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                          <Video className="w-8 h-8 text-white opacity-50" />
+                                        </div>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateCategory(cat.id, { video_url: null })}
+                                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full shadow-sm"
+                                        >
+                                          <Trash2 className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <div className="aspect-video rounded-md border-2 border-dashed border-border flex items-center justify-center bg-muted/30">
+                                        <Video className="w-8 h-8 text-muted-foreground/30" />
+                                      </div>
+                                    )}
+                                    
+                                    <Input
+                                      type="file"
+                                      accept="video/*"
+                                      className="hidden"
+                                      id={`video-file-${cat.id}`}
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) handleFileUpload(cat.id, file, "video_url");
+                                      }}
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      className="w-full"
+                                      onClick={() => document.getElementById(`video-file-${cat.id}`)?.click()}
+                                    >
+                                      <Upload className="w-4 h-4 mr-2" />
+                                      {cat.video_url ? "Change Video" : "Upload Video"}
+                                    </Button>
                                   </div>
-                                )}
-                                
-                                <div className="flex-1">
-                                  <Input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    id={`file-${cat.id}`}
-                                    onChange={(e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) handleImageUpload(cat.id, file);
-                                    }}
-                                  />
-                                  <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
-                                    className="w-full"
-                                    onClick={() => document.getElementById(`file-${cat.id}`)?.click()}
-                                  >
-                                    <Upload className="w-4 h-4 mr-2" />
-                                    {cat.image_url ? "Change Image" : "Upload Image"}
-                                  </Button>
-                                  <p className="text-[10px] text-muted-foreground mt-1">
-                                    Recommended: 800x600px, Max 5MB
-                                  </p>
                                 </div>
                               </div>
+                              <p className="text-[10px] text-muted-foreground mt-2">
+                                Max 50MB for videos. Recommended aspect ratio 16:9.
+                              </p>
                             </div>
                           </div>
 

@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { 
   Music, Trophy, Camera, Palette, Globe, Heart, 
-  Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight, Loader2
+  Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight, Loader2, Play
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -198,18 +198,38 @@ export function Extracurricular() {
                             </Link>
                           </Button>
                         </div>
-                        <div className={`min-w-0 ${isEven ? '' : 'lg:order-1'}`}>
-                          <div className="relative">
-                            <img 
-                              src={category.image_url || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop"} 
-                              alt={category.title}
-                              className="rounded-2xl shadow-strong w-full h-[400px] object-cover"
-                            />
-                            <div className="absolute -bottom-4 -right-4 bg-accent px-6 py-3 rounded-xl shadow-strong">
-                              <p className="text-accent-foreground font-semibold">{category.title}</p>
+                          <div className={`min-w-0 ${isEven ? '' : 'lg:order-1'}`}>
+                            <div className="relative group/media">
+                              {category.video_url ? (
+                                <div className="relative rounded-2xl overflow-hidden shadow-strong aspect-video bg-black group/video">
+                                  <video 
+                                    src={category.video_url} 
+                                    className="w-full h-full object-cover"
+                                    controls
+                                    poster={category.image_url || undefined}
+                                  />
+                                  {!category.image_url && (
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover/video:opacity-0 transition-opacity">
+                                      <div className="w-16 h-16 rounded-full bg-primary/80 flex items-center justify-center">
+                                        <Play className="w-8 h-8 text-white fill-current ml-1" />
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="relative">
+                                  <img 
+                                    src={category.image_url || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop"} 
+                                    alt={category.title}
+                                    className="rounded-2xl shadow-strong w-full h-[400px] object-cover"
+                                  />
+                                  <div className="absolute -bottom-4 -right-4 bg-accent px-6 py-3 rounded-xl shadow-strong">
+                                    <p className="text-accent-foreground font-semibold">{category.title}</p>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
-                        </div>
                       </div>
                     );
                   })}
