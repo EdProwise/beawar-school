@@ -1,75 +1,364 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Loader2, GraduationCap } from "lucide-react";
+import { Loader2, GraduationCap, Search, Briefcase, Calendar, MapPin, UserPlus, Send, Camera, Sparkles } from "lucide-react";
 import { FormattedContent } from "@/components/ui/formatted-content";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+
+interface AlumniProfile {
+  id: string;
+  name: string;
+  batch: string;
+  image: string;
+  designation: string;
+  company?: string;
+  location?: string;
+  bio: string;
+  is_featured: boolean;
+}
 
 export default function Alumni() {
-  const { data: alumniData, isLoading } = useQuery({
-    queryKey: ["alumni"],
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    batch: "",
+    designation: "",
+    company: "",
+    location: "",
+    bio: "",
+    image: ""
+  });
+
+  const { data: alumniProfiles, isLoading: profilesLoading } = useQuery({
+    queryKey: ["alumni_profiles"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("alumni").select("*").order("sort_order", { ascending: true });
+      const { data, error } = await supabase.from("alumni_profiles").select("*").order("name", { ascending: true });
       if (error) throw error;
-      return data;
+      return data as AlumniProfile[];
     }
   });
 
+  const registrationMutation = useMutation({
+    mutationFn: async (newData: any) => {
+      const { error } = await supabase.from("alumni_profiles").insert([{ ...newData, is_featured: false }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["alumni_profiles"] });
+      setIsJoinDialogOpen(false);
+      setFormData({ name: "", batch: "", designation: "", company: "", location: "", bio: "", image: "" });
+      toast({
+        title: "Welcome to the Network!",
+        description: "Your profile has been successfully registered.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Registration Failed",
+        description: err.message,
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleJoinSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.batch || !formData.designation) {
+      toast({ title: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    registrationMutation.mutate(formData);
+  };
+
+  const filteredProfiles = alumniProfiles?.filter(profile => 
+    profile.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    profile.batch.includes(searchQuery) ||
+    profile.designation.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const featuredProfiles = alumniProfiles?.filter(p => p.is_featured);
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50">
       <Header />
       <main>
         {/* Hero */}
-        <section className="pt-32 pb-20 bg-gradient-to-b from-indigo-600 to-indigo-800 relative overflow-hidden text-center">
-          <div className="absolute inset-0 opacity-10">
+        <section className="pt-32 pb-24 bg-gradient-to-br from-indigo-900 via-indigo-800 to-blue-900 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
+            <div className="grid grid-cols-8 gap-4 h-full transform -skew-y-12 translate-y-20">
+              {[...Array(24)].map((_, i) => (
+                <div key={i} className="bg-white/5 rounded-lg h-32 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
+              ))}
+            </div>
           </div>
-          <div className="container relative">
-            <span className="inline-block px-4 py-2 bg-indigo-100/10 text-indigo-100 rounded-full text-sm font-medium mb-4 uppercase tracking-wider">
-              Network
-            </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              Our Alumni
-            </h1>
-            <p className="text-indigo-100/80 text-lg max-w-2xl mx-auto">
-              Connecting our global community of graduates and celebrating their journeys beyond the classroom.
-            </p>
+          <div className="container relative z-10 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="inline-block px-4 py-2 bg-white/10 text-white rounded-full text-sm font-medium mb-6 backdrop-blur-md border border-white/20 uppercase tracking-widest">
+                Orbit School Alumni Network
+              </span>
+              <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
+                Legends Never Graduate
+              </h1>
+              <p className="text-indigo-100/90 text-xl max-w-3xl mx-auto leading-relaxed mb-10">
+                A global community of achievers, dreamers, and leaders. Connect, collaborate, and continue the legacy.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Button 
+                  size="lg" 
+                  onClick={() => setIsJoinDialogOpen(true)}
+                  className="bg-white text-indigo-900 hover:bg-indigo-50 font-bold px-8 h-14 text-lg rounded-full"
+                >
+                  Join the Network
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  onClick={() => document.getElementById('directory')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="text-white border-white/30 hover:bg-white/10 font-bold px-8 h-14 text-lg rounded-full backdrop-blur-sm"
+                >
+                  Explore Stories
+                </Button>
+              </div>
+            </motion.div>
           </div>
         </section>
 
-        {/* Content */}
-        <section className="py-20 bg-background">
-          <div className="container">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+        {/* Featured Alumni */}
+        {featuredProfiles && featuredProfiles.length > 0 && (
+          <section className="py-24 bg-white border-b border-slate-100">
+            <div className="container">
+              <div className="flex items-end justify-between mb-16">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Distinguished Alumni</h2>
+                  <p className="text-slate-500 text-lg">Celebrating the remarkable achievements of our graduates.</p>
+                </div>
               </div>
-            ) : alumniData && alumniData.length > 0 ? (
-              <div className="max-w-4xl mx-auto space-y-12">
-                {alumniData.map((section: any) => (
-                  <div key={section.id} className="relative group">
-                    <div className="absolute -inset-4 bg-indigo-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                        <GraduationCap className="w-6 h-6" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredProfiles.map((profile, idx) => (
+                  <motion.div
+                    key={profile.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    viewport={{ once: true }}
+                    className="group bg-slate-50 rounded-3xl overflow-hidden border border-slate-100 hover:border-indigo-200 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500"
+                  >
+                    <div className="aspect-[4/3] relative overflow-hidden">
+                      <img 
+                        src={profile.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600"} 
+                        alt={profile.name}
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <div className="absolute bottom-4 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                        <span className="text-white/90 text-sm font-medium px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                          Class of {profile.batch}
+                        </span>
                       </div>
-                      <h2 className="text-3xl font-bold text-foreground">{section.title}</h2>
                     </div>
-                    <div className="prose prose-lg max-w-none text-muted-foreground">
-                      <FormattedContent content={section.content} />
+                    <div className="p-8">
+                      <h3 className="text-2xl font-bold text-slate-900 mb-2">{profile.name}</h3>
+                      <p className="text-indigo-600 font-semibold mb-4 flex items-center gap-2">
+                        <Briefcase className="w-4 h-4" />
+                        {profile.designation} {profile.company && `at ${profile.company}`}
+                      </p>
+                      <p className="text-slate-600 line-clamp-3 leading-relaxed italic">
+                        "{profile.bio}"
+                      </p>
                     </div>
-                  </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Search & Directory */}
+        <section id="directory" className="py-24 bg-slate-50">
+          <div className="container">
+            <div className="max-w-2xl mx-auto text-center mb-16">
+              <h2 className="text-4xl font-bold text-slate-900 mb-6">Alumni Directory</h2>
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                <Input
+                  type="text"
+                  placeholder="Search by name, batch, or profession..."
+                  className="pl-12 h-14 text-lg rounded-2xl border-slate-200 focus:ring-indigo-500 shadow-sm bg-white"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {profilesLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
+              </div>
+            ) : filteredProfiles && filteredProfiles.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {filteredProfiles.map((profile) => (
+                  <motion.div 
+                    layout
+                    key={profile.id} 
+                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow group"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mb-4 overflow-hidden border-2 border-white ring-2 ring-indigo-50 transition-transform group-hover:scale-110">
+                      {profile.image ? (
+                        <img src={profile.image} alt={profile.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <GraduationCap className="w-8 h-8" />
+                      )}
+                    </div>
+                    <h4 className="font-bold text-slate-900 mb-1">{profile.name}</h4>
+                    <p className="text-sm text-slate-500 mb-3 flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      Class of {profile.batch}
+                    </p>
+                    <div className="space-y-2">
+                      <p className="text-sm text-slate-600 font-medium line-clamp-1">{profile.designation}</p>
+                      {profile.location && (
+                        <p className="text-xs text-slate-400 flex items-center gap-1">
+                          <MapPin className="w-3 h-3" />
+                          {profile.location}
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
-                <GraduationCap className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
-                <h3 className="text-2xl font-semibold text-muted-foreground">Alumni portal coming soon</h3>
-                <p className="text-muted-foreground mt-2">We are building a platform to connect our alumni worldwide.</p>
+              <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                <UserPlus className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <h3 className="text-2xl font-semibold text-slate-900">No members found</h3>
+                <p className="text-slate-500 mt-2">Try adjusting your search or be the first to join!</p>
               </div>
             )}
           </div>
         </section>
+
+        {/* Join CTA Section */}
+        <section className="py-24 bg-indigo-900 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-white/5 skew-x-12 transform translate-x-1/2" />
+          <div className="container relative z-10">
+            <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl p-12 rounded-[3rem] border border-white/20 text-center">
+              <Sparkles className="w-12 h-12 text-amber-400 mx-auto mb-6" />
+              <h2 className="text-4xl font-bold text-white mb-6">Are you an Orbit Alumnus?</h2>
+              <p className="text-indigo-100 text-xl mb-10 leading-relaxed">
+                Join our exclusive network to mentor students, attend reunions, and connect with fellow graduates worldwide.
+              </p>
+              <Button 
+                size="lg" 
+                onClick={() => setIsJoinDialogOpen(true)}
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-12 h-16 text-xl rounded-full shadow-2xl shadow-amber-500/20"
+              >
+                Join the Network Today
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Join Dialog */}
+        <Dialog open={isJoinDialogOpen} onOpenChange={setIsJoinDialogOpen}>
+          <DialogContent className="max-w-lg rounded-3xl">
+            <DialogHeader>
+              <DialogTitle className="text-3xl font-bold text-slate-900">Join the Network</DialogTitle>
+              <DialogDescription className="text-lg">
+                Tell us about your journey since graduation.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleJoinSubmit} className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Full Name*</Label>
+                  <Input 
+                    required 
+                    value={formData.name} 
+                    onChange={e => setFormData({...formData, name: e.target.value})} 
+                    className="rounded-xl border-slate-200" 
+                    placeholder="John Doe" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Batch (Year)*</Label>
+                  <Input 
+                    required 
+                    value={formData.batch} 
+                    onChange={e => setFormData({...formData, batch: e.target.value})} 
+                    className="rounded-xl border-slate-200" 
+                    placeholder="2018" 
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Current Designation*</Label>
+                <Input 
+                  required 
+                  value={formData.designation} 
+                  onChange={e => setFormData({...formData, designation: e.target.value})} 
+                  className="rounded-xl border-slate-200" 
+                  placeholder="Senior Consultant" 
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Company</Label>
+                  <Input 
+                    value={formData.company} 
+                    onChange={e => setFormData({...formData, company: e.target.value})} 
+                    className="rounded-xl border-slate-200" 
+                    placeholder="Microsoft" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Location</Label>
+                  <Input 
+                    value={formData.location} 
+                    onChange={e => setFormData({...formData, location: e.target.value})} 
+                    className="rounded-xl border-slate-200" 
+                    placeholder="London, UK" 
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>A Short Bio / Achievement</Label>
+                <Textarea 
+                  value={formData.bio} 
+                  onChange={e => setFormData({...formData, bio: e.target.value})} 
+                  className="rounded-xl border-slate-200 h-24" 
+                  placeholder="Briefly describe your path after Orbit School..." 
+                />
+              </div>
+              <DialogFooter className="pt-4">
+                <Button 
+                  type="submit" 
+                  disabled={registrationMutation.isPending}
+                  className="w-full h-14 text-lg font-bold rounded-2xl bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20"
+                >
+                  {registrationMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Send className="w-5 h-5 mr-2" />}
+                  Register Profile
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </main>
       <Footer />
     </div>
