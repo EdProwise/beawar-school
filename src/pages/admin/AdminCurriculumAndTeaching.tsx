@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Plus, Trash2, BookOpen, ClipboardList, Image as ImageIcon, CheckCircle, ExternalLink } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, BookOpen, ClipboardList, Image as ImageIcon, CheckCircle, ExternalLink, Star } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CurriculumContent {
