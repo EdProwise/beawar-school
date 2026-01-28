@@ -1,72 +1,80 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/mongodb/client";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Loader2, Lightbulb } from "lucide-react";
-import { FormattedContent } from "@/components/ui/formatted-content";
+import { ExternalLink } from "lucide-react";
 
 export default function TeachingMethod() {
-  const { data: methodsData, isLoading } = useQuery({
-    queryKey: ["teaching-methods"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("teaching_methods").select("*").order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data;
-    }
-  });
-
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-sans">
       <Header />
-      <main>
-        {/* Hero */}
-        <section className="pt-32 pb-20 bg-gradient-to-b from-accent to-accent-dark relative overflow-hidden text-center">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
+      <main className="pt-20">
+        <section className="relative py-20 px-4 overflow-hidden bg-[#E0F7F6]">
+          {/* Decorative Wavy Background - Top */}
+          <div className="absolute top-0 left-0 w-full h-32 bg-white" style={{ clipPath: 'ellipse(100% 50% at 50% 0%)' }}></div>
+          
+          <div className="container mx-auto relative z-10 text-center mb-16">
+            <h3 className="text-sm font-bold tracking-widest text-gray-800 uppercase mb-2">THINGS FOR OUR STUDENTS</h3>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-2">What we do?</h2>
+            <div className="w-24 h-1.5 bg-yellow-400 mx-auto rounded-full"></div>
           </div>
-          <div className="container relative">
-            <span className="inline-block px-4 py-2 bg-accent-foreground/10 text-accent-foreground rounded-full text-sm font-medium mb-4 uppercase tracking-wider">
-              Pedagogy
-            </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-accent-foreground mb-6">
-              Teaching Methods
-            </h1>
-            <p className="text-accent-foreground/80 text-lg max-w-2xl mx-auto">
-              Empowering students through innovative, student-centric, and research-based pedagogical approaches.
-            </p>
-          </div>
-        </section>
 
-        {/* Content */}
-        <section className="py-20 bg-background">
-          <div className="container">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="w-10 h-10 animate-spin text-accent" />
+          <div className="container mx-auto relative max-w-6xl">
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-0 relative">
+              
+              {/* Left Cards */}
+              <div className="flex flex-col gap-8 lg:gap-32 w-full lg:w-1/3 z-20">
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 transform lg:-translate-x-12">
+                  <h4 className="text-xl font-bold text-gray-900 mb-3">Teaching with Passion</h4>
+                  <p className="text-gray-600 leading-relaxed">
+                    Our instructors inspire from the heart, going beyond textbooks.
+                  </p>
+                </div>
+                
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 transform lg:-translate-x-12">
+                  <h4 className="text-xl font-bold text-gray-900 mb-3">Tech-Enhanced Classrooms</h4>
+                  <p className="text-gray-600 leading-relaxed">
+                    Our digital facilities create an engaging learning environment.
+                  </p>
+                </div>
               </div>
-            ) : methodsData && methodsData.length > 0 ? (
-              <div className="max-w-4xl mx-auto grid gap-12">
-                {methodsData.map((method: any, index: number) => (
-                  <div key={method.id} className="bg-card p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-accent-light flex items-center justify-center flex-shrink-0">
-                        <span className="text-accent font-bold text-xl">{index + 1}</span>
-                      </div>
-                      <h2 className="text-2xl font-bold text-foreground">{method.title}</h2>
-                    </div>
-                    <div className="prose prose-lg max-w-none text-muted-foreground">
-                      <FormattedContent content={method.content} />
-                    </div>
-                  </div>
-                ))}
+
+              {/* Center Image */}
+              <div className="w-full lg:w-2/5 flex justify-center relative">
+                <div className="relative w-full max-w-md aspect-[4/5] bg-slate-500 rounded-[2.5rem] overflow-hidden shadow-2xl">
+                  <img 
+                    src="https://images.unsplash.com/photo-1544717297-fa95b3ee51f3?auto=format&fit=crop&q=80&w=800" 
+                    alt="Teacher" 
+                    className="w-full h-full object-cover mix-blend-overlay opacity-80"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                  {/* High quality placeholder that looks like a teacher */}
+                  <img 
+                    src="https://images.unsplash.com/photo-1580894732444-8ecdead79730?auto=format&fit=crop&q=80&w=800" 
+                    alt="Teacher" 
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-20">
-                <Lightbulb className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
-                <h3 className="text-2xl font-semibold text-muted-foreground">Teaching methods coming soon</h3>
-                <p className="text-muted-foreground mt-2">We are currently detailing our unique approach to education.</p>
+
+              {/* Right Cards */}
+              <div className="flex flex-col gap-8 lg:gap-32 w-full lg:w-1/3 z-20">
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 transform lg:translate-x-12">
+                  <h4 className="text-xl font-bold text-gray-900 mb-3">Interactive Clubs</h4>
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    Students form groups to foster curiosity and hands-on experiences.
+                  </p>
+                  <a href="/extracurricular" className="inline-flex items-center text-blue-600 font-bold hover:underline gap-1">
+                    Skill Development Clubs <ExternalLink size={16} />
+                  </a>
+                </div>
+
+                <div className="bg-white p-8 rounded-[2rem] shadow-xl hover:shadow-2xl transition-all duration-300 transform lg:translate-x-12">
+                  <h4 className="text-xl font-bold text-gray-900 mb-3">Love-Centric Learning</h4>
+                  <p className="text-gray-600 leading-relaxed">
+                    We cultivate love for knowledge, making learning a joyous journey.
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </section>
       </main>
