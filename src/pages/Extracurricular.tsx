@@ -1,10 +1,9 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { 
   Music, Trophy, Camera, Palette, Globe, Heart, 
-  Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight
+  Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -16,6 +15,63 @@ import {
 const iconMap: Record<string, React.ElementType> = {
   Music, Trophy, Camera, Palette, Globe, Heart, Rocket, Star, Shield, Zap, BookOpen, Users, Award, Clock, Target
 };
+
+const cardStyles = [
+  {
+    light: "bg-indigo-50/50",
+    iconBg: "bg-indigo-100",
+    iconText: "text-indigo-600",
+    border: "border-indigo-100",
+    hoverBorder: "group-hover:border-indigo-300",
+    shadow: "hover:shadow-indigo-500/10",
+    gradient: "from-indigo-500/20 to-transparent"
+  },
+  {
+    light: "bg-rose-50/50",
+    iconBg: "bg-rose-100",
+    iconText: "text-rose-600",
+    border: "border-rose-100",
+    hoverBorder: "group-hover:border-rose-300",
+    shadow: "hover:shadow-rose-500/10",
+    gradient: "from-rose-500/20 to-transparent"
+  },
+  {
+    light: "bg-amber-50/50",
+    iconBg: "bg-amber-100",
+    iconText: "text-amber-600",
+    border: "border-amber-100",
+    hoverBorder: "group-hover:border-amber-300",
+    shadow: "hover:shadow-amber-500/10",
+    gradient: "from-amber-500/20 to-transparent"
+  },
+  {
+    light: "bg-emerald-50/50",
+    iconBg: "bg-emerald-100",
+    iconText: "text-emerald-600",
+    border: "border-emerald-100",
+    hoverBorder: "group-hover:border-emerald-300",
+    shadow: "hover:shadow-emerald-500/10",
+    gradient: "from-emerald-500/20 to-transparent"
+  },
+  {
+    light: "bg-purple-50/50",
+    iconBg: "bg-purple-100",
+    iconText: "text-purple-600",
+    border: "border-purple-100",
+    hoverBorder: "group-hover:border-purple-300",
+    shadow: "hover:shadow-purple-500/10",
+    gradient: "from-purple-500/20 to-transparent"
+  },
+  {
+    light: "bg-sky-50/50",
+    iconBg: "bg-sky-100",
+    iconText: "text-sky-600",
+    border: "border-sky-100",
+    hoverBorder: "group-hover:border-sky-300",
+    shadow: "hover:shadow-sky-500/10",
+    gradient: "from-sky-500/20 to-transparent"
+  }
+];
 
 const defaultCategories = [
   {
@@ -57,230 +113,174 @@ const defaultHighlights = [
 
 export function Extracurricular() {
   const { data: settings } = useSiteSettings();
-  const { data: dbCategories } = useExtracurricularCategories();
-  const { data: dbHighlights } = useExtracurricularHighlights();
+  const { data: dbCategories, isLoading } = useExtracurricularCategories();
+  const { data: dbHighlights, isLoading: isLoadingHighlights } = useExtracurricularHighlights();
   
   const schoolName = settings?.school_name || "Orbit School";
   const categories = dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories;
   const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Header />
       <main>
-        {/* Hero Section */}
-        <section className="relative pt-28 pb-20 lg:pt-40 lg:pb-32 bg-foreground overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.03]">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }} />
+        {/* Hero */}
+        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>
-          
-          <div className="container relative z-10">
-            <div className="max-w-4xl mx-auto text-center">
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-white/80 text-sm font-medium tracking-wider uppercase mb-6"
-              >
-                Life Beyond Academics
-              </motion.span>
-              
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-6 tracking-tight"
-              >
-                Extracurricular Activities
-              </motion.h1>
-              
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto mb-10"
-              >
-                We believe in nurturing every child's unique talent through a diverse range of activities that build character, confidence, and community.
-              </motion.p>
-              
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Button size="lg" className="rounded-full h-12 px-8 bg-white text-foreground hover:bg-white/90 font-semibold" asChild>
-                  <Link to="/admissions">
-                    Join Our Program
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Link>
-                </Button>
-              </motion.div>
-            </div>
+          <div className="container relative text-center">
+            <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
+              Life Beyond Academics
+            </span>
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
+              Extracurricular Activities
+            </h1>
+            <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
+              We believe in nurturing every child's unique talent through a diverse range of activities that build character, confidence, and community.
+            </p>
           </div>
         </section>
 
-        {/* Categories Section */}
-        <section className="py-20 lg:py-32">
+        {/* Categories */}
+        <section className="py-20 bg-background">
           <div className="container">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">Our Programs</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Discover a world of opportunities designed to help students explore their passions and develop new skills.
-              </p>
-            </motion.div>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
+                Our Programs
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                Discover Your Passion
+              </h2>
+            </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {categories.map((category: any, index: number) => {
-                const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
-                return (
-                  <motion.div 
-                    key={index}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-500"
-                  >
-                    {category.image_url && (
-                      <div className="relative h-56 overflow-hidden">
-                        <img 
-                          src={category.image_url} 
-                          alt={category.title} 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                              <IconComponent className="w-6 h-6 text-white" />
-                            </div>
-                            <h3 className="text-2xl font-heading font-bold text-white">
-                              {category.title}
-                            </h3>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-8">
+                {categories.map((category: any, index: number) => {
+                  const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
+                  const style = cardStyles[index % cardStyles.length];
+                  
+                  return (
+                    <div 
+                      key={index}
+                      className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                      
+                      <div className="relative z-10">
+                        {category.image_url && (
+                          <div className="relative h-48 mb-6 rounded-2xl overflow-hidden">
+                            <img 
+                              src={category.image_url} 
+                              alt={category.title} 
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                           </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {!category.image_url && (
-                      <div className="p-6 pb-0">
+                        )}
+                        
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-12 h-12 rounded-xl bg-foreground/5 flex items-center justify-center">
-                            <IconComponent className="w-6 h-6 text-foreground" />
+                          <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
+                            <IconComponent className={`w-7 h-7 ${style.iconText}`} />
                           </div>
-                          <h3 className="text-2xl font-heading font-bold text-foreground">
+                          <h3 className="font-heading text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
                             {category.title}
                           </h3>
                         </div>
+                        
+                        <p className="text-muted-foreground mb-6 leading-relaxed">
+                          {category.description}
+                        </p>
+                        
+                        <div className="flex flex-wrap gap-2">
+                          {category.activities?.map((activity: string, idx: number) => (
+                            <span 
+                              key={idx} 
+                              className={`px-3 py-1.5 rounded-full ${style.light} text-foreground text-sm font-medium border ${style.border}`}
+                            >
+                              {activity}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    )}
-                    
-                    <div className="p-6">
-                      <p className="text-muted-foreground mb-6 leading-relaxed">
-                        {category.description}
-                      </p>
+
+                      <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Highlights */}
+        <section className="py-20 bg-background">
+          <div className="container">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
+                Why Choose Us
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                Excellence in Every Activity
+              </h2>
+            </div>
+
+            {isLoadingHighlights ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {highlights.map((item, index) => {
+                  const IconComponent = iconMap[item.icon_name || "Star"] || Star;
+                  const style = cardStyles[index % cardStyles.length];
+                  return (
+                    <div 
+                      key={index} 
+                      className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                       
-                      <div className="flex flex-wrap gap-2">
-                        {category.activities?.map((activity: string, idx: number) => (
-                          <span 
-                            key={idx} 
-                            className="px-3 py-1.5 rounded-full bg-foreground/5 text-foreground text-sm font-medium"
-                          >
-                            {activity}
-                          </span>
-                        ))}
+                      <div className="relative z-10">
+                        <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
+                          <IconComponent className={`w-7 h-7 ${style.iconText}`} />
+                        </div>
+                        <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{item.title}</h3>
+                        <p className="text-muted-foreground leading-relaxed text-sm">{item.description}</p>
                       </div>
+
+                      <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Highlights Section */}
-        <section className="py-20 lg:py-32 bg-foreground/[0.02]">
-          <div className="container">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">Why Choose Us</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Our commitment to excellence ensures every student receives the best opportunities to grow and succeed.
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {highlights.map((item, index) => {
-                const IconComponent = iconMap[item.icon_name || "Star"] || Star;
-                return (
-                  <motion.div 
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="group bg-card p-8 rounded-2xl border border-border hover:border-foreground/20 transition-all duration-300"
-                  >
-                    <div className="w-14 h-14 rounded-xl bg-foreground/5 flex items-center justify-center mb-6 group-hover:bg-foreground group-hover:text-background transition-all duration-300">
-                      <IconComponent className="w-7 h-7" />
-                    </div>
-                    <h4 className="text-xl font-heading font-bold mb-3 text-foreground">{item.title}</h4>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {item.description}
-                    </p>
-                  </motion.div>
-                );
-              })}
-            </div>
+        {/* CTA */}
+        <section className="py-20 bg-primary relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-20 lg:py-32">
-          <div className="container">
-            <div className="bg-foreground rounded-3xl p-10 lg:p-16 text-center">
-              <motion.h2 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-6"
-              >
-                Ready to Discover Your Passion?
-              </motion.h2>
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-lg text-white/70 mb-10 max-w-2xl mx-auto"
-              >
-                Join {schoolName}'s vibrant community where every talent is celebrated and every student is empowered to excel.
-              </motion.p>
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="flex flex-wrap justify-center gap-4"
-              >
-                <Button size="lg" className="rounded-full h-12 px-8 bg-white text-foreground hover:bg-white/90 font-semibold" asChild>
-                  <Link to="/admissions">Apply Now</Link>
-                </Button>
-                <Button size="lg" variant="outline" className="rounded-full h-12 px-8 border-white/30 text-white hover:bg-white/10 font-semibold" asChild>
-                  <Link to="/contact">Contact Us</Link>
-                </Button>
-              </motion.div>
+          <div className="container relative text-center">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-6">
+              Ready to Discover Your Passion?
+            </h2>
+            <p className="text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
+              Join {schoolName}'s vibrant community where every talent is celebrated and every student is empowered to excel.
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Button variant="hero-gold" size="lg" asChild>
+                <Link to="/admissions">Apply Now</Link>
+              </Button>
+              <Button variant="hero" size="lg" asChild>
+                <Link to="/contact">Contact Us</Link>
+              </Button>
             </div>
           </div>
         </section>
