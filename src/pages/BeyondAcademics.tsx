@@ -4,8 +4,18 @@ import { useBeyondAcademics } from "@/hooks/use-school-data";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { Loader2, Zap } from "lucide-react";
 
+interface BeyondAcademicsSection {
+  id: string;
+  title: string;
+  content: string;
+  image_url?: string;
+  video_url?: string;
+  sort_order: number;
+}
+
 export default function BeyondAcademics() {
-  const { data: sections, isLoading } = useBeyondAcademics();
+  const { data, isLoading } = useBeyondAcademics();
+  const sections = data as BeyondAcademicsSection[];
 
   return (
     <div className="min-h-screen">
@@ -54,15 +64,32 @@ export default function BeyondAcademics() {
                         <FormattedContent content={section.content} />
                       </div>
                     </div>
-                    <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
-                      <div className="relative group">
-                        <div className="absolute -inset-4 bg-primary/5 rounded-[2rem] rotate-1 group-hover:rotate-0 transition-transform duration-500" />
-                        <div className="relative aspect-video rounded-2xl bg-secondary flex items-center justify-center overflow-hidden border border-border">
-                          <Zap className="w-12 h-12 text-primary/20" />
-                          <p className="absolute bottom-4 text-xs text-muted-foreground uppercase tracking-widest font-medium">Enrichment Programs</p>
+                      <div className={index % 2 === 1 ? 'lg:order-1' : ''}>
+                        <div className="relative group">
+                          <div className="absolute -inset-4 bg-primary/5 rounded-[2rem] rotate-1 group-hover:rotate-0 transition-transform duration-500" />
+                          <div className="relative aspect-video rounded-2xl bg-secondary flex items-center justify-center overflow-hidden border border-border shadow-lg">
+                            {section.video_url ? (
+                              <video 
+                                src={section.video_url} 
+                                className="w-full h-full object-cover"
+                                controls
+                                poster={section.image_url}
+                              />
+                            ) : section.image_url ? (
+                              <img 
+                                src={section.image_url} 
+                                alt={section.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            ) : (
+                              <>
+                                <Zap className="w-12 h-12 text-primary/20" />
+                                <p className="absolute bottom-4 text-xs text-muted-foreground uppercase tracking-widest font-medium">Enrichment Programs</p>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
                   </div>
                 ))}
               </div>

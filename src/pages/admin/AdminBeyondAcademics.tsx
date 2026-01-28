@@ -6,13 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Plus, Trash2, Zap } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, Zap, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
+import { FileUpload } from "@/components/admin/FileUpload";
 
 interface BeyondAcademicsSection {
   id: string;
   title: string;
   content: string;
+  image_url?: string;
+  video_url?: string;
   sort_order: number;
 }
 
@@ -75,6 +78,8 @@ export default function AdminBeyondAcademics() {
       id: `temp-${Date.now()}`,
       title: "New Section",
       content: "",
+      image_url: "",
+      video_url: "",
       sort_order: sections.length
     }]);
   };
@@ -127,15 +132,41 @@ export default function AdminBeyondAcademics() {
                 <Trash2 className="w-4 h-4" />
               </button>
               
-              <div className="space-y-4">
-                <div>
-                  <Label>Section Title</Label>
-                  <Input
-                    value={section.title}
-                    onChange={(e) => handleUpdateSection(section.id, { title: e.target.value })}
-                    placeholder="e.g., Leadership Programs"
-                  />
-                </div>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Section Title</Label>
+                    <Input
+                      value={section.title}
+                      onChange={(e) => handleUpdateSection(section.id, { title: e.target.value })}
+                      placeholder="e.g., Leadership Programs"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label className="flex items-center gap-2 mb-2">
+                        <ImageIcon className="w-4 h-4" />
+                        Image
+                      </Label>
+                      <FileUpload
+                        accept="image"
+                        currentUrl={section.image_url}
+                        onUpload={(url) => handleUpdateSection(section.id, { image_url: url })}
+                      />
+                    </div>
+                    <div>
+                      <Label className="flex items-center gap-2 mb-2">
+                        <VideoIcon className="w-4 h-4" />
+                        Video
+                      </Label>
+                      <FileUpload
+                        accept="video"
+                        currentUrl={section.video_url}
+                        onUpload={(url) => handleUpdateSection(section.id, { video_url: url })}
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <Label>Content</Label>
                     <RichTextEditor
@@ -143,7 +174,7 @@ export default function AdminBeyondAcademics() {
                       onChange={(content) => handleUpdateSection(section.id, { content })}
                     />
                   </div>
-              </div>
+                </div>
             </div>
           ))}
 
