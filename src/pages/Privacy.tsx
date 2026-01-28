@@ -23,7 +23,36 @@ const Privacy = () => {
     },
   });
 
-  const sections: Section[] = Array.isArray(page?.sections) ? page.sections : [];
+  const defaultPrivacy = {
+    page_title: "Privacy Policy",
+    last_updated: "January 2026",
+    content: "<p>Orbit School is committed to protecting the privacy and security of our students, parents, and staff. This policy outlines how we collect, use, and safeguard your personal information.</p>",
+    sections: [
+      {
+        title: "Information Collection",
+        content: "<p>We collect personal data such as names, contact details, academic history, and medical information necessary for school administration and student welfare.</p>"
+      },
+      {
+        title: "Use of Information",
+        content: "<p>Your data is used for educational purposes, communication, safety protocols, and providing school services.</p>"
+      },
+      {
+        title: "Data Protection",
+        content: "<p>We implement strict security measures, including encryption and access controls, to prevent unauthorized access or disclosure.</p>"
+      },
+      {
+        title: "Information Sharing",
+        content: "<p>We do not sell your data. Information is only shared with authorized educational bodies or when legally required.</p>"
+      },
+      {
+        title: "Your Rights",
+        content: "<p>You have the right to access, update, or request the deletion of your personal information held by the school.</p>"
+      }
+    ]
+  };
+
+  const currentPage = page || defaultPrivacy;
+  const sections: Section[] = Array.isArray(currentPage?.sections) ? currentPage.sections : [];
 
     return (
       <div className="min-h-screen bg-white">
@@ -39,15 +68,15 @@ const Privacy = () => {
                   <span>Legal Document</span>
                 </div>
                 <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6">
-                  {page?.page_title || "Privacy Policy"}
+                  {currentPage?.page_title || "Privacy Policy"}
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   This privacy policy describes how we handle your personal information and ensure your data security while using our services.
                 </p>
-                {page?.last_updated && (
+                {currentPage?.last_updated && (
                   <div className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
                     <span className="w-2 h-2 rounded-full bg-green-500" />
-                    Last Updated: {page.last_updated}
+                    Last Updated: {currentPage.last_updated}
                   </div>
                 )}
               </div>
@@ -63,7 +92,7 @@ const Privacy = () => {
                   <div className="sticky top-32 space-y-4">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-[#1A1A1A] mb-6">Contents</h3>
                     <nav className="space-y-1">
-                      {page?.content && (
+                      {currentPage?.content && (
                         <a href="#introduction" className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                           Introduction
                         </a>
@@ -89,8 +118,8 @@ const Privacy = () => {
                     </div>
                   ) : (
                     <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-[#1A1A1A] prose-p:text-muted-foreground prose-li:text-muted-foreground prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6">
-                      {page?.content && (
-                        <div id="introduction" className="mb-12 border-b border-border pb-12" dangerouslySetInnerHTML={{ __html: page.content }} />
+                      {currentPage?.content && (
+                        <div id="introduction" className="mb-12 border-b border-border pb-12" dangerouslySetInnerHTML={{ __html: currentPage.content }} />
                       )}
   
                       <div className="space-y-16">
@@ -103,13 +132,6 @@ const Privacy = () => {
                           </div>
                         ))}
                       </div>
-  
-                      {sections.length === 0 && !page?.content && (
-                        <div className="text-center py-20 bg-[#F9FAFB] rounded-3xl border border-dashed border-border">
-                          <Shield className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                          <p className="text-muted-foreground">Privacy policy content is currently being updated.</p>
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>

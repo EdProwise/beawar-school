@@ -23,7 +23,36 @@ const Terms = () => {
     },
   });
 
-  const sections: Section[] = Array.isArray(page?.sections) ? page.sections : [];
+  const defaultTerms = {
+    page_title: "Terms & Conditions",
+    last_updated: "January 2026",
+    content: "<p>By accessing Orbit School's services and website, you agree to comply with the following terms and conditions.</p>",
+    sections: [
+      {
+        title: "Admission & Enrollment",
+        content: "<p>Enrollment is subject to our admission policy, seat availability, and completion of required documentation.</p>"
+      },
+      {
+        title: "Fee Policy",
+        content: "<p>All school fees must be paid according to the published schedule. Late payments may incur penalties or suspension of services.</p>"
+      },
+      {
+        title: "Code of Conduct",
+        content: "<p>Students and parents are expected to maintain the highest standards of behavior and respect within the school community.</p>"
+      },
+      {
+        title: "Use of Facilities",
+        content: "<p>School resources and facilities must be used responsibly and solely for educational purposes.</p>"
+      },
+      {
+        title: "Limitation of Liability",
+        content: "<p>While we strive for excellence, the school is not liable for indirect or incidental damages arising from the use of its services.</p>"
+      }
+    ]
+  };
+
+  const currentPage = page || defaultTerms;
+  const sections: Section[] = Array.isArray(currentPage?.sections) ? currentPage.sections : [];
 
     return (
       <div className="min-h-screen bg-white">
@@ -39,15 +68,15 @@ const Terms = () => {
                   <span>Legal Document</span>
                 </div>
                 <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-[#1A1A1A] mb-6">
-                  {page?.page_title || "Terms & Conditions"}
+                  {currentPage?.page_title || "Terms & Conditions"}
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   These terms and conditions outline the rules and regulations for the use of Orbit School's website and services.
                 </p>
-                {page?.last_updated && (
+                {currentPage?.last_updated && (
                   <div className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
                     <span className="w-2 h-2 rounded-full bg-primary" />
-                    Last Updated: {page.last_updated}
+                    Last Updated: {currentPage.last_updated}
                   </div>
                 )}
               </div>
@@ -63,7 +92,7 @@ const Terms = () => {
                   <div className="sticky top-32 space-y-4">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-[#1A1A1A] mb-6">Contents</h3>
                     <nav className="space-y-1">
-                      {page?.content && (
+                      {currentPage?.content && (
                         <a href="#introduction" className="block py-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                           Introduction
                         </a>
@@ -89,8 +118,8 @@ const Terms = () => {
                     </div>
                   ) : (
                     <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-[#1A1A1A] prose-p:text-muted-foreground prose-li:text-muted-foreground prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6">
-                      {page?.content && (
-                        <div id="introduction" className="mb-12 border-b border-border pb-12" dangerouslySetInnerHTML={{ __html: page.content }} />
+                      {currentPage?.content && (
+                        <div id="introduction" className="mb-12 border-b border-border pb-12" dangerouslySetInnerHTML={{ __html: currentPage.content }} />
                       )}
   
                       <div className="space-y-16">
@@ -103,13 +132,6 @@ const Terms = () => {
                           </div>
                         ))}
                       </div>
-  
-                      {sections.length === 0 && !page?.content && (
-                        <div className="text-center py-20 bg-[#F9FAFB] rounded-3xl border border-dashed border-border">
-                          <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                          <p className="text-muted-foreground">Terms and conditions content is currently being updated.</p>
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>
