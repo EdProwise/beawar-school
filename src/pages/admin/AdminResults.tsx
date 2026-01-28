@@ -11,6 +11,8 @@ import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 interface ResultSection {
   id: string;
+  year: string;
+  category: string; // e.g. Board Results, Internal Exams
   title: string;
   content: string;
   sort_order: number;
@@ -23,7 +25,7 @@ export default function AdminResults() {
   const { data: resultsData, isLoading } = useQuery({
     queryKey: ["admin-results"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("results").select("*").order("sort_order", { ascending: true });
+      const { data, error } = await supabase.from("results").select("*").order("year", { ascending: false }).order("sort_order", { ascending: true });
       if (error) throw error;
       return data as ResultSection[];
     }
@@ -37,6 +39,15 @@ export default function AdminResults() {
 
   const saveMutation = useMutation({
     mutationFn: async (values: ResultSection[]) => {
+      // Use upsert for all items
+      const itemsToUpsert = values.map(v => {
+        if (v.id.startsWith("temp-")) {
+          const { id, ...rest } = v;
+          return rest;
+        }
+        return v;
+      });
+
       const { data: currentDbItems } = await supabase.from("results").select("id");
       const dbIds = currentDbItems?.map(item => item.id) || [];
       const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
@@ -46,30 +57,32 @@ export default function AdminResults() {
         await supabase.from("results").delete().in("id", toDelete);
       }
 
-      for (const val of values) {
-        if (val.id.startsWith("temp-")) {
-          const { id, ...rest } = val;
-          await supabase.from("results").insert([rest]);
-        } else {
-          await supabase.from("results").update(val).eq("id", val.id);
-        }
-      }
+      const { error } = await supabase.from("results").upsert(itemsToUpsert);
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-results"] });
       queryClient.invalidateQueries({ queryKey: ["results"] });
       toast({ title: "Results updated successfully" });
     },
-    onError: () => toast({ title: "Error saving changes", variant: "destructive" })
+    onError: (error) => {
+      console.error("Save error:", error);
+      toast({ title: "Error saving changes", variant: "destructive" });
+    }
   });
 
   const handleAddSection = () => {
-    setSections([...sections, {
+    const currentYear = new Date().getFullYear();
+    const academicYear = `${currentYear}-${(currentYear + 1).toString().slice(-2)}`;
+    
+    setSections([{
       id: `temp-${Date.now()}`,
-      title: "New Result Category",
+      year: academicYear,
+      category: "Board Results",
+      title: "Class X Results",
       content: "",
       sort_order: sections.length
-    }]);
+    }, ...sections]);
   };
 
   const handleUpdateSection = (id: string, updates: Partial<ResultSection>) => {
@@ -100,18 +113,18 @@ export default function AdminResults() {
       <div className="max-w-4xl pb-20">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Results Management</h1>
-            <p className="text-muted-foreground">Manage academic results and achievements</p>
+            <h1 className="text-3xl font-bold text-foreground font-heading">Results Management</h1>
+            <p className="text-muted-foreground">Manage academic results year-wise</p>
           </div>
-          <Button onClick={handleAddSection}>
+          <Button onClick={handleAddSection} className="bg-amber-600 hover:bg-amber-700">
             <Plus className="w-4 h-4 mr-2" />
-            Add Result Category
+            Add New Result
           </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {sections.map((section) => (
-            <div key={section.id} className="bg-card rounded-xl border border-border p-6 shadow-sm relative group">
+            <div key={section.id} className="bg-card rounded-xl border border-border p-6 shadow-sm relative group hover:border-amber-200 transition-colors">
               <button
                 type="button"
                 onClick={() => handleRemoveSection(section.id)}
@@ -120,17 +133,36 @@ export default function AdminResults() {
                 <Trash2 className="w-4 h-4" />
               </button>
               
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div>
-                  <Label>Category Title</Label>
+                  <Label>Academic Year</Label>
                   <Input
-                    value={section.title}
-                    onChange={(e) => handleUpdateSection(section.id, { title: e.target.value })}
-                    placeholder="e.g., Board Results 2024"
+                    value={section.year}
+                    onChange={(e) => handleUpdateSection(section.id, { year: e.target.value })}
+                    placeholder="e.g., 2023-24"
                   />
                 </div>
                 <div>
-                  <Label>Content</Label>
+                  <Label>Category</Label>
+                  <Input
+                    value={section.category}
+                    onChange={(e) => handleUpdateSection(section.id, { category: e.target.value })}
+                    placeholder="e.g., Board Results"
+                  />
+                </div>
+                <div>
+                  <Label>Title</Label>
+                  <Input
+                    value={section.title}
+                    onChange={(e) => handleUpdateSection(section.id, { title: e.target.value })}
+                    placeholder="e.g., Class X Achievement"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label>Content / Highlights</Label>
                   <RichTextEditor
                     content={section.content}
                     onChange={(content) => handleUpdateSection(section.id, { content })}
@@ -143,14 +175,14 @@ export default function AdminResults() {
           {sections.length === 0 && (
             <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
               <Trophy className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
-              <p className="text-muted-foreground">No results added yet. Click "Add Result Category" to start.</p>
+              <p className="text-muted-foreground">No results added yet. Click "Add New Result" to start.</p>
             </div>
           )}
 
-          <div className="flex justify-end sticky bottom-8 py-4 bg-background/80 backdrop-blur-sm border-t border-border">
-            <Button type="submit" size="lg" disabled={saveMutation.isPending}>
+          <div className="flex justify-end sticky bottom-8 py-4 bg-background/80 backdrop-blur-sm border-t border-border z-10">
+            <Button type="submit" size="lg" disabled={saveMutation.isPending} className="bg-amber-600 hover:bg-amber-700">
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              Save Results
+              Save All Changes
             </Button>
           </div>
         </form>
