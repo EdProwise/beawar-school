@@ -10,8 +10,18 @@ import { ScrollingTicker } from "./ScrollingTicker";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
-  { name: "Academics", path: "/academics" },
-  { name: "Beyond Academics", path: "/extracurricular" },
+  { 
+    name: "Academics", 
+    path: "/academics",
+    children: [
+      { name: "Academic Programs", path: "/academics" },
+      { name: "Curriculum", path: "/curriculum" },
+      { name: "Teaching Method", path: "/teaching-method" },
+      { name: "Results", path: "/results" },
+      { name: "Alumni", path: "/alumni" },
+    ]
+  },
+  { name: "Beyond Academics", path: "/beyond-academics" },
   { name: "Admissions", path: "/admissions" },
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Gallery", path: "/gallery" },
@@ -101,26 +111,65 @@ export function Header({ variant = "solid" }: HeaderProps) {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={cn(
-                    "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1",
-                    isScrolled || isSolid
-                      ? location.pathname === link.path
-                        ? "text-primary bg-primary-light"
-                        : "text-foreground hover:text-primary hover:bg-secondary"
-                      : isLight
-                        ? location.pathname === link.path
-                          ? "text-primary bg-primary/10"
-                          : "text-slate-700 hover:text-primary hover:bg-slate-100"
-                        : location.pathname === link.path
-                          ? "text-primary-foreground bg-primary-foreground/20"
-                          : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 drop-shadow-sm"
+                <div key={link.name} className="relative group/dropdown">
+                  {link.children ? (
+                    <>
+                      <button
+                        className={cn(
+                          "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1",
+                          isScrolled || isSolid
+                            ? location.pathname.startsWith(link.path)
+                              ? "text-primary bg-primary-light"
+                              : "text-foreground hover:text-primary hover:bg-secondary"
+                            : isLight
+                              ? location.pathname.startsWith(link.path)
+                                ? "text-primary bg-primary/10"
+                                : "text-slate-700 hover:text-primary hover:bg-slate-100"
+                              : location.pathname.startsWith(link.path)
+                                ? "text-primary-foreground bg-primary-foreground/20"
+                                : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 drop-shadow-sm"
+                        )}
+                      >
+                        {link.name}
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                      <div className="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-xl shadow-strong opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50 overflow-hidden">
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            to={child.path}
+                            className={cn(
+                              "block px-4 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
+                              location.pathname === child.path ? "text-primary bg-primary/5" : "text-foreground"
+                            )}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className={cn(
+                        "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1",
+                        isScrolled || isSolid
+                          ? location.pathname === link.path
+                            ? "text-primary bg-primary-light"
+                            : "text-foreground hover:text-primary hover:bg-secondary"
+                          : isLight
+                            ? location.pathname === link.path
+                              ? "text-primary bg-primary/10"
+                              : "text-slate-700 hover:text-primary hover:bg-slate-100"
+                            : location.pathname === link.path
+                              ? "text-primary-foreground bg-primary-foreground/20"
+                              : "text-primary-foreground/90 hover:text-primary-foreground hover:bg-primary-foreground/10 drop-shadow-sm"
+                      )}
+                    >
+                      {link.name}
+                    </Link>
                   )}
-                >
-                  {link.name}
-                </Link>
+                </div>
               ))}
               
               {user ? (
@@ -152,16 +201,37 @@ export function Header({ variant = "solid" }: HeaderProps) {
           <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className={cn(
-                    "px-4 py-3 rounded-lg font-medium text-sm transition-all",
-                    location.pathname === link.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                <div key={link.name}>
+                  {link.children ? (
+                    <div className="space-y-1">
+                      <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                        {link.name}
+                      </div>
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.name}
+                          to={child.path}
+                          className={cn(
+                            "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
+                            location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                          )}
+                        >
+                          {child.name}
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className={cn(
+                        "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
+                        location.pathname === link.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                      )}
+                    >
+                      {link.name}
+                    </Link>
                   )}
-                >
-                  {link.name}
-                </Link>
+                </div>
               ))}
               <hr className="my-2 border-border" />
               {user ? (
