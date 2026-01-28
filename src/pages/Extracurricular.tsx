@@ -95,27 +95,41 @@ export function Extracurricular() {
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {categories.map((category, index) => {
-                const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
-                return (
-                  <div key={index} className="bg-card p-8 rounded-2xl border border-border hover:shadow-strong transition-all group">
-                    <div className="w-16 h-16 rounded-2xl bg-primary-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-8 h-8 text-primary" />
+              <div className="grid md:grid-cols-2 gap-8">
+                {categories.map((category: any, index: number) => {
+                  const IconComponent = iconMap[category.icon_name || "Trophy"] || Trophy;
+                  return (
+                    <div key={index} className="bg-card rounded-2xl border border-border hover:shadow-strong transition-all group overflow-hidden flex flex-col">
+                      {category.image_url && (
+                        <div className="h-64 overflow-hidden relative">
+                          <img 
+                            src={category.image_url} 
+                            alt={category.title} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent opacity-60" />
+                        </div>
+                      )}
+                      
+                      <div className="p-8 flex-1">
+                        <div className="w-16 h-16 rounded-2xl bg-primary-light flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                          <IconComponent className="w-8 h-8 text-primary" />
+                        </div>
+                        <h3 className="font-heading text-2xl font-bold text-foreground mb-4">{category.title}</h3>
+                        <p className="text-muted-foreground mb-6">{category.description}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {category.activities?.map((activity: string, idx: number) => (
+                            <span key={idx} className="px-3 py-1 bg-secondary text-foreground text-sm rounded-full">
+                              {activity}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <h3 className="font-heading text-2xl font-bold text-foreground mb-4">{category.title}</h3>
-                    <p className="text-muted-foreground mb-6">{category.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {category.activities?.map((activity, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-secondary text-foreground text-sm rounded-full">
-                          {activity}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+
           </div>
         </section>
 

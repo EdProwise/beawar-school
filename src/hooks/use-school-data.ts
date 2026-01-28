@@ -616,6 +616,7 @@ export interface ExtracurricularCategory {
   description: string | null;
   icon_name: string | null;
   activities: string[] | null;
+  image_url: string | null;
   is_active: boolean;
   sort_order: number;
 }

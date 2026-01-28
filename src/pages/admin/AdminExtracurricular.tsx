@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Loader2, Save, Plus, Trash2, Zap, Star, Trophy, Music, Palette, Globe, 
-  Rocket, Shield, Award, Clock, Target, Heart, Camera, BookOpen, Users
-} from "lucide-react";
+    Loader2, Save, Plus, Trash2, Zap, Star, Trophy, Music, Palette, Globe, 
+    Rocket, Shield, Award, Clock, Target, Heart, Camera, BookOpen, Users, Upload, Image as ImageIcon
+  } from "lucide-react";
+
 import { 
   useExtracurricularCategories, 
   useExtracurricularHighlights,
@@ -122,18 +123,44 @@ export default function AdminExtracurricular() {
     }
   });
 
-  const handleAddCategory = () => {
-    const newVal: ExtracurricularCategory = {
-      id: `temp-${Date.now()}`,
-      title: "New Category",
-      description: "",
-      icon_name: "Trophy",
-      activities: [],
-      is_active: true,
-      sort_order: localCategories.length,
+    const handleAddCategory = () => {
+      const newVal: ExtracurricularCategory = {
+        id: `temp-${Date.now()}`,
+        title: "New Category",
+        description: "",
+        icon_name: "Trophy",
+        activities: [],
+        image_url: null,
+        is_active: true,
+        sort_order: localCategories.length,
+      };
+      setLocalCategories([...localCategories, newVal]);
     };
-    setLocalCategories([...localCategories, newVal]);
-  };
+
+    const handleImageUpload = async (id: string, file: File) => {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("path", `extracurricular/${Date.now()}-${file.name}`);
+
+        const response = await fetch("/api/storage/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) throw new Error("Upload failed");
+
+        const result = await response.json();
+        const imageUrl = result.data.url;
+
+        handleUpdateCategory(id, { image_url: imageUrl });
+        toast({ title: "Image uploaded successfully" });
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast({ title: "Error uploading image", variant: "destructive" });
+      }
+    };
+
 
   const handleUpdateCategory = (id: string, updates: Partial<ExtracurricularCategory>) => {
     setLocalCategories(localCategories.map(c => c.id === id ? { ...c, ...updates } : c));
@@ -248,17 +275,66 @@ export default function AdminExtracurricular() {
                               ))}
                             </div>
                           </div>
-                          <div>
-                            <Label>Activities (comma separated)</Label>
-                            <Input
-                              value={cat.activities?.join(", ") || ""}
-                              onChange={(e) => handleUpdateCategory(cat.id, { 
-                                activities: e.target.value.split(",").map(s => s.trim()).filter(s => s !== "") 
-                              })}
-                              placeholder="e.g., Football, Basketball, Swimming"
-                            />
+                            <div>
+                              <Label>Activities (comma separated)</Label>
+                              <Input
+                                value={cat.activities?.join(", ") || ""}
+                                onChange={(e) => handleUpdateCategory(cat.id, { 
+                                  activities: e.target.value.split(",").map(s => s.trim()).filter(s => s !== "") 
+                                })}
+                                placeholder="e.g., Football, Basketball, Swimming"
+                              />
+                            </div>
+                            
+                            <div>
+                              <Label>Category Image</Label>
+                              <div className="mt-2 flex items-start gap-4">
+                                {cat.image_url ? (
+                                  <div className="relative w-32 h-20 rounded-md overflow-hidden border border-border">
+                                    <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover" />
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateCategory(cat.id, { image_url: null })}
+                                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full shadow-sm"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="w-32 h-20 rounded-md border-2 border-dashed border-border flex items-center justify-center bg-muted/30">
+                                    <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+                                  </div>
+                                )}
+                                
+                                <div className="flex-1">
+                                  <Input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    id={`file-${cat.id}`}
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) handleImageUpload(cat.id, file);
+                                    }}
+                                  />
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => document.getElementById(`file-${cat.id}`)?.click()}
+                                  >
+                                    <Upload className="w-4 h-4 mr-2" />
+                                    {cat.image_url ? "Change Image" : "Upload Image"}
+                                  </Button>
+                                  <p className="text-[10px] text-muted-foreground mt-1">
+                                    Recommended: 800x600px, Max 5MB
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                        </div>
+
                         <div>
                           <Label>Description</Label>
                           <Textarea
