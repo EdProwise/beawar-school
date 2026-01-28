@@ -11,7 +11,7 @@ const navLinks = [
   { name: "Home", path: "/" },
   { name: "About", path: "/about" },
   { name: "Academics", path: "/academics" },
-  { name: "Extracurricular", path: "/extracurricular" },
+  { name: "Beyond Academics", path: "/extracurricular" },
   { name: "Admissions", path: "/admissions" },
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Gallery", path: "/gallery" },

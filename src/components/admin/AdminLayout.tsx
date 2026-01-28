@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
   { name: "About Content", path: "/admin/about", icon: Info },
     { name: "Academic", path: "/admin/programs", icon: BookOpen },
       { name: "Academic Content", path: "/admin/academics", icon: FileText },
-      { name: "Extracurricular Content", path: "/admin/extracurricular", icon: Zap },
+        { name: "Beyond Academics", path: "/admin/extracurricular", icon: Zap },
       { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
       { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
 

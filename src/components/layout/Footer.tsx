@@ -20,7 +20,7 @@ const quickLinks = [
   { name: "Home", path: "/" },
   { name: "About Us", path: "/about" },
   { name: "Academics", path: "/academics" },
-  { name: "Extracurricular", path: "/extracurricular" },
+  { name: "Beyond Academics", path: "/extracurricular" },
   { name: "Admissions", path: "/admissions" },
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Contact", path: "/contact" },
