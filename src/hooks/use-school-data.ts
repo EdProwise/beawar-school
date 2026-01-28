@@ -684,3 +684,25 @@ export function useExtracurricularHighlights() {
     },
   });
 }
+
+// Beyond Academics
+export interface BeyondAcademicsSection {
+  id: string;
+  title: string;
+  content: string;
+  sort_order: number;
+}
+
+export function useBeyondAcademics() {
+  return useQuery({
+    queryKey: ["beyond-academics"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("beyond_academics")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as BeyondAcademicsSection[];
+    },
+  });
+}
