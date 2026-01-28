@@ -7,20 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, Plus, Trash2, GraduationCap, Star, Search, UserPlus, X, Upload, CheckCircle, Clock } from "lucide-react";
-import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-
-interface AlumniSection {
-  id: string;
-  title: string;
-  content: string;
-  sort_order: number;
-}
 
 interface AlumniProfile {
   id?: string;
@@ -38,20 +29,9 @@ interface AlumniProfile {
 export default function AdminAlumni() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("profiles");
   const [profileSearch, setProfileSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "approved">("all");
   
-  // Sections Data
-  const { data: alumniData, isLoading: sectionsLoading } = useQuery({
-    queryKey: ["admin-alumni-sections"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("alumni").select("*").order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data as AlumniSection[];
-    }
-  });
-
   // Profiles Data
   const { data: profilesData, isLoading: profilesLoading } = useQuery({
     queryKey: ["admin-alumni-profiles"],
@@ -62,43 +42,9 @@ export default function AdminAlumni() {
     }
   });
 
-  const [sections, setSections] = useState<AlumniSection[]>([]);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [editingProfile, setEditingProfile] = useState<AlumniProfile | null>(null);
   const [uploading, setUploading] = useState(false);
-
-  useEffect(() => {
-    if (alumniData) setSections(alumniData);
-  }, [alumniData]);
-
-  // Section Mutations
-  const saveSectionsMutation = useMutation({
-    mutationFn: async (values: AlumniSection[]) => {
-      const { data: currentDbItems } = await supabase.from("alumni").select("id");
-      const dbIds = currentDbItems?.map(item => item.id) || [];
-      const incomingIds = values.map(v => v.id).filter(id => !id.startsWith("temp-"));
-      const toDelete = dbIds.filter(id => !incomingIds.includes(id));
-
-      if (toDelete.length > 0) {
-        await supabase.from("alumni").delete().in("id", toDelete);
-      }
-
-      for (const val of values) {
-        if (val.id.startsWith("temp-")) {
-          const { id, ...rest } = val;
-          await supabase.from("alumni").insert([rest]);
-        } else {
-          await supabase.from("alumni").update(val).eq("id", val.id);
-        }
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-alumni-sections"] });
-      queryClient.invalidateQueries({ queryKey: ["alumni"] });
-      toast({ title: "Alumni sections updated" });
-    },
-    onError: () => toast({ title: "Error saving changes", variant: "destructive" })
-  });
 
   // Profile Mutations
   const saveProfileMutation = useMutation({
@@ -183,29 +129,7 @@ export default function AdminAlumni() {
     }
   };
 
-  const handleAddSection = () => {
-    setSections([...sections, {
-      id: `temp-${Date.now()}`,
-      title: "New Alumni Highlight",
-      content: "",
-      sort_order: sections.length
-    }]);
-  };
-
-  const handleUpdateSection = (id: string, updates: Partial<AlumniSection>) => {
-    setSections(sections.map(s => s.id === id ? { ...s, ...updates } : s));
-  };
-
-  const handleRemoveSection = (id: string) => {
-    setSections(sections.filter(s => s.id !== id));
-  };
-
-  const handleSaveSections = (e: React.FormEvent) => {
-    e.preventDefault();
-    saveSectionsMutation.mutate(sections);
-  };
-
-  if (sectionsLoading || profilesLoading) {
+  if (profilesLoading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-64">
@@ -221,179 +145,120 @@ export default function AdminAlumni() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Alumni Management System</h1>
-            <p className="text-muted-foreground">Manage alumni profiles, success stories, and network content</p>
+            <p className="text-muted-foreground">Manage alumni profiles and success stories</p>
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-muted/50 p-1 rounded-xl">
-            <TabsTrigger value="profiles" className="rounded-lg px-6">Alumni Profiles</TabsTrigger>
-            <TabsTrigger value="sections" className="rounded-lg px-6">Content Sections</TabsTrigger>
-          </TabsList>
-
-            <TabsContent value="profiles" className="space-y-6">
-              <div className="flex flex-wrap gap-4 justify-between items-center bg-white p-4 rounded-xl border border-border shadow-sm">
-                <div className="flex gap-4 flex-1 min-w-[300px]">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input 
-                      placeholder="Search profiles..." 
-                      className="pl-9 bg-slate-50 border-none"
-                      value={profileSearch}
-                      onChange={(e) => setProfileSearch(e.target.value)}
-                    />
-                  </div>
-                  <select 
-                    className="bg-slate-50 border-none rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value as any)}
-                  >
-                    <option value="all">All Profiles</option>
-                    <option value="approved">Approved</option>
-                    <option value="pending">Pending ({pendingCount})</option>
-                  </select>
-                </div>
-                <Button onClick={() => {
-                  setEditingProfile({
-                    name: "",
-                    batch: "",
-                    image: "",
-                    designation: "",
-                    company: "",
-                    location: "",
-                    bio: "",
-                    is_featured: false,
-                    is_approved: true
-                  });
-                  setIsProfileDialogOpen(true);
-                }} className="rounded-full px-6 shadow-lg shadow-primary/20">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Alumni
-                </Button>
+        <div className="space-y-6">
+          <div className="flex flex-wrap gap-4 justify-between items-center bg-white p-4 rounded-xl border border-border shadow-sm">
+            <div className="flex gap-4 flex-1 min-w-[300px]">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search profiles..." 
+                  className="pl-9 bg-slate-50 border-none"
+                  value={profileSearch}
+                  onChange={(e) => setProfileSearch(e.target.value)}
+                />
               </div>
+              <select 
+                className="bg-slate-50 border-none rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-primary"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+              >
+                <option value="all">All Profiles</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending ({pendingCount})</option>
+              </select>
+            </div>
+            <Button onClick={() => {
+              setEditingProfile({
+                name: "",
+                batch: "",
+                image: "",
+                designation: "",
+                company: "",
+                location: "",
+                bio: "",
+                is_featured: false,
+                is_approved: true
+              });
+              setIsProfileDialogOpen(true);
+            }} className="rounded-full px-6 shadow-lg shadow-primary/20">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Alumni
+            </Button>
+          </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProfiles?.map((profile) => (
-                  <Card key={profile.id} className={`group overflow-hidden border-border/50 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 ${profile.is_approved === false ? 'border-amber-200 bg-amber-50/10' : ''}`}>
-                    <div className="aspect-[16/9] relative bg-slate-100 overflow-hidden">
-                      {profile.image ? (
-                        <img src={profile.image} alt={profile.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-300">
-                          <GraduationCap className="w-16 h-16" />
-                        </div>
-                      )}
-                      
-                      <div className="absolute top-3 right-3 flex flex-col gap-2">
-                        {profile.is_featured && (
-                          <div className="bg-amber-400 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
-                            <Star className="w-3 h-3 fill-white" /> Featured
-                          </div>
-                        )}
-                        {profile.is_approved === false && (
-                          <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-200 shadow-sm">
-                            <Clock className="w-3 h-3" /> Pending Review
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                        {profile.is_approved === false && (
-                          <Button 
-                            variant="default" 
-                            size="sm" 
-                            className="bg-green-600 hover:bg-green-700"
-                            onClick={() => approveProfileMutation.mutate(profile.id!)}
-                          >
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Approve
-                          </Button>
-                        )}
-                        <Button variant="secondary" size="sm" onClick={() => {
-                          setEditingProfile(profile);
-                          setIsProfileDialogOpen(true);
-                        }}>Edit</Button>
-                        <Button variant="destructive" size="sm" onClick={() => {
-                          if (confirm("Are you sure?")) deleteProfileMutation.mutate(profile.id!);
-                        }}>Delete</Button>
-                      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProfiles?.map((profile) => (
+              <Card key={profile.id} className={`group overflow-hidden border-border/50 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 ${profile.is_approved === false ? 'border-amber-200 bg-amber-50/10' : ''}`}>
+                <div className="aspect-[16/9] relative bg-slate-100 overflow-hidden">
+                  {profile.image ? (
+                    <img src={profile.image} alt={profile.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                      <GraduationCap className="w-16 h-16" />
                     </div>
-                    <CardContent className="p-5">
-                      <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-bold text-lg">{profile.name}</h3>
-                        {profile.is_approved ? (
-                          <Badge variant="outline" className="text-[10px] text-green-600 border-green-200 bg-green-50">Approved</Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-200 bg-amber-50">Pending</Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-indigo-600 font-semibold mb-3">Class of {profile.batch}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-2 italic">"{profile.bio}"</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              {(!profilesData || profilesData.length === 0) && (
-                <div className="col-span-full py-20 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
-                  <UserPlus className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-slate-900">No Alumni Profiles</h3>
-                  <p className="text-slate-500 mt-2">Start building your school's legacy network.</p>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="sections" className="space-y-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Content Highlights</h2>
-              <Button onClick={handleAddSection} variant="outline" className="rounded-full">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Section
-              </Button>
-            </div>
-            
-            <form onSubmit={handleSaveSections} className="space-y-8">
-              {sections.map((section) => (
-                <Card key={section.id} className="relative group">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleRemoveSection(section.id)}
-                    className="absolute top-4 right-4 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  )}
                   
-                  <CardContent className="p-6 space-y-4">
-                    <div className="space-y-2">
-                      <Label>Section Title</Label>
-                      <Input
-                        value={section.title}
-                        onChange={(e) => handleUpdateSection(section.id, { title: e.target.value })}
-                        placeholder="e.g., Alumni Success Stories"
-                        className="font-semibold"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Content</Label>
-                      <RichTextEditor
-                        content={section.content}
-                        onChange={(content) => handleUpdateSection(section.id, { content })}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  <div className="absolute top-3 right-3 flex flex-col gap-2">
+                    {profile.is_featured && (
+                      <div className="bg-amber-400 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+                        <Star className="w-3 h-3 fill-white" /> Featured
+                      </div>
+                    )}
+                    {profile.is_approved === false && (
+                      <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 border border-amber-200 shadow-sm">
+                        <Clock className="w-3 h-3" /> Pending Review
+                      </div>
+                    )}
+                  </div>
 
-              <div className="flex justify-end sticky bottom-8 py-4 bg-background/80 backdrop-blur-sm border-t border-border z-10">
-                <Button type="submit" size="lg" disabled={saveSectionsMutation.isPending} className="px-10 rounded-full shadow-xl shadow-primary/20">
-                  {saveSectionsMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                  Save Changes
-                </Button>
+                  <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                    {profile.is_approved === false && (
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={() => approveProfileMutation.mutate(profile.id!)}
+                      >
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Approve
+                      </Button>
+                    )}
+                    <Button variant="secondary" size="sm" onClick={() => {
+                      setEditingProfile(profile);
+                      setIsProfileDialogOpen(true);
+                    }}>Edit</Button>
+                    <Button variant="destructive" size="sm" onClick={() => {
+                      if (confirm("Are you sure?")) deleteProfileMutation.mutate(profile.id!);
+                    }}>Delete</Button>
+                  </div>
+                </div>
+                <CardContent className="p-5">
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="font-bold text-lg">{profile.name}</h3>
+                    {profile.is_approved ? (
+                      <Badge variant="outline" className="text-[10px] text-green-600 border-green-200 bg-green-50">Approved</Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px] text-amber-600 border-amber-200 bg-amber-50">Pending</Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-indigo-600 font-semibold mb-3">Class of {profile.batch}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2 italic">"{profile.bio}"</p>
+                </CardContent>
+              </Card>
+            ))}
+            {(!profilesData || profilesData.length === 0) && (
+              <div className="col-span-full py-20 text-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50/50">
+                <UserPlus className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900">No Alumni Profiles</h3>
+                <p className="text-slate-500 mt-2">Start building your school's legacy network.</p>
               </div>
-            </form>
-          </TabsContent>
-        </Tabs>
+            )}
+          </div>
+        </div>
 
         {/* Profile Dialog */}
         <Dialog open={isProfileDialogOpen} onOpenChange={setIsProfileDialogOpen}>
