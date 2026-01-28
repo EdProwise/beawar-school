@@ -52,59 +52,69 @@ export default function AdminSettings() {
     });
 
 
-  const [formData, setFormData] = useState({
-    school_name: "",
-    tagline: "",
-    logo_url: "",
-    email: "",
-    phone: "",
-    phone_secondary: "",
-    address: "",
-    map_embed_url: "",
-    facebook_url: "",
-    twitter_url: "",
-    instagram_url: "",
-    youtube_url: "",
-    whatsapp_number: "",
-    footer_text: "",
-    primary_color: "#4C0DC9",
-    accent_color: "#d4a853",
-    cta_primary_text: "Apply Now",
-    cta_primary_link: "/admissions",
-    cta_secondary_text: "Portal",
-    cta_secondary_link: "/students",
-    office_hours_weekday: "Mon - Fri: 8:00 AM - 5:00 PM",
-    office_hours_weekend: "Sat: 9:00 AM - 1:00 PM",
-  });
+    const [formData, setFormData] = useState({
+      school_name: "",
+      tagline: "",
+      logo_url: "",
+      email: "",
+      phone: "",
+      phone_secondary: "",
+      address: "",
+      map_embed_url: "",
+      facebook_url: "",
+      twitter_url: "",
+      instagram_url: "",
+      youtube_url: "",
+      whatsapp_number: "",
+      footer_text: "",
+      primary_color: "#4C0DC9",
+      accent_color: "#d4a853",
+      cta_primary_text: "Apply Now",
+      cta_primary_link: "/admissions",
+      cta_secondary_text: "Portal",
+      cta_secondary_link: "/students",
+      office_hours_weekday: "Mon - Fri: 8:00 AM - 5:00 PM",
+      office_hours_weekend: "Sat: 9:00 AM - 1:00 PM",
+    });
 
-  useEffect(() => {
-    if (settings) {
-      setFormData({
-        school_name: settings.school_name || "",
-        tagline: settings.tagline || "",
-        logo_url: settings.logo_url || "",
-        email: settings.email || "",
-        phone: settings.phone || "",
-        phone_secondary: settings.phone_secondary || "",
-        address: settings.address || "",
-        map_embed_url: settings.map_embed_url || "",
-        facebook_url: settings.facebook_url || "",
-        twitter_url: settings.twitter_url || "",
-        instagram_url: settings.instagram_url || "",
-        youtube_url: settings.youtube_url || "",
-        whatsapp_number: settings.whatsapp_number || "",
-        footer_text: settings.footer_text || "",
-        primary_color: settings.primary_color || "#4C0DC9",
-        accent_color: settings.accent_color || "#d4a853",
-        cta_primary_text: settings.cta_primary_text || "Apply Now",
-        cta_primary_link: settings.cta_primary_link || "/admissions",
-        cta_secondary_text: settings.cta_secondary_text || "Portal",
-        cta_secondary_link: settings.cta_secondary_link || "/students",
-        office_hours_weekday: settings.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM",
-        office_hours_weekend: settings.office_hours_weekend || "Sat: 9:00 AM - 1:00 PM",
-      });
-    }
-  }, [settings]);
+    const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
+    const [secondaryLinkType, setSecondaryLinkType] = useState<string>("preset");
+
+    useEffect(() => {
+      if (settings) {
+        setFormData({
+          school_name: settings.school_name || "",
+          tagline: settings.tagline || "",
+          logo_url: settings.logo_url || "",
+          email: settings.email || "",
+          phone: settings.phone || "",
+          phone_secondary: settings.phone_secondary || "",
+          address: settings.address || "",
+          map_embed_url: settings.map_embed_url || "",
+          facebook_url: settings.facebook_url || "",
+          twitter_url: settings.twitter_url || "",
+          instagram_url: settings.instagram_url || "",
+          youtube_url: settings.youtube_url || "",
+          whatsapp_number: settings.whatsapp_number || "",
+          footer_text: settings.footer_text || "",
+          primary_color: settings.primary_color || "#4C0DC9",
+          accent_color: settings.accent_color || "#d4a853",
+          cta_primary_text: settings.cta_primary_text || "Apply Now",
+          cta_primary_link: settings.cta_primary_link || "/admissions",
+          cta_secondary_text: settings.cta_secondary_text || "Portal",
+          cta_secondary_link: settings.cta_secondary_link || "/students",
+          office_hours_weekday: settings.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM",
+          office_hours_weekend: settings.office_hours_weekend || "Sat: 9:00 AM - 1:00 PM",
+        });
+
+        // Initialize link types based on values
+        const primaryPresets = ["/admissions", "/contact", "/about"];
+        const secondaryPresets = ["/students", "/teachers", "/parents", ...portals.map((p: any) => p.login_url)];
+        
+        setPrimaryLinkType(primaryPresets.includes(settings.cta_primary_link) ? "preset" : "custom");
+        setSecondaryLinkType(secondaryPresets.includes(settings.cta_secondary_link) ? "preset" : "custom");
+      }
+    }, [settings, portals]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -286,110 +296,118 @@ export default function AdminSettings() {
                         placeholder="Apply Now"
                       />
                     </div>
-                    <div>
-                      <Label>Select Primary Link</Label>
-                      <Select
-                        value={["/admissions", "/contact", "/about"].includes(formData.cta_primary_link) ? formData.cta_primary_link : "custom"}
-                        onValueChange={(value) => {
-                          if (value === "custom") {
-                            // If switching to custom and current value is a preset, clear it to allow typing
-                            if (["/admissions", "/contact", "/about"].includes(formData.cta_primary_link)) {
-                              setFormData({ ...formData, cta_primary_link: "" });
-                            }
-                          } else {
-                            setFormData({ ...formData, cta_primary_link: value });
-                          }
-                        }}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a page or enter custom link" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="/admissions">Admissions (/admissions)</SelectItem>
-                          <SelectItem value="/contact">Contact (/contact)</SelectItem>
-                          <SelectItem value="/about">About (/about)</SelectItem>
-                          <SelectItem value="custom">Custom Link / HTTPS URL (Type below)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="cta_primary_link">Button URL / Link</Label>
-                      <div className="relative">
-                        <Input
-                          id="cta_primary_link"
-                          value={formData.cta_primary_link}
-                          onChange={(e) => setFormData({ ...formData, cta_primary_link: e.target.value })}
-                          placeholder="https://... or /admissions"
-                          className="pr-10"
-                        />
-                        <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
-                      </div>
-                      <p className="text-[10px] text-muted-foreground mt-1">
-                        Enter external URLs (e.g., https://google.com) or internal routes (e.g., /contact)
-                      </p>
-                    </div>
-                  </div>
-                    <div className="space-y-4 p-4 border border-border rounded-lg">
-                      <h3 className="font-medium text-foreground">Secondary Button (Portal)</h3>
                       <div>
-                        <Label htmlFor="cta_secondary_text">Button Text</Label>
-                        <Input
-                          id="cta_secondary_text"
-                          value={formData.cta_secondary_text}
-                          onChange={(e) => setFormData({ ...formData, cta_secondary_text: e.target.value })}
-                          placeholder="Portal"
-                        />
-                      </div>
-                      <div>
-                        <Label>Select Portal Link</Label>
+                        <Label>Select Primary Link</Label>
                         <Select
-                          value={["/students", "/teachers", "/parents", ...portals.map((p: any) => p.login_url)].includes(formData.cta_secondary_link) ? formData.cta_secondary_link : "custom"}
+                          value={primaryLinkType === "custom" ? "custom" : formData.cta_primary_link}
                           onValueChange={(value) => {
                             if (value === "custom") {
-                              // If switching to custom and current value is a preset, clear it to allow typing
-                              if (["/students", "/teachers", "/parents", ...portals.map((p: any) => p.login_url)].includes(formData.cta_secondary_link)) {
-                                setFormData({ ...formData, cta_secondary_link: "" });
-                              }
+                              setPrimaryLinkType("custom");
                             } else {
-                              setFormData({ ...formData, cta_secondary_link: value });
+                              setPrimaryLinkType("preset");
+                              setFormData({ ...formData, cta_primary_link: value });
                             }
                           }}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a portal or enter custom link" />
+                            <SelectValue placeholder="Select a page or enter custom link" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="/students">Internal Student Portal (/students)</SelectItem>
-                            <SelectItem value="/teachers">Internal Teacher Portal (/teachers)</SelectItem>
-                            <SelectItem value="/parents">Internal Parent Portal (/parents)</SelectItem>
-                            {portals.map((portal: any) => (
-                              portal.login_url && (
-                                <SelectItem key={portal.portal_type} value={portal.login_url}>
-                                  External {portal.page_title} Portal
-                                </SelectItem>
-                              )
-                            ))}
+                            <SelectItem value="/admissions">Admissions (/admissions)</SelectItem>
+                            <SelectItem value="/contact">Contact (/contact)</SelectItem>
+                            <SelectItem value="/about">About (/about)</SelectItem>
                             <SelectItem value="custom">Custom Link / HTTPS URL (Type below)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <div>
-                        <Label htmlFor="cta_secondary_link">Button URL / Link</Label>
+                        <Label htmlFor="cta_primary_link">Button URL / Link</Label>
                         <div className="relative">
                           <Input
-                            id="cta_secondary_link"
-                            value={formData.cta_secondary_link}
-                            onChange={(e) => setFormData({ ...formData, cta_secondary_link: e.target.value })}
-                            placeholder="https://... or /portal"
+                            id="cta_primary_link"
+                            value={formData.cta_primary_link}
+                            onChange={(e) => {
+                              setFormData({ ...formData, cta_primary_link: e.target.value });
+                              // If they type something, and it's not a preset, ensure it's "custom"
+                              if (!["/admissions", "/contact", "/about"].includes(e.target.value)) {
+                                setPrimaryLinkType("custom");
+                              }
+                            }}
+                            placeholder="https://... or /admissions"
                             className="pr-10"
                           />
                           <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-1">
-                          Enter external URLs (e.g., https://portal.com) or internal routes (e.g., /students)
+                          Enter external URLs (e.g., https://google.com) or internal routes (e.g., /contact)
                         </p>
                       </div>
                     </div>
+                      <div className="space-y-4 p-4 border border-border rounded-lg">
+                        <h3 className="font-medium text-foreground">Secondary Button (Portal)</h3>
+                        <div>
+                          <Label htmlFor="cta_secondary_text">Button Text</Label>
+                          <Input
+                            id="cta_secondary_text"
+                            value={formData.cta_secondary_text}
+                            onChange={(e) => setFormData({ ...formData, cta_secondary_text: e.target.value })}
+                            placeholder="Portal"
+                          />
+                        </div>
+                        <div>
+                          <Label>Select Portal Link</Label>
+                          <Select
+                            value={secondaryLinkType === "custom" ? "custom" : formData.cta_secondary_link}
+                            onValueChange={(value) => {
+                              if (value === "custom") {
+                                setSecondaryLinkType("custom");
+                              } else {
+                                setSecondaryLinkType("preset");
+                                setFormData({ ...formData, cta_secondary_link: value });
+                              }
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a portal or enter custom link" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="/students">Internal Student Portal (/students)</SelectItem>
+                              <SelectItem value="/teachers">Internal Teacher Portal (/teachers)</SelectItem>
+                              <SelectItem value="/parents">Internal Parent Portal (/parents)</SelectItem>
+                              {portals.map((portal: any) => (
+                                portal.login_url && (
+                                  <SelectItem key={portal.portal_type} value={portal.login_url}>
+                                    External {portal.page_title} Portal
+                                  </SelectItem>
+                                )
+                              ))}
+                              <SelectItem value="custom">Custom Link / HTTPS URL (Type below)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label htmlFor="cta_secondary_link">Button URL / Link</Label>
+                          <div className="relative">
+                            <Input
+                              id="cta_secondary_link"
+                              value={formData.cta_secondary_link}
+                              onChange={(e) => {
+                                setFormData({ ...formData, cta_secondary_link: e.target.value });
+                                const secondaryPresets = ["/students", "/teachers", "/parents", ...portals.map((p: any) => p.login_url)];
+                                if (!secondaryPresets.includes(e.target.value)) {
+                                  setSecondaryLinkType("custom");
+                                }
+                              }}
+                              placeholder="https://... or /portal"
+                              className="pr-10"
+                            />
+                            <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+                          </div>
+                          <p className="text-[10px] text-muted-foreground mt-1">
+                            Enter external URLs (e.g., https://portal.com) or internal routes (e.g., /students)
+                          </p>
+                        </div>
+                      </div>
 
             </div>
           </div>

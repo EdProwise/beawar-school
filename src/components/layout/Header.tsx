@@ -172,86 +172,141 @@ export function Header({ variant = "solid" }: HeaderProps) {
                 </div>
               ))}
               
-              {user ? (
-                <Button variant="default" size="sm" className="ml-4" asChild>
-                  <Link to="/admin/dashboard">Admin Panel</Link>
-                </Button>
-              ) : (
-                <Button variant="outline" size="sm" className="ml-4" asChild>
-                  <Link to="/admin/login">Portal</Link>
-                </Button>
-              )}
-            </nav>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={cn(
-                "lg:hidden p-2 rounded-lg transition-colors",
-                isScrolled || isSolid || isLight ? "text-foreground hover:bg-secondary" : "text-primary-foreground hover:bg-primary-foreground/10"
-              )}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
-            <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <div key={link.name}>
-                  {link.children ? (
-                    <div className="space-y-1">
-                      <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                        {link.name}
-                      </div>
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.name}
-                          to={child.path}
-                          className={cn(
-                            "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
-                            location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
-                          )}
-                        >
-                          {child.name}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <Link
-                      to={link.path}
-                      className={cn(
-                        "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
-                        location.pathname === link.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                {/* Header CTA Buttons from Settings */}
+                <div className="flex items-center gap-2 ml-4">
+                  {settings?.cta_secondary_text && settings?.cta_secondary_link && (
+                    <Button variant="outline" size="sm" asChild>
+                      {isExternalLink(settings.cta_secondary_link) ? (
+                        <a href={settings.cta_secondary_link} target="_blank" rel="noopener noreferrer">
+                          {settings.cta_secondary_text}
+                        </a>
+                      ) : (
+                        <Link to={settings.cta_secondary_link}>{settings.cta_secondary_text}</Link>
                       )}
+                    </Button>
+                  )}
+
+                  {settings?.cta_primary_text && settings?.cta_primary_link && (
+                    <Button variant="default" size="sm" asChild>
+                      {isExternalLink(settings.cta_primary_link) ? (
+                        <a href={settings.cta_primary_link} target="_blank" rel="noopener noreferrer">
+                          {settings.cta_primary_text}
+                        </a>
+                      ) : (
+                        <Link to={settings.cta_primary_link}>{settings.cta_primary_text}</Link>
+                      )}
+                    </Button>
+                  )}
+
+                  {user && (
+                    <Button variant="ghost" size="sm" className="ml-2" asChild>
+                      <Link to="/admin/dashboard">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Admin
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </nav>
+
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={cn(
+                  "lg:hidden p-2 rounded-lg transition-colors",
+                  isScrolled || isSolid || isLight ? "text-foreground hover:bg-secondary" : "text-primary-foreground hover:bg-primary-foreground/10"
+                )}
+              >
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
+              <div className="flex flex-col gap-2">
+                {navLinks.map((link) => (
+                  <div key={link.name}>
+                    {link.children ? (
+                      <div className="space-y-1">
+                        <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                          {link.name}
+                        </div>
+                        {link.children.map((child) => (
+                          <Link
+                            key={child.name}
+                            to={child.path}
+                            className={cn(
+                              "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
+                              location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                            )}
+                          >
+                            {child.name}
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <Link
+                        to={link.path}
+                        className={cn(
+                          "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
+                          location.pathname === link.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                        )}
+                      >
+                        {link.name}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+                <hr className="my-2 border-border" />
+                
+                {/* Mobile CTA Buttons */}
+                <div className="flex flex-col gap-2 pt-2">
+                  {settings?.cta_secondary_text && settings?.cta_secondary_link && (
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      {isExternalLink(settings.cta_secondary_link) ? (
+                        <a href={settings.cta_secondary_link} target="_blank" rel="noopener noreferrer">
+                          <User className="w-4 h-4 mr-2" />
+                          {settings.cta_secondary_text}
+                        </a>
+                      ) : (
+                        <Link to={settings.cta_secondary_link}>
+                          <User className="w-4 h-4 mr-2" />
+                          {settings.cta_secondary_text}
+                        </Link>
+                      )}
+                    </Button>
+                  )}
+
+                  {settings?.cta_primary_text && settings?.cta_primary_link && (
+                    <Button variant="default" className="w-full justify-start" asChild>
+                      {isExternalLink(settings.cta_primary_link) ? (
+                        <a href={settings.cta_primary_link} target="_blank" rel="noopener noreferrer">
+                          <GraduationCap className="w-4 h-4 mr-2" />
+                          {settings.cta_primary_text}
+                        </a>
+                      ) : (
+                        <Link to={settings.cta_primary_link}>
+                          <GraduationCap className="w-4 h-4 mr-2" />
+                          {settings.cta_primary_text}
+                        </Link>
+                      )}
+                    </Button>
+                  )}
+
+                  {user && (
+                    <Link
+                      to="/admin/dashboard"
+                      className="px-4 py-3 rounded-lg font-medium text-sm text-primary hover:bg-primary/5 flex items-center gap-2"
                     >
-                      {link.name}
+                      <Settings className="w-4 h-4" /> Admin Panel
                     </Link>
                   )}
                 </div>
-              ))}
-              <hr className="my-2 border-border" />
-              {user ? (
-                <Link
-                  to="/admin/dashboard"
-                  className="px-4 py-3 rounded-lg font-medium text-sm text-primary hover:bg-primary/5 flex items-center gap-2"
-                >
-                  <Settings className="w-4 h-4" /> Admin Panel
-                </Link>
-              ) : (
-                <Link
-                  to="/admin/login"
-                  className="px-4 py-3 rounded-lg font-medium text-sm text-primary hover:bg-primary/5 flex items-center gap-2"
-                >
-                  <User className="w-4 h-4" /> Student/Teacher Portal
-                </Link>
-              )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
         
         {/* Scrolling Ticker integrated into header so it's fixed below menu */}
         <ScrollingTicker />
