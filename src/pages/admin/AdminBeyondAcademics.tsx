@@ -33,10 +33,14 @@ export default function AdminBeyondAcademics() {
   });
 
   const [sections, setSections] = useState<BeyondAcademicsSection[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (beyondData) setSections(beyondData);
-  }, [beyondData]);
+    if (beyondData && !isInitialized) {
+      setSections(beyondData);
+      setIsInitialized(true);
+    }
+  }, [beyondData, isInitialized]);
 
   const saveMutation = useMutation({
     mutationFn: async (values: BeyondAcademicsSection[]) => {
@@ -132,13 +136,13 @@ export default function AdminBeyondAcademics() {
                     placeholder="e.g., Leadership Programs"
                   />
                 </div>
-                <div>
-                  <Label>Content</Label>
-                  <RichTextEditor
-                    content={section.content}
-                    onChange={(content) => handleUpdateSection(section.id, { content })}
-                  />
-                </div>
+                  <div>
+                    <Label>Content</Label>
+                    <RichTextEditor
+                      value={section.content}
+                      onChange={(content) => handleUpdateSection(section.id, { content })}
+                    />
+                  </div>
               </div>
             </div>
           ))}
