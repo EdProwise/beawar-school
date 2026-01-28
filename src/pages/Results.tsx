@@ -11,9 +11,11 @@ import { cn } from "@/lib/utils";
 interface Result {
   id: string;
   year: string;
+  student_name: string;
+  percentage: string;
+  remarks: string;
+  photo_url?: string;
   category: string;
-  title: string;
-  content: string;
   sort_order: number;
 }
 
@@ -21,7 +23,7 @@ export default function Results() {
   const { data: resultsData, isLoading } = useQuery({
     queryKey: ["results"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("results").select("*").order("year", { ascending: false }).order("sort_order", { ascending: true });
+      const { data, error } = await supabase.from("results").select("*").order("percentage", { ascending: false }).order("sort_order", { ascending: true });
       if (error) throw error;
       return data as Result[];
     }
@@ -70,7 +72,7 @@ export default function Results() {
                 Academic <span className="text-amber-500">Results</span>
               </h1>
               <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-                Celebrating the legacy of excellence and the outstanding milestones achieved by our students year after year.
+                Celebrating the outstanding milestones and academic achievements of our brilliant students.
               </p>
             </motion.div>
           </div>
@@ -85,82 +87,85 @@ export default function Results() {
                 <p className="text-muted-foreground font-medium">Fetching academic records...</p>
               </div>
             ) : resultsData && resultsData.length > 0 ? (
-              <div className="flex flex-col lg:flex-row gap-12">
-                {/* Sidebar Year Selector */}
-                <div className="lg:w-64 flex-shrink-0">
-                  <div className="sticky top-32">
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 flex items-center">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Select Year
-                    </h3>
-                    <div className="flex lg:flex-col gap-2 overflow-x-auto pb-4 lg:pb-0 no-scrollbar">
-                      {years.map((year) => (
-                        <button
-                          key={year}
-                          onClick={() => setSelectedYear(year)}
-                          className={cn(
-                            "flex items-center justify-between px-6 py-4 rounded-xl transition-all duration-300 text-left whitespace-nowrap lg:whitespace-normal group",
-                            selectedYear === year
-                              ? "bg-white text-amber-600 shadow-[0_10px_30px_-10px_rgba(217,119,6,0.2)] border border-amber-100 font-bold translate-x-1"
-                              : "text-gray-500 hover:bg-white hover:text-amber-600 border border-transparent"
-                          )}
-                        >
-                          <span className="flex items-center">
-                            {year}
-                          </span>
-                          <ChevronRight className={cn(
-                            "w-4 h-4 transition-transform duration-300",
-                            selectedYear === year ? "opacity-100" : "opacity-0 group-hover:opacity-50"
-                          )} />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+              <div className="flex flex-col gap-12">
+                {/* Year Selector - Horizontal on all screens now for better UX */}
+                <div className="flex flex-wrap justify-center gap-4 mb-8">
+                  {years.map((year) => (
+                    <button
+                      key={year}
+                      onClick={() => setSelectedYear(year)}
+                      className={cn(
+                        "px-8 py-3 rounded-full transition-all duration-300 font-bold border",
+                        selectedYear === year
+                          ? "bg-amber-600 text-white border-amber-600 shadow-lg scale-105"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-amber-400 hover:text-amber-600"
+                      )}
+                    >
+                      {year}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Results Display */}
-                <div className="flex-grow">
+                <div className="w-full">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={selectedYear}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.4 }}
-                      className="space-y-10"
                     >
-                      <div className="flex items-end justify-between border-b border-gray-200 pb-6 mb-8">
-                        <h2 className="text-3xl font-bold text-gray-900 flex items-center">
-                          Academic Year {selectedYear}
-                          <Star className="w-5 h-5 ml-3 text-amber-400 fill-amber-400" />
-                        </h2>
-                        <span className="text-sm text-gray-400 font-medium">
-                          {filteredResults.length} records found
-                        </span>
-                      </div>
-
-                      <div className="grid gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {filteredResults.map((result, index) => (
                           <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.05 }}
                             key={result.id}
-                            className="bg-white rounded-3xl border border-gray-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] overflow-hidden hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] transition-all duration-500 group"
+                            className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group relative"
                           >
-                            <div className="flex flex-col md:flex-row">
-                              <div className="md:w-1/3 bg-[#f8f9fa] p-8 flex flex-col justify-center border-b md:border-b-0 md:border-r border-gray-100">
-                                <span className="text-amber-600 font-bold text-xs uppercase tracking-widest mb-2 block">
-                                  {result.category}
+                            <div className="aspect-[4/5] relative overflow-hidden bg-gray-100">
+                              {result.photo_url ? (
+                                <img
+                                  src={result.photo_url}
+                                  alt={result.student_name}
+                                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-amber-50">
+                                  <Trophy className="w-20 h-20 text-amber-200" />
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                              
+                              <div className="absolute bottom-4 left-4 right-4 text-white">
+                                <span className="inline-block px-3 py-1 bg-amber-600 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2">
+                                  {result.category || "Topper"}
                                 </span>
-                                <h3 className="text-2xl font-bold text-gray-900 leading-tight">
-                                  {result.title}
+                                <h3 className="text-xl font-bold leading-tight drop-shadow-md">
+                                  {result.student_name}
                                 </h3>
                               </div>
-                              <div className="md:w-2/3 p-8 md:p-10">
-                                <div className="prose prose-amber max-w-none text-gray-600 leading-relaxed">
-                                  <FormattedContent content={result.content} />
+                            </div>
+                            
+                            <div className="p-6">
+                              <div className="flex items-center justify-between mb-4">
+                                <div className="flex flex-col">
+                                  <span className="text-xs text-gray-400 uppercase font-bold tracking-widest">Score</span>
+                                  <span className="text-3xl font-black text-amber-600">
+                                    {result.percentage}%
+                                  </span>
                                 </div>
+                                <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center">
+                                  <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
+                                </div>
+                              </div>
+                              
+                              <div className="pt-4 border-t border-gray-100">
+                                <p className="text-gray-500 text-sm italic leading-relaxed">
+                                  "{result.remarks}"
+                                </p>
                               </div>
                             </div>
                           </motion.div>
