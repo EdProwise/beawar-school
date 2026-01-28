@@ -27,7 +27,7 @@ export function HeroSection() {
 
   if (isLoading) {
     return (
-      <section className="relative min-h-[64vh] flex items-center justify-center bg-primary">
+      <section className="relative min-h-[71vh] flex items-center justify-center bg-primary">
         <div className="animate-pulse text-primary-foreground">Loading...</div>
       </section>
     );
@@ -35,7 +35,7 @@ export function HeroSection() {
 
   if (slides.length === 0) {
     return (
-      <section className="relative min-h-[64vh] flex items-center justify-center bg-gradient-to-br from-primary-dark via-primary to-primary">
+      <section className="relative min-h-[71vh] flex items-center justify-center bg-gradient-to-br from-primary-dark via-primary to-primary">
         <div className="text-center text-primary-foreground">
           <h1 className="font-heading text-4xl font-bold mb-4">Welcome</h1>
           <p>Configure hero slides in admin panel</p>
@@ -45,7 +45,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-[64vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[71vh] flex items-center overflow-hidden">
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div

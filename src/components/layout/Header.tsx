@@ -23,16 +23,16 @@ export interface HeaderProps {
   variant?: "transparent" | "solid" | "light";
 }
 
-export function Header({ variant = "transparent" }: HeaderProps) {
-  const [isScrolled, setIsScrolled] = useState(variant === "solid");
+export function Header({ variant = "solid" }: HeaderProps) {
+  const [isScrolled, setIsScrolled] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const location = useLocation();
   const { data: settings } = useSiteSettings();
   const { user } = useAuth();
 
-  const isLight = variant === "light";
-  const isSolid = variant === "solid";
+  const isLight = false;
+  const isSolid = true;
 
   const schoolName = settings?.school_name || "Orbit School";
   const tagline = settings?.tagline || "Excellence in Education";
@@ -48,13 +48,11 @@ export function Header({ variant = "transparent" }: HeaderProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (variant !== "solid") {
-        setIsScrolled(window.scrollY > 20);
-      }
+      setIsScrolled(true);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [variant]);
+  }, []);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -64,12 +62,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          isScrolled || isSolid
-            ? "bg-card/95 backdrop-blur-lg shadow-medium py-2"
-            : isLight 
-              ? "bg-transparent py-4" 
-              : "bg-transparent py-4"
+          "sticky top-0 left-0 right-0 z-50 transition-all duration-300 bg-card/95 backdrop-blur-lg shadow-medium py-2"
         )}
       >
         <div className="container mx-auto px-4">
