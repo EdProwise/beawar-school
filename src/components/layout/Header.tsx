@@ -81,7 +81,7 @@ export interface HeaderProps {
     };
 
     const dynamicNavLinks = useMemo(() => {
-      return navLinks.map(link => {
+      const baseLinks = navLinks.map(link => {
         if (link.name === "Admissions" && link.children) {
           const hasProspectus = link.children.some(child => child.name === "Download Prospectus");
           if (!hasProspectus) {
@@ -100,7 +100,18 @@ export interface HeaderProps {
         }
         return link;
       });
-    }, [admissionSettings]);
+
+      // Add CTA buttons as links for mobile menu visibility
+      const ctaLinks = [];
+      if (settings?.cta_secondary_text && settings?.cta_secondary_link) {
+        ctaLinks.push({ name: settings.cta_secondary_text, path: settings.cta_secondary_link, isCta: true });
+      }
+      if (settings?.cta_primary_text && settings?.cta_primary_link) {
+        ctaLinks.push({ name: settings.cta_primary_text, path: settings.cta_primary_link, isCta: true });
+      }
+
+      return [...baseLinks, ...ctaLinks];
+    }, [admissionSettings, settings]);
 
 
   useEffect(() => {
@@ -155,10 +166,10 @@ export interface HeaderProps {
                 </div>
               </Link>
 
-              {/* Desktop Navigation Links (Center) */}
-              <nav className="hidden lg:flex items-center justify-center flex-1 gap-1">
-                {dynamicNavLinks.map((link) => (
-                  <div key={link.name} className="relative group/dropdown">
+                {/* Desktop Navigation Links (Center) */}
+                <nav className="hidden lg:flex items-center justify-center flex-1 gap-1">
+                  {dynamicNavLinks.filter(l => !(l as any).isCta).map((link) => (
+                    <div key={link.name} className="relative group/dropdown">
                     {link.children ? (
                       <>
                         <button
@@ -333,15 +344,19 @@ export interface HeaderProps {
                         </div>
                       ) : (
 
-                      <Link
-                        to={link.path}
-                        className={cn(
-                          "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
-                          location.pathname === link.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
-                        )}
-                      >
-                        {link.name}
-                      </Link>
+                          <Link
+                            to={link.path}
+                            className={cn(
+                              "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
+                              (link as any).isCta 
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90 mt-2 text-center"
+                                : location.pathname === link.path 
+                                  ? "bg-primary/10 text-primary" 
+                                  : "text-foreground hover:bg-secondary"
+                            )}
+                          >
+                            {link.name}
+                          </Link>
                     )}
                   </div>
                 ))}

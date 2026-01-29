@@ -56,7 +56,7 @@ export function AladdinLamp() {
   return (
     <>
       {/* Hanging Lamp */}
-      <div className="fixed left-4 md:left-8 top-0 z-[100] pointer-events-none flex flex-col items-center">
+      <div className="fixed right-4 md:right-8 top-0 z-[100] pointer-events-none flex flex-col items-center">
         {/* The Premium Hanger (Chain) */}
         <div 
           className="w-[3px] h-24 md:h-32 shadow-[0_0_10px_rgba(0,0,0,0.3)] relative"
@@ -95,9 +95,9 @@ export function AladdinLamp() {
           {/* Premium Aladdin Lamp Image */}
           <div className="relative group p-2">
             <img
-              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/fc57899a-cbde-403e-b59d-22e39f138b1f/ChatGPT-Image-Jan-30-2026-12_55_24-AM-1769714739191.png?width=400&height=400&resize=contain"
+              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/fc57899a-cbde-403e-b59d-22e39f138b1f/ChatGPT-Image-Jan-30-2026-01_06_44-AM-1769715661000.png?width=400&height=400&resize=contain"
               alt="Magic Lamp"
-              className="w-20 h-20 md:w-24 md:h-24 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
+              className="w-24 h-24 md:w-32 md:h-32 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
               style={{ 
                 filter: `drop-shadow(0 0 15px ${lampColor}66) drop-shadow(0 0 5px ${lampColor}AA)` 
               }}
@@ -105,12 +105,12 @@ export function AladdinLamp() {
             
             {/* Sparkles Effect */}
             <div className="absolute inset-0 pointer-events-none">
-              <Sparkles className="absolute top-0 right-0 w-4 h-4 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
-              <Sparkles className="absolute bottom-4 left-0 w-3 h-3 text-yellow-200 opacity-0 group-hover:opacity-100 transition-opacity animate-bounce delay-75" />
+              <Sparkles className="absolute top-0 left-0 w-4 h-4 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
+              <Sparkles className="absolute bottom-4 right-0 w-3 h-3 text-yellow-200 opacity-0 group-hover:opacity-100 transition-opacity animate-bounce delay-75" />
             </div>
             
             {/* Tooltip */}
-            <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
               <div className="bg-card border border-border px-3 py-1.5 rounded-lg shadow-xl text-xs font-medium text-foreground">
                 Psst! Open for magic offers ✨
               </div>
