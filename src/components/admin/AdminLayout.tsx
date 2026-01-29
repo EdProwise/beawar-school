@@ -58,7 +58,15 @@ interface NavItem {
         { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
       ]
   },
-  { name: "Beyond Academics", path: "/admin/beyond-academics", icon: Zap },
+    { 
+      name: "Beyond Academics", 
+      icon: Zap,
+      children: [
+        { name: "Beyond Academics", path: "/admin/beyond-academics", icon: Zap },
+        { name: "Entrepreneur Skills", path: "/admin/beyond-academics?tab=entrepreneur-skills", icon: Star },
+        { name: "Residential School", path: "/admin/beyond-academics?tab=residential-school", icon: Building },
+      ]
+    },
   { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
   { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
   { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
