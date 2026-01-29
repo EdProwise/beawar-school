@@ -10,7 +10,8 @@ import {
   Instagram, 
   Youtube,
   ArrowRight,
-  Loader2
+  Loader2,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,13 +25,6 @@ const quickLinks = [
     { name: "Admissions", path: "/admissions/process" },
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Contact", path: "/contact" },
-];
-
-const academicLinks = [
-  { name: "Pre-Primary", path: "/academics#pre-primary" },
-  { name: "Primary School", path: "/academics#primary" },
-  { name: "Secondary School", path: "/academics#secondary" },
-  { name: "Higher Secondary", path: "/academics#higher-secondary" },
 ];
 
 const resourceLinks = [
@@ -50,6 +44,11 @@ export function Footer() {
     const address = settings?.address || "123 Education Lane, Learning City, State, 54321";
     const phone = settings?.phone || "+1 (234) 567-8900";
     const emailAddress = settings?.email || "info@orbitschool.edu";
+    
+    const tcLinks = [
+      { name: "Apply for TC", path: settings?.tc_apply_url || "#" },
+      { name: "Verify TC", path: settings?.tc_verify_url || "#" },
+    ];
 
   const topographyPattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 10C10 10 10 0 20 0S30 10 40 10 50 0 60 0 70 10 80 10 90 0 100 0' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 30C10 30 10 20 20 20S30 30 40 30 50 20 60 20 70 30 80 30 90 20 100 20' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 50C10 50 10 40 20 40S30 50 40 50 50 40 60 40 70 50 80 50 90 40 100 40' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 70C10 70 10 60 20 60S30 70 40 70 50 60 60 60 70 70 80 70 90 60 100 60' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 90C10 90 10 80 20 80S30 90 40 90 50 80 60 80 70 90 80 90 90 80 100 80' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E")`;
 
@@ -89,26 +88,39 @@ export function Footer() {
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
                 {footerText}
               </p>
-              <div className="flex items-center gap-3">
-                {[Facebook, Twitter, Instagram, Youtube].map((Icon, idx) => {
-                  const urls = [
-                    settings?.facebook_url,
-                    settings?.twitter_url,
-                    settings?.instagram_url,
-                    settings?.youtube_url
-                  ];
-                  return (
-                    <a 
-                      key={idx} 
-                      href={urls[idx] || "#"} 
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-10 h-10 rounded-full bg-[#2a2638] flex items-center justify-center hover:bg-[#3a354d] transition-colors"
-                    >
-                      <Icon className="w-4 h-4 text-gray-300" />
-                    </a>
-                  );
-                })}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  {[Facebook, Twitter, Instagram, Youtube].map((Icon, idx) => {
+                    const urls = [
+                      settings?.facebook_url,
+                      settings?.twitter_url,
+                      settings?.instagram_url,
+                      settings?.youtube_url
+                    ];
+                    return (
+                      <a 
+                        key={idx} 
+                        href={urls[idx] || "#"} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-[#2a2638] flex items-center justify-center hover:bg-[#3a354d] transition-colors"
+                      >
+                        <Icon className="w-4 h-4 text-gray-300" />
+                      </a>
+                    );
+                  })}
+                </div>
+                
+                {(settings?.affiliation_no || settings?.udise_code) && (
+                  <div className="pt-2 space-y-1 text-xs text-gray-500 font-medium">
+                    {settings?.affiliation_no && (
+                      <p>Affiliation No: <span className="text-gray-400">{settings.affiliation_no}</span></p>
+                    )}
+                    {settings?.udise_code && (
+                      <p>UDISE Code: <span className="text-gray-400">{settings.udise_code}</span></p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -126,15 +138,27 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Academic Links */}
+            {/* Verify TC Section */}
             <div className="space-y-6">
-              <h4 className="text-2xl font-serif font-bold">Academics</h4>
+              <h4 className="text-2xl font-serif font-bold">Verify TC</h4>
               <ul className="space-y-4">
-                {academicLinks.map((link) => (
+                {tcLinks.map((link) => (
                   <li key={link.name}>
-                    <Link to={link.path} className="text-gray-400 hover:text-white transition-colors text-sm">
-                      {link.name}
-                    </Link>
+                    {link.path.startsWith('http') ? (
+                      <a 
+                        href={link.path} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"
+                      >
+                        {link.name}
+                        <ArrowRight className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <Link to={link.path} className="text-gray-400 hover:text-white transition-colors text-sm">
+                        {link.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -200,4 +224,3 @@ export function Footer() {
     </footer>
   );
 }
-
