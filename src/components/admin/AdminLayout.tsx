@@ -79,12 +79,13 @@ interface NavItem {
     { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
   { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },
-  {
-    name: "Settings",
-    icon: Settings,
-    children: [
-      { name: "Site Settings", path: "/admin/settings", icon: Settings },
-      { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
+    {
+      name: "Settings",
+      icon: Settings,
+      children: [
+        { name: "Site Settings", path: "/admin/settings", icon: Settings },
+        { name: "Offers", path: "/admin/offers", icon: Star },
+        { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
       { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
       { name: "Highlights", path: "/admin/highlights", icon: Star },
       { name: "Newsletter", path: "/admin/newsletter", icon: Bell },

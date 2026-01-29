@@ -37,6 +37,7 @@ import AdminNewsletter from "./pages/admin/AdminNewsletter";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminHeroSlides from "./pages/admin/AdminHeroSlides";
 import AdminStatistics from "./pages/admin/AdminStatistics";
+import AdminOffers from "./pages/admin/AdminOffers";
 import AdminFacilitiesManage from "./pages/admin/AdminFacilitiesManage";
 import AdminPrograms from "./pages/admin/AdminPrograms";
 import AdminAbout from "./pages/admin/AdminAbout";
@@ -224,16 +225,21 @@ export const routers = [
       name: 'admin-newsletter',
       element: <AdminNewsletter />,
     },
-    {
-      path: "/admin/settings",
-      name: 'admin-settings',
-      element: <AdminSettings />,
-    },
-    {
-      path: "/admin/hero-slides",
-      name: 'admin-hero-slides',
-      element: <AdminHeroSlides />,
-    },
+      {
+        path: "/admin/settings",
+        name: 'admin-settings',
+        element: <AdminSettings />,
+      },
+      {
+        path: "/admin/offers",
+        name: 'admin-offers',
+        element: <AdminOffers />,
+      },
+      {
+        path: "/admin/hero-slides",
+        name: 'admin-hero-slides',
+        element: <AdminHeroSlides />,
+      },
     {
       path: "/admin/statistics",
       name: 'admin-statistics',

@@ -8,11 +8,13 @@ import { FacilitiesSection } from "@/components/sections/FacilitiesSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { NewsSection } from "@/components/sections/NewsSection";
 import { ContactCTASection } from "@/components/sections/ContactCTASection";
+import { AladdinLamp } from "@/components/sections/AladdinLamp";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      <AladdinLamp />
       <main>
         <HeroSection />
         <AboutSection />
