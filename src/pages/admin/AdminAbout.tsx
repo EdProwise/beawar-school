@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Plus, Trash2, Award, Heart, Users, GraduationCap, Star, Shield, Target, Lightbulb, CheckCircle, MapPin, Phone, Mail, Clock, Building } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, Award, Heart, Users, GraduationCap, Star, Shield, Target, Lightbulb, CheckCircle, MapPin, Phone, Mail, Clock, Building, Globe, Image as ImageIcon } from "lucide-react";
 import { useCoreValues, useMilestones, useHighlightCards, useBranches, type CoreValue, type Milestone, type HighlightCard, type Branch } from "@/hooks/use-school-data";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -291,10 +291,13 @@ export default function AdminAbout() {
       id: `temp-${Date.now()}`,
       name: "New Branch",
       address: "",
+      city: "",
+      state: "",
       phone: "",
       email: "",
+      website: "",
       hours: "Mon - Sat: 8:00 AM - 4:00 PM",
-      map_url: "",
+      images: [],
       is_active: true,
       sort_order: localBranches.length,
     };
@@ -656,83 +659,162 @@ export default function AdminAbout() {
                         <Trash2 className="w-4 h-4" />
                       </button>
                       
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                          <div>
-                            <Label>Branch Name</Label>
-                            <Input
-                              value={branch.name}
-                              onChange={(e) => handleUpdateBranch(branch.id, { name: e.target.value })}
-                              placeholder="e.g., Main Campus"
-                            />
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div className="space-y-4">
+                            <div>
+                              <Label>Branch Name</Label>
+                              <Input
+                                value={branch.name}
+                                onChange={(e) => handleUpdateBranch(branch.id, { name: e.target.value })}
+                                placeholder="e.g., Main Campus"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label>City</Label>
+                                <Input
+                                  value={branch.city || ""}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { city: e.target.value })}
+                                  placeholder="e.g., Mumbai"
+                                />
+                              </div>
+                              <div>
+                                <Label>State</Label>
+                                <Input
+                                  value={branch.state || ""}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { state: e.target.value })}
+                                  placeholder="e.g., Maharashtra"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <Label>Address</Label>
+                              <Textarea
+                                value={branch.address}
+                                onChange={(e) => handleUpdateBranch(branch.id, { address: e.target.value })}
+                                placeholder="Full address of the branch"
+                                rows={2}
+                              />
+                            </div>
+                            <div>
+                              <Label>Website</Label>
+                              <div className="flex gap-2">
+                                <div className="bg-muted px-3 flex items-center border border-border rounded-l-md border-r-0">
+                                  <Globe className="w-4 h-4 text-muted-foreground" />
+                                </div>
+                                <Input
+                                  className="rounded-l-none"
+                                  value={branch.website || ""}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { website: e.target.value })}
+                                  placeholder="https://branch-website.com"
+                                />
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            <Label>Address</Label>
-                            <Textarea
-                              value={branch.address}
-                              onChange={(e) => handleUpdateBranch(branch.id, { address: e.target.value })}
-                              placeholder="Full address of the branch"
-                              rows={3}
-                            />
-                          </div>
-                          <div>
-                            <Label>Google Maps Embed URL</Label>
-                            <Input
-                              value={branch.map_url}
-                              onChange={(e) => handleUpdateBranch(branch.id, { map_url: e.target.value })}
-                              placeholder="https://www.google.com/maps/embed?..."
-                            />
-                            <p className="text-[10px] text-muted-foreground mt-1">Copy the 'src' attribute from the Google Maps iframe embed code</p>
+
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label>Phone</Label>
+                                <Input
+                                  value={branch.phone}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { phone: e.target.value })}
+                                  placeholder="+91 ..."
+                                />
+                              </div>
+                              <div>
+                                <Label>Email</Label>
+                                <Input
+                                  value={branch.email}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { email: e.target.value })}
+                                  placeholder="branch@orbitschool.com"
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <Label>Office Hours</Label>
+                              <Input
+                                value={branch.hours}
+                                onChange={(e) => handleUpdateBranch(branch.id, { hours: e.target.value })}
+                                placeholder="Mon - Sat: 8:00 AM - 4:00 PM"
+                              />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 items-end">
+                              <div>
+                                <Label>Sort Order</Label>
+                                <Input
+                                  type="number"
+                                  value={branch.sort_order}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { sort_order: parseInt(e.target.value) || 0 })}
+                                />
+                              </div>
+                              <div className="flex items-center gap-2 pb-2">
+                                <input
+                                  type="checkbox"
+                                  id={`active-${branch.id}`}
+                                  checked={branch.is_active}
+                                  onChange={(e) => handleUpdateBranch(branch.id, { is_active: e.target.checked })}
+                                  className="rounded border-border"
+                                />
+                                <Label htmlFor={`active-${branch.id}`} className="text-xs">Active</Label>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <Label>Phone</Label>
-                              <Input
-                                value={branch.phone}
-                                onChange={(e) => handleUpdateBranch(branch.id, { phone: e.target.value })}
-                                placeholder="+91 ..."
-                              />
-                            </div>
-                            <div>
-                              <Label>Email</Label>
-                              <Input
-                                value={branch.email}
-                                onChange={(e) => handleUpdateBranch(branch.id, { email: e.target.value })}
-                                placeholder="branch@orbitschool.com"
-                              />
-                            </div>
+                        {/* Multiple Images */}
+                        <div className="mt-6 pt-6 border-t border-border">
+                          <div className="flex items-center justify-between mb-4">
+                            <Label className="flex items-center gap-2">
+                              <ImageIcon className="w-4 h-4 text-primary" />
+                              Branch Images
+                            </Label>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 text-xs"
+                              onClick={() => {
+                                const currentImages = branch.images || [];
+                                handleUpdateBranch(branch.id, { images: [...currentImages, ""] });
+                              }}
+                            >
+                              <Plus className="w-3 h-3 mr-1" />
+                              Add Image URL
+                            </Button>
                           </div>
-                          <div>
-                            <Label>Office Hours</Label>
-                            <Input
-                              value={branch.hours}
-                              onChange={(e) => handleUpdateBranch(branch.id, { hours: e.target.value })}
-                              placeholder="Mon - Sat: 8:00 AM - 4:00 PM"
-                            />
-                          </div>
-                          <div>
-                            <Label>Sort Order</Label>
-                            <Input
-                              type="number"
-                              value={branch.sort_order}
-                              onChange={(e) => handleUpdateBranch(branch.id, { sort_order: parseInt(e.target.value) || 0 })}
-                            />
-                          </div>
-                          <div className="flex items-center gap-2 pt-4">
-                            <input
-                              type="checkbox"
-                              id={`active-${branch.id}`}
-                              checked={branch.is_active}
-                              onChange={(e) => handleUpdateBranch(branch.id, { is_active: e.target.checked })}
-                              className="rounded border-border"
-                            />
-                            <Label htmlFor={`active-${branch.id}`}>Branch is active and visible</Label>
+                          <div className="grid gap-3">
+                            {(branch.images || []).map((url, idx) => (
+                              <div key={idx} className="flex gap-2">
+                                <Input
+                                  value={url}
+                                  onChange={(e) => {
+                                    const newImages = [...(branch.images || [])];
+                                    newImages[idx] = e.target.value;
+                                    handleUpdateBranch(branch.id, { images: newImages });
+                                  }}
+                                  placeholder="https://example.com/branch-image.jpg"
+                                  className="flex-1"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    const newImages = (branch.images || []).filter((_, i) => i !== idx);
+                                    handleUpdateBranch(branch.id, { images: newImages });
+                                  }}
+                                  className="text-muted-foreground hover:text-destructive"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ))}
+                            {(branch.images || []).length === 0 && (
+                              <p className="text-xs text-muted-foreground italic">No images added. These will replace the map on the public page.</p>
+                            )}
                           </div>
                         </div>
-                      </div>
                     </div>
                   ))}
 

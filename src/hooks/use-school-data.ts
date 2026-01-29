@@ -723,10 +723,13 @@ export interface Branch {
   id: string;
   name: string;
   address: string;
+  city?: string;
+  state?: string;
   phone: string;
   email: string;
+  website?: string;
   hours: string;
-  map_url: string;
+  images?: string[];
   is_active: boolean;
   sort_order: number;
 }
