@@ -9,7 +9,14 @@ import { ScrollingTicker } from "./ScrollingTicker";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
+  { 
+    name: "About", 
+    path: "/about-us",
+    children: [
+      { name: "About Us", path: "/about-us" },
+      { name: "Our Branches", path: "/our-branches" },
+    ]
+  },
   { 
     name: "Academics", 
     path: "/academics",

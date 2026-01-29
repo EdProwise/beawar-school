@@ -41,7 +41,7 @@ export function AboutSection() {
             </div>
 
               <Button variant="default" size="lg" asChild>
-                <Link to="/about">
+                <Link to="/about-us">
                   Know More
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Link>

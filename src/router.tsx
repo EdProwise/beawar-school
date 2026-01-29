@@ -1,5 +1,6 @@
 import Index from "./pages/Index";
-import About from "./pages/About";
+import AboutUs from "./pages/AboutUs";
+import OurBranches from "./pages/OurBranches";
 import Academics from "./pages/Academics";
 import Extracurricular from "./pages/Extracurricular";
 import AdmissionProcess from "./pages/AdmissionProcess";
@@ -62,9 +63,14 @@ export const routers = [
       element: <Index />,
     },
     {
-      path: "/about",
-      name: 'about',
-      element: <About />,
+      path: "/about-us",
+      name: 'about-us',
+      element: <AboutUs />,
+    },
+    {
+      path: "/our-branches",
+      name: 'our-branches',
+      element: <OurBranches />,
     },
     {
       path: "/academics",

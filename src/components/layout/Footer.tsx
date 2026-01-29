@@ -19,7 +19,7 @@ import { useSubscribeNewsletter, useSiteSettings } from "@/hooks/use-school-data
 
 const quickLinks = [
   { name: "Home", path: "/" },
-  { name: "About Us", path: "/about" },
+  { name: "About Us", path: "/about-us" },
   { name: "Academics", path: "/academics" },
   { name: "Beyond Academics", path: "/extracurricular" },
     { name: "Admissions", path: "/admissions/process" },
