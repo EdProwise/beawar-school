@@ -41,8 +41,8 @@ export default function Curriculum() {
     );
   }
 
-  const defaultContent = {
-    title: "DBA's Education Pathway",
+    const defaultContent = {
+    title: "Orbit Education Pathway",
     main_image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1200",
     preschool_title: "Fun and Educational Preschool Activities",
     preschool_desc: "Preschool activities aim to foster learning, creativity, and development in children aged 3-5. These activities encompass arts and crafts, storytelling, music, sensory play, outdoor play and many many more like :",
@@ -80,16 +80,29 @@ export default function Curriculum() {
     ? gallery.map((g: any) => g.image_url) 
     : defaultGallery;
 
-  return (
+    return (
     <div className="min-h-screen font-sans bg-white">
       <Header />
-      <main className="pt-28 pb-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-gray-600 font-medium mb-2">Curriculum</p>
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900">{pageData.title}</h1>
+      <main className="pb-20">
+        <section className="pt-40 pb-24 bg-[#A11B5A] relative overflow-hidden">
+          <div className="container mx-auto px-4 relative z-10 text-center">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-6 backdrop-blur-sm">
+              Curriculum
+            </span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight">
+              Orbit Education Pathway
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed font-medium">
+              Discover our comprehensive curriculum designed to nurture every student's potential from pre-primary to higher secondary.
+            </p>
           </div>
+          <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[100px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[100px]" />
+          </div>
+        </section>
 
+        <div className="container mx-auto px-4 mt-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-7xl mx-auto">
             <div className="lg:col-span-7 space-y-12">
               <div className="relative">

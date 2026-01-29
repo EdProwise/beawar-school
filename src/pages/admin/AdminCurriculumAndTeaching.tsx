@@ -107,7 +107,7 @@ export default function AdminCurriculumAndTeaching() {
 
   // Local States
   const [curForm, setCurForm] = useState<CurriculumContent>({
-    title: "DBA's Education Pathway",
+    title: "Orbit Education Pathway",
     main_image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1200",
     preschool_title: "Fun and Educational Preschool Activities",
     preschool_desc: "Preschool activities aim to foster learning, creativity, and development in children aged 3-5. These activities encompass arts and crafts, storytelling, music, sensory play, outdoor play and many many more like :",
