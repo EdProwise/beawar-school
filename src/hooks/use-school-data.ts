@@ -717,3 +717,30 @@ export function useBeyondAcademics(category?: string) {
     },
   });
 }
+
+// Our Branches
+export interface Branch {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  hours: string;
+  map_url: string;
+  is_active: boolean;
+  sort_order: number;
+}
+
+export function useBranches() {
+  return useQuery({
+    queryKey: ["branches"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("branches")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as Branch[];
+    },
+  });
+}
