@@ -67,9 +67,16 @@ interface NavItem {
         { name: "Residential School", path: "/admin/beyond-academics?tab=residential-school", icon: Building },
       ]
     },
-  { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
-  { name: "Admission", path: "/admin/admissions-content", icon: ClipboardList },
-  { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
+    { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
+    {
+      name: "Admission",
+      icon: ClipboardList,
+      children: [
+        { name: "Admission Process", path: "/admin/admission-process", icon: FileText },
+        { name: "Fees Structure", path: "/admin/fees-structure", icon: BarChart3 },
+      ]
+    },
+    { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
   { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },
   {

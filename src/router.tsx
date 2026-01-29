@@ -43,6 +43,7 @@ import AdminExtracurricular from "./pages/admin/AdminExtracurricular";
 import AdminHighlights from "./pages/admin/AdminHighlights";
 import AdminScrollWords from "./pages/admin/AdminScrollWords";
 import AdminAdmissionsContent from "./pages/admin/AdminAdmissionsContent";
+import AdminFeesStructure from "./pages/admin/AdminFeesStructure";
 import AdminLegalPages from "./pages/admin/AdminLegalPages";
 import AdminMedia from "./pages/admin/AdminMedia";
 import AdminCurriculum from "./pages/admin/AdminCurriculum";
@@ -294,12 +295,17 @@ export const routers = [
           element: <AdminScrollWords />,
         },
       {
-        path: "/admin/admissions-content",
-      name: 'admin-admissions-content',
-      element: <AdminAdmissionsContent />,
-    },
-    {
-      path: "/admin/legal",
+        path: "/admin/admission-process",
+        name: 'admin-admission-process',
+        element: <AdminAdmissionsContent />,
+      },
+      {
+        path: "/admin/fees-structure",
+        name: 'admin-fees-structure',
+        element: <AdminFeesStructure />,
+      },
+      {
+        path: "/admin/legal",
       name: 'admin-legal',
       element: <AdminLegalPages />,
     },

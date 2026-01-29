@@ -244,7 +244,7 @@ export default function AdminAdmissionsContent() {
   return (
     <AdminLayout>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Admissions Page Content</h1>
+        <h1 className="text-3xl font-bold text-foreground">Admission Process</h1>
         <p className="text-muted-foreground">Manage admission steps, requirements, and FAQs</p>
       </div>
 
