@@ -112,64 +112,108 @@ export function AboutUs() {
         </section>
 
         {/* Our Story */}
-        <section className="py-20 bg-background">
-          <div className="container">
+        <section className="py-24 bg-background relative overflow-hidden">
+          {/* Decorative background elements */}
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 transform origin-top translate-x-1/2 -z-0" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full -translate-x-1/2 translate-y-1/2 blur-3xl -z-0" />
+
+          <div className="container relative z-10">
             {aboutLoading ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
-              ) : (
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                  <div className="relative z-10">
-                  <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
-                    Our Story
-                  </span>
-                      <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
+            ) : (
+              <div className="grid lg:grid-cols-12 gap-12 items-center">
+                {/* Text Content Area */}
+                <div className="lg:col-span-7 relative">
+                  <div className="bg-card/80 backdrop-blur-md p-8 md:p-12 rounded-[2.5rem] border border-border/50 shadow-2xl relative overflow-hidden group">
+                    {/* Interior Decorative Accent */}
+                    <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-accent to-primary-dark" />
+                    
+                    <div className="relative">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-[2px] bg-primary" />
+                        <span className="text-primary font-bold tracking-widest uppercase text-xs">
+                          Our Heritage & Future
+                        </span>
+                      </div>
+
+                      <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
                         {about?.main_heading || "A Legacy of Educational Excellence"}
                       </h2>
-                      <div className="mb-6">
+
+                      <div className="prose prose-lg text-muted-foreground mb-10 max-w-none">
                         <FormattedContent 
                           content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`} 
                         />
                         
                         {about?.history_text && (
-                          <FormattedContent content={about.history_text} className="mt-4" />
+                          <div className="mt-6 pt-6 border-t border-border/50 italic font-medium text-foreground/80">
+                            <FormattedContent content={about.history_text} />
+                          </div>
                         )}
                       </div>
 
-                        <div className="flex flex-wrap items-center gap-8">
-                          {statistics.length > 0 ? (
-                            statistics.map((stat) => (
-                              <div key={stat.id}>
-                                <p className="font-heading text-4xl font-bold text-primary">
-                                  {stat.value}{stat.suffix}
+                      {/* Redesigned Statistics */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-8 border-t border-border/50">
+                        {statistics.length > 0 ? (
+                          statistics.map((stat, idx) => (
+                            <div key={stat.id} className="relative group/stat">
+                              <div className="absolute -inset-2 bg-primary/5 rounded-xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                              <div className="relative">
+                                <p className="font-heading text-3xl md:text-4xl font-bold text-primary mb-1">
+                                  {stat.value}<span className="text-accent">{stat.suffix}</span>
                                 </p>
-                                <p className="text-muted-foreground text-sm">{stat.label}</p>
+                                <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">{stat.label}</p>
                               </div>
-                            ))
-                          ) : (
-                            <>
-                              <div>
-                                <p className="font-heading text-4xl font-bold text-primary">{yearsOfExcellence}+</p>
-                                <p className="text-muted-foreground text-sm">Years of Excellence</p>
-                              </div>
-                              <div>
-                                <p className="font-heading text-4xl font-bold text-accent-dark">1500+</p>
-                                <p className="text-muted-foreground text-sm">Students Enrolled</p>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                </div>
-                <div className="relative">
-                  <img 
-                    src={about?.main_image_url || "/hero_campus.png"} 
-                    alt={schoolName}
-                    className="rounded-2xl shadow-strong"
-                  />
-                  <div className="absolute -bottom-6 -left-6 bg-accent p-6 rounded-xl shadow-strong">
-                    <p className="text-accent-foreground font-heading text-xl font-bold">Since {foundingYear}</p>
+                            </div>
+                          ))
+                        ) : (
+                          <>
+                            <div className="relative">
+                              <p className="font-heading text-3xl md:text-4xl font-bold text-primary mb-1">
+                                {yearsOfExcellence}<span className="text-accent">+</span>
+                              </p>
+                              <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Years of Glory</p>
+                            </div>
+                            <div className="relative">
+                              <p className="font-heading text-3xl md:text-4xl font-bold text-accent-dark mb-1">
+                                1500<span className="text-primary">+</span>
+                              </p>
+                              <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Global Alumni</p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
+                </div>
+
+                {/* Image Area */}
+                <div className="lg:col-span-5 relative group">
+                  {/* Decorative Frame Elements */}
+                  <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 duration-500" />
+                  <div className="absolute -inset-4 border-2 border-accent/20 rounded-[2.5rem] rotate-3 transition-transform group-hover:rotate-0 duration-500 delay-75" />
+                  
+                  <div className="relative rounded-[2rem] overflow-hidden shadow-2xl">
+                    <img 
+                      src={about?.main_image_url || "/hero_campus.png"} 
+                      alt={schoolName}
+                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                    />
+                    
+                    {/* Premium Floating Badge */}
+                    <div className="absolute bottom-6 right-6 bg-primary/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">
+                      <div className="flex flex-col items-center text-center">
+                        <span className="text-primary-foreground/70 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Established</span>
+                        <span className="text-primary-foreground font-heading text-3xl font-black">{foundingYear}</span>
+                        <div className="w-8 h-1 bg-accent mt-2 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Floating Circular Element */}
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse" />
                 </div>
               </div>
             )}
