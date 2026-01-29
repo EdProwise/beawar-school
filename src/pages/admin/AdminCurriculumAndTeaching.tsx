@@ -460,33 +460,32 @@ export default function AdminCurriculumAndTeaching() {
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   The Teaching Method page uses a fixed 4-card layout around the central image:
-                  <br /><br />
-                  - <strong>Card 1 & 2</strong>: Appear on the LEFT side.
-                  <br />
-                  - <strong>Card 3 & 4</strong>: Appear on the RIGHT side.
-                  <br /><br />
-                  One card (Card 3 by default) supports an optional external link for Skill Development Clubs.
-                </p>
+                    <br /><br />
+                    - <strong>Card 1 & 2</strong>: Appear on the LEFT side.
+                    <br />
+                    - <strong>Card 3 & 4</strong>: Appear on the RIGHT side.
+                    <br /><br />
+                    All cards support an optional external link for additional details or relevant pages.
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* 4 Cards Management */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {teachCards.map((card, idx) => (
-                <div key={card.id} className="bg-card rounded-xl border border-border p-6 shadow-md space-y-4 relative">
-                  <div className="absolute top-4 right-4 bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded">
-                    CARD {idx + 1} ({idx < 2 ? 'LEFT' : 'RIGHT'})
-                  </div>
-                  <div className="space-y-3 pt-2">
-                    <div>
-                      <Label>Card Title</Label>
-                      <Input value={card.title} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, title: e.target.value} : c))} />
+              {/* 4 Cards Management */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {teachCards.map((card, idx) => (
+                  <div key={card.id} className="bg-card rounded-xl border border-border p-6 shadow-md space-y-4 relative">
+                    <div className="absolute top-4 right-4 bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded">
+                      CARD {idx + 1} ({idx < 2 ? 'LEFT' : 'RIGHT'})
                     </div>
-                    <div>
-                      <Label>Card Content</Label>
-                      <Textarea value={card.content} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, content: e.target.value} : c))} rows={3} />
-                    </div>
-                    {idx === 2 && (
+                    <div className="space-y-3 pt-2">
+                      <div>
+                        <Label>Card Title</Label>
+                        <Input value={card.title} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, title: e.target.value} : c))} />
+                      </div>
+                      <div>
+                        <Label>Card Content</Label>
+                        <Textarea value={card.content} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, content: e.target.value} : c))} rows={3} />
+                      </div>
                       <div className="grid grid-cols-2 gap-3 pt-2">
                         <div>
                           <Label>Link Text (Optional)</Label>
@@ -497,11 +496,10 @@ export default function AdminCurriculumAndTeaching() {
                           <Input value={card.link_url || ""} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, link_url: e.target.value} : c))} />
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
             <div className="flex justify-end pt-4">
               <Button size="lg" onClick={() => saveTeachingMutation.mutate()} disabled={saveTeachingMutation.isPending}>
