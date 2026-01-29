@@ -105,9 +105,9 @@ export function AboutUs() {
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
               Shaping Futures Since {foundingYear}
             </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              Discover the story, mission, and values that drive {schoolName}'s commitment to excellence in education.
-            </p>
+              <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto break-words">
+                Discover the story, mission, and values that drive {schoolName}'s commitment to excellence in education.
+              </p>
           </div>
         </section>
 
@@ -285,11 +285,11 @@ export function AboutUs() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
               {milestones.map((milestone, index) => (
                 <div key={milestone.id} className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
-                    <span className="font-heading font-bold text-accent-foreground">{milestone.year}</span>
+                    <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                      <span className="font-heading font-bold text-accent-foreground">{milestone.year}</span>
+                    </div>
+                    <p className="text-primary-foreground/80 text-sm break-words">{milestone.event}</p>
                   </div>
-                  <p className="text-primary-foreground/80 text-sm">{milestone.event}</p>
-                </div>
               ))}
             </div>
           </div>
@@ -321,13 +321,13 @@ export function AboutUs() {
                           <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
                             <IconComponent className={`w-7 h-7 ${style.iconText}`} />
                           </div>
-                          <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
-                            {card.title}
-                          </h3>
-                          <p className="text-muted-foreground leading-relaxed">
-                            {card.description}
-                          </p>
-                        </div>
+                            <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                              {card.title}
+                            </h3>
+                            <p className="text-muted-foreground leading-relaxed break-words">
+                              {card.description}
+                            </p>
+                          </div>
 
                         {/* Bottom Accent Line */}
                         <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />

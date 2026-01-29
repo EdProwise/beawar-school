@@ -105,9 +105,9 @@ const About = () => {
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
               Shaping Futures Since {foundingYear}
             </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              Discover the story, mission, and values that drive {schoolName}'s commitment to excellence in education.
-            </p>
+              <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto break-words">
+                Discover the story, mission, and values that drive {schoolName}'s commitment to excellence in education.
+              </p>
           </div>
         </section>
 
