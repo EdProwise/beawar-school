@@ -93,38 +93,54 @@ export default function BeyondAcademics() {
                 viewport={{ once: true, margin: "-100px" }}
                 className="space-y-40"
               >
-                {sections.map((section, index) => (
-                  <motion.div 
-                    key={section.id} 
-                    variants={itemVariants}
-                    className={`group grid lg:grid-cols-2 gap-16 lg:gap-24 items-center`}
-                  >
-                    <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} space-y-8`}>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <span className="flex items-center justify-center w-12 h-12 rounded-2xl bg-blue-500 text-white font-bold text-xl shadow-lg shadow-blue-500/20">
-                            {index + 1}
-                          </span>
-                          <div className="h-px flex-1 bg-gradient-to-r from-blue-500/20 to-transparent" />
+                    <motion.div 
+                      key={section.id} 
+                      variants={itemVariants}
+                      className={`group grid lg:grid-cols-2 gap-16 lg:gap-24 items-center`}
+                    >
+                      <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} relative group/content`}>
+                        {/* Modern Premium Card */}
+                        <div className="relative p-10 md:p-14 rounded-[3rem] bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] hover:shadow-[0_48px_80px_-16px_rgba(59,130,246,0.12)] transition-all duration-700 hover:-translate-y-2">
+                          {/* Animated Corner Accent */}
+                          <div className={`absolute top-0 ${index % 2 === 1 ? 'right-0 rounded-tr-[3rem]' : 'left-0 rounded-tl-[3rem]'} w-24 h-24 bg-gradient-to-br from-blue-600/10 to-transparent rounded-full -translate-x-8 -translate-y-8 blur-2xl group-hover/content:scale-150 transition-transform duration-1000`} />
+                          
+                          <div className="relative space-y-10">
+                            <div className="space-y-6">
+                              <div className="flex items-center gap-6">
+                                <div className="relative group/num">
+                                  <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full scale-150 opacity-0 group-hover/num:opacity-100 transition-opacity" />
+                                  <span className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0A192F] text-white font-bold text-2xl shadow-2xl shadow-blue-900/20 rotate-3 group-hover/content:rotate-0 transition-transform duration-500">
+                                    {String(index + 1).padStart(2, '0')}
+                                  </span>
+                                </div>
+                                <div className="flex-1 flex flex-col gap-1">
+                                  <div className="h-0.5 w-full bg-gradient-to-r from-blue-500 via-blue-200 to-transparent rounded-full" />
+                                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-500/50">Excellence Pillar</span>
+                                </div>
+                              </div>
+                              
+                              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] group-hover:text-blue-600 transition-colors duration-500">
+                                {section.title}
+                              </h2>
+                            </div>
+                            
+                            <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed font-medium">
+                              <FormattedContent content={section.content} />
+                            </div>
+                            
+                            <div className="flex items-center gap-4 pt-4">
+                              <div className="h-px w-8 bg-blue-500/30" />
+                              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-50 text-blue-600 text-xs font-black uppercase tracking-widest border border-blue-100/50 shadow-sm">
+                                <Zap className="w-3.5 h-3.5 fill-blue-600" />
+                                Enrichment Program
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
-                          {section.title}
-                        </h2>
                       </div>
-                      
-                      <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed break-words overflow-hidden">
-                        <FormattedContent content={section.content} />
-                      </div>
-                      
-                      <div className="pt-4">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-600 text-sm font-semibold border border-slate-200 group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100 transition-colors duration-300">
-                          <Zap className="w-4 h-4" />
-                          Enrichment Program
-                        </div>
-                      </div>
-                    </div>
 
-                    <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                      <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+
                       <div className="relative group/media">
                         {/* Decorative background elements */}
                         <div className="absolute -inset-6 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />

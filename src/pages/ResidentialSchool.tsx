@@ -83,31 +83,47 @@ export default function ResidentialSchool() {
                 viewport={{ once: true, margin: "-100px" }}
                 className="space-y-40"
               >
-                {sections.map((section, index) => (
-                  <motion.div 
-                    key={section.id} 
-                    variants={itemVariants}
-                    className={`group grid lg:grid-cols-2 gap-16 lg:gap-24 items-center`}
-                  >
-                    <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} space-y-8`}>
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <span className="flex items-center justify-center w-12 h-12 rounded-2xl bg-[#A11B5A] text-white font-bold text-xl shadow-lg shadow-[#A11B5A]/20">
-                            {index + 1}
-                          </span>
-                          <div className="h-px flex-1 bg-gradient-to-r from-[#A11B5A]/20 to-transparent" />
+                  {sections.map((section, index) => (
+                    <motion.div 
+                      key={section.id} 
+                      variants={itemVariants}
+                      className={`group grid lg:grid-cols-2 gap-16 lg:gap-24 items-center`}
+                    >
+                      <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} relative group/content`}>
+                        <div className="relative overflow-hidden rounded-[2.5rem] bg-white border border-slate-200/60 shadow-[0_20px_50px_rgba(161,27,90,0.05)] group-hover:shadow-[0_30px_60px_rgba(161,27,90,0.1)] transition-all duration-500">
+                          {/* Side Accent Line */}
+                          <div className={`absolute top-0 bottom-0 w-1.5 bg-[#A11B5A] ${index % 2 === 1 ? 'right-0' : 'left-0'}`} />
+                          
+                          <div className="p-8 md:p-12 space-y-8">
+                            <div className="flex items-start justify-between">
+                              <div className="space-y-2">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-50 text-[#A11B5A] text-[10px] font-bold uppercase tracking-widest border border-pink-100">
+                                  <ShieldCheck className="w-3 h-3" />
+                                  Safe & Secure
+                                </div>
+                                <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+                                  {section.title}
+                                </h2>
+                              </div>
+                              <span className="text-6xl font-black text-slate-100 select-none group-hover:text-pink-50 transition-colors duration-500">
+                                {String(index + 1).padStart(2, '0')}
+                              </span>
+                            </div>
+                            
+                            <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed text-lg">
+                              <FormattedContent content={section.content} />
+                            </div>
+                            
+                            <div className="pt-4 flex items-center gap-4">
+                              <div className="w-12 h-px bg-slate-200" />
+                              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest italic">Residential Life Excellence</p>
+                            </div>
+                          </div>
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
-                          {section.title}
-                        </h2>
                       </div>
-                      
-                      <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed break-words overflow-hidden">
-                        <FormattedContent content={section.content} />
-                      </div>
-                    </div>
 
-                    <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                      <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+
                       <div className="relative group/media">
                         <div className="absolute -inset-6 bg-gradient-to-tr from-[#A11B5A]/10 to-yellow-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />
                         <div className={`absolute -inset-4 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 transition-transform duration-700 ${index % 2 === 1 ? '-rotate-2 group-hover/media:-rotate-1' : 'rotate-2 group-hover/media:rotate-1'}`} />
