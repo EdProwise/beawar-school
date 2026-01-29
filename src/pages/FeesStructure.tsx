@@ -14,6 +14,8 @@ export default function FeesStructure() {
     },
   });
 
+  const academicYear = fees.length > 0 ? fees[0].academic_year : "2026-27";
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -39,11 +41,11 @@ export default function FeesStructure() {
         {/* Fees Table */}
         <section className="py-20 bg-background">
           <div className="container">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
                 <div className="inline-flex items-center gap-2 px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
                   <TableIcon className="w-4 h-4" />
-                  Academic Year 2026-27
+                  Academic Year {academicYear}
                 </div>
                 <h2 className="font-heading text-3xl font-bold text-foreground">School Fees by Grade</h2>
               </div>
@@ -55,22 +57,24 @@ export default function FeesStructure() {
               ) : fees.length > 0 ? (
                 <div className="bg-card rounded-2xl border border-border shadow-strong overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-primary text-primary-foreground">
                           <th className="px-6 py-4 font-semibold">Grade / Class</th>
-                          <th className="px-6 py-4 font-semibold">Admission Fee</th>
-                          <th className="px-6 py-4 font-semibold">Tuition Fee</th>
-                          <th className="px-6 py-4 font-semibold text-right">Total Annual Fee</th>
+                          <th className="px-6 py-4 font-semibold text-center">Admission Fee</th>
+                          <th className="px-6 py-4 font-semibold text-center">Registration Fee</th>
+                          <th className="px-6 py-4 font-semibold text-center">School Fees</th>
+                          <th className="px-6 py-4 font-semibold text-center">Boarding Fees</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border">
                         {fees.map((fee: any) => (
                           <tr key={fee.id} className="hover:bg-secondary/20 transition-colors">
                             <td className="px-6 py-4 font-medium text-foreground">{fee.grade}</td>
-                            <td className="px-6 py-4 text-muted-foreground">{fee.admission_fee || "-"}</td>
-                            <td className="px-6 py-4 text-muted-foreground">{fee.tuition_fee || "-"}</td>
-                            <td className="px-6 py-4 font-bold text-primary text-right">{fee.total || "-"}</td>
+                            <td className="px-6 py-4 text-muted-foreground text-center">{fee.admission_fee || "-"}</td>
+                            <td className="px-6 py-4 text-muted-foreground text-center">{fee.registration_fee || "-"}</td>
+                            <td className="px-6 py-4 text-muted-foreground text-center">{fee.school_fee || "-"}</td>
+                            <td className="px-6 py-4 text-muted-foreground text-center">{fee.boarding_fee || "-"}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -89,7 +93,7 @@ export default function FeesStructure() {
                   <p className="font-bold mb-1">Important Note:</p>
                   <ul className="list-disc ml-4 space-y-1">
                     <li>Fees are subject to change as per the school management's decision.</li>
-                    <li>Transport, uniform, and books are not included in the above tuition fees.</li>
+                    <li>Transport, uniform, and books are not included in the above school fees.</li>
                     <li>Fees once paid are non-refundable and non-transferable.</li>
                   </ul>
                 </div>
