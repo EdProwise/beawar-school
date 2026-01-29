@@ -367,6 +367,8 @@ export interface SiteSettings {
   footer_text: string | null;
   primary_color: string | null;
   accent_color: string | null;
+  ticker_bg_color: string | null;
+  ticker_text_color: string | null;
   campus_video_url: string | null;
   cta_primary_text: string | null;
   cta_primary_link: string | null;

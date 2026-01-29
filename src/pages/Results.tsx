@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Loader2, Trophy, Calendar, ChevronRight, Award, Star } from "lucide-react";
-import { FormattedContent } from "@/components/ui/formatted-content";
+import { Loader2, Trophy, Award, Star } from "lucide-react";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -79,7 +78,7 @@ export default function Results() {
         </section>
 
         {/* Year Selector & Content */}
-        <section className="py-20">
+        <section className="py-12">
           <div className="container">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -87,17 +86,17 @@ export default function Results() {
                 <p className="text-muted-foreground font-medium">Fetching academic records...</p>
               </div>
             ) : resultsData && resultsData.length > 0 ? (
-              <div className="flex flex-col gap-12">
-                {/* Year Selector - Horizontal on all screens now for better UX */}
-                <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <div className="flex flex-col gap-8">
+                {/* Year Selector */}
+                <div className="flex flex-wrap justify-center gap-3 mb-4">
                   {years.map((year) => (
                     <button
                       key={year}
                       onClick={() => setSelectedYear(year)}
                       className={cn(
-                        "px-8 py-3 rounded-full transition-all duration-300 font-bold border",
+                        "px-6 py-2 rounded-full transition-all duration-300 font-bold border text-sm",
                         selectedYear === year
-                          ? "bg-amber-600 text-white border-amber-600 shadow-lg scale-105"
+                          ? "bg-amber-600 text-white border-amber-600 shadow-md"
                           : "bg-white text-gray-600 border-gray-200 hover:border-amber-400 hover:text-amber-600"
                       )}
                     >
@@ -116,16 +115,16 @@ export default function Results() {
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.4 }}
                     >
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {filteredResults.map((result, index) => (
                           <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: index * 0.05 }}
                             key={result.id}
-                            className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group relative"
+                            className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-500 group relative"
                           >
-                            <div className="aspect-[4/5] relative overflow-hidden bg-gray-100">
+                            <div className="aspect-square relative overflow-hidden bg-gray-100">
                               {result.photo_url ? (
                                 <img
                                   src={result.photo_url}
@@ -134,36 +133,36 @@ export default function Results() {
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center bg-amber-50">
-                                  <Trophy className="w-20 h-20 text-amber-200" />
+                                  <Trophy className="w-12 h-12 text-amber-200" />
                                 </div>
                               )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
                               
-                              <div className="absolute bottom-4 left-4 right-4 text-white">
-                                <span className="inline-block px-3 py-1 bg-amber-600 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2">
+                              <div className="absolute bottom-3 left-3 right-3 text-white">
+                                <span className="inline-block px-2 py-0.5 bg-amber-600 rounded-full text-[9px] font-bold uppercase tracking-wider mb-1">
                                   {result.category || "Topper"}
                                 </span>
-                                <h3 className="text-xl font-bold leading-tight drop-shadow-md">
+                                <h3 className="text-lg font-bold leading-tight drop-shadow-md">
                                   {result.student_name}
                                 </h3>
                               </div>
                             </div>
                             
-                            <div className="p-6">
-                              <div className="flex items-center justify-between mb-4">
+                            <div className="p-4">
+                              <div className="flex items-center justify-between mb-2">
                                 <div className="flex flex-col">
-                                  <span className="text-xs text-gray-400 uppercase font-bold tracking-widest">Score</span>
-                                  <span className="text-3xl font-black text-amber-600">
+                                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Score</span>
+                                  <span className="text-2xl font-black text-amber-600">
                                     {result.percentage}%
                                   </span>
                                 </div>
-                                <div className="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center">
-                                  <Star className="w-6 h-6 text-amber-500 fill-amber-500" />
+                                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
+                                  <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
                                 </div>
                               </div>
                               
-                              <div className="pt-4 border-t border-gray-100">
-                                <p className="text-gray-500 text-sm italic leading-relaxed">
+                              <div className="pt-2 border-t border-gray-100">
+                                <p className="text-gray-500 text-xs italic leading-relaxed line-clamp-2">
                                   "{result.remarks}"
                                 </p>
                               </div>
@@ -176,24 +175,24 @@ export default function Results() {
                 </div>
               </div>
             ) : (
-              <div className="text-center py-32 bg-white rounded-[3rem] border border-dashed border-gray-200">
-                <Trophy className="w-20 h-20 text-gray-200 mx-auto mb-6" />
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Results are being compiled</h3>
-                <p className="text-gray-400 max-w-sm mx-auto">We're currently updating our academic records for the current session. Please check back soon.</p>
+              <div className="text-center py-20 bg-white rounded-[2rem] border border-dashed border-gray-200">
+                <Trophy className="w-16 h-16 text-gray-200 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-1">Results are being compiled</h3>
+                <p className="text-gray-400 text-sm max-w-sm mx-auto">We're currently updating our academic records for the current session.</p>
               </div>
             )}
           </div>
         </section>
 
         {/* Recognition Banner */}
-        <section className="py-20 container">
-          <div className="bg-amber-600 rounded-[3rem] p-12 relative overflow-hidden text-center text-white">
-            <div className="absolute top-0 right-0 p-12 opacity-10">
-              <Award className="w-64 h-64" />
+        <section className="py-12 container">
+          <div className="bg-amber-600 rounded-[2rem] p-8 relative overflow-hidden text-center text-white">
+            <div className="absolute top-0 right-0 p-8 opacity-10">
+              <Award className="w-32 h-32" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 relative z-10">Proud of Our Orbitians!</h2>
-            <p className="text-amber-100/90 text-lg max-w-2xl mx-auto mb-8 relative z-10 leading-relaxed">
-              Every result tells a story of dedication, hard work, and the pursuit of excellence. We congratulate all our students on their brilliant success.
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 relative z-10">Proud of Our Orbitians!</h2>
+            <p className="text-amber-100/90 text-sm md:text-base max-w-2xl mx-auto relative z-10 leading-relaxed">
+              Every result tells a story of dedication and pursuit of excellence. We congratulate all our students.
             </p>
           </div>
         </section>

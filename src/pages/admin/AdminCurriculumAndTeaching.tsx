@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Plus, Trash2, BookOpen, ClipboardList, Image as ImageIcon, CheckCircle, ExternalLink, Star } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, BookOpen, ClipboardList, Image as ImageIcon, CheckCircle, Star } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CurriculumContent {
@@ -150,7 +149,7 @@ export default function AdminCurriculumAndTeaching() {
   }, [teachingContent]);
 
   useEffect(() => {
-    if (teachingCards) setTeachCards(teachingCards);
+    if (teachingCards && teachingCards.length > 0) setTeachCards(teachingCards);
     else {
       // Initialize 4 cards if not exists
       setTeachCards([
