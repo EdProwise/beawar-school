@@ -2,7 +2,8 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Academics from "./pages/Academics";
 import Extracurricular from "./pages/Extracurricular";
-import Admissions from "./pages/Admissions";
+import AdmissionProcess from "./pages/AdmissionProcess";
+import FeesStructure from "./pages/FeesStructure";
 import Facilities from "./pages/Facilities";
 import Gallery from "./pages/Gallery";
 import News from "./pages/News";
@@ -111,9 +112,14 @@ export const routers = [
       element: <Extracurricular />,
     },
     {
-      path: "/admissions",
-      name: 'admissions',
-      element: <Admissions />,
+      path: "/admissions/process",
+      name: 'admissions-process',
+      element: <AdmissionProcess />,
+    },
+    {
+      path: "/admissions/fees-structure",
+      name: 'fees-structure',
+      element: <FeesStructure />,
     },
     {
       path: "/infrastructure",

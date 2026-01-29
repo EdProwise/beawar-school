@@ -30,7 +30,14 @@ const navLinks = [
       { name: "Residential School", path: "/beyond-academics/residential-school" },
     ]
   },
-  { name: "Admissions", path: "/admissions" },
+    { 
+      name: "Admissions", 
+      path: "/admissions",
+      children: [
+        { name: "Admission Process", path: "/admissions/process" },
+        { name: "Fees Structure", path: "/admissions/fees-structure" },
+      ]
+    },
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Gallery", path: "/gallery" },
   { name: "News", path: "/news" },
