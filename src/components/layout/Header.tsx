@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, GraduationCap, User, Settings } from "lucide-react";
+import { Menu, X, ChevronDown, GraduationCap, User, Settings, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSiteSettings } from "@/hooks/use-school-data";
+import { useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
 import { useAuth } from "@/hooks/use-auth";
 import { ScrollingTicker } from "./ScrollingTicker";
 
@@ -48,28 +48,53 @@ export interface HeaderProps {
   variant?: "transparent" | "solid" | "light";
 }
 
-export function Header({ variant = "solid" }: HeaderProps) {
-  const [isScrolled, setIsScrolled] = useState(true);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const location = useLocation();
-  const { data: settings } = useSiteSettings();
-  const { user } = useAuth();
+  export function Header({ variant = "solid" }: HeaderProps) {
+    const [isScrolled, setIsScrolled] = useState(true);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const location = useLocation();
+    const { data: settings } = useSiteSettings();
+    const { data: admissionSettings = {} } = useAdmissionSettings();
+    const { user } = useAuth();
+  
+    const isLight = false;
+    const isSolid = true;
+  
+    const schoolName = settings?.school_name || "Orbit School";
+    const tagline = settings?.tagline || "Excellence in Education";
+  
+    const isExternalLink = (url: string) => {
+      if (!url) return false;
+      return url.startsWith('http://') || 
+             url.startsWith('https://') || 
+             url.startsWith('//') || 
+             url.startsWith('mailto:') || 
+             url.startsWith('tel:') ||
+             url.endsWith('.pdf');
+    };
 
-  const isLight = false;
-  const isSolid = true;
+    const dynamicNavLinks = useMemo(() => {
+      return navLinks.map(link => {
+        if (link.name === "Admissions" && link.children) {
+          const hasProspectus = link.children.some(child => child.name === "Download Prospectus");
+          if (!hasProspectus) {
+            return {
+              ...link,
+              children: [
+                ...link.children,
+                { 
+                  name: "Download Prospectus", 
+                  path: (admissionSettings as any).brochure_url || "#",
+                  isExternal: true 
+                }
+              ]
+            };
+          }
+        }
+        return link;
+      });
+    }, [admissionSettings]);
 
-  const schoolName = settings?.school_name || "Orbit School";
-  const tagline = settings?.tagline || "Excellence in Education";
-
-  const isExternalLink = (url: string) => {
-    if (!url) return false;
-    return url.startsWith('http://') || 
-           url.startsWith('https://') || 
-           url.startsWith('//') || 
-           url.startsWith('mailto:') || 
-           url.startsWith('tel:');
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -125,7 +150,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
+              {dynamicNavLinks.map((link) => (
                 <div key={link.name} className="relative group/dropdown">
                   {link.children ? (
                     <>
@@ -149,18 +174,37 @@ export function Header({ variant = "solid" }: HeaderProps) {
                         <ChevronDown className="w-4 h-4" />
                       </button>
                       <div className="absolute top-full left-0 mt-1 w-48 bg-card border border-border rounded-xl shadow-strong opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-200 z-50 overflow-hidden">
-                        {link.children.map((child) => (
-                          <Link
-                            key={child.name}
-                            to={child.path}
-                            className={cn(
-                              "block px-4 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
-                              location.pathname === child.path ? "text-primary bg-primary/5" : "text-foreground"
-                            )}
-                          >
-                            {child.name}
-                          </Link>
-                        ))}
+                        {link.children.map((child) => {
+                          const isExternal = (child as any).isExternal || isExternalLink(child.path);
+                          if (isExternal) {
+                            return (
+                              <a
+                                key={child.name}
+                                href={child.path}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={cn(
+                                  "block px-4 py-2.5 text-sm font-medium transition-colors hover:bg-secondary text-foreground flex items-center justify-between"
+                                )}
+                              >
+                                {child.name}
+                                <FileDown className="w-4 h-4 opacity-50" />
+                              </a>
+                            );
+                          }
+                          return (
+                            <Link
+                              key={child.name}
+                              to={child.path}
+                              className={cn(
+                                "block px-4 py-2.5 text-sm font-medium transition-colors hover:bg-secondary",
+                                location.pathname === child.path ? "text-primary bg-primary/5" : "text-foreground"
+                              )}
+                            >
+                              {child.name}
+                            </Link>
+                          );
+                        })}
                       </div>
                     </>
                   ) : (
@@ -237,31 +281,51 @@ export function Header({ variant = "solid" }: HeaderProps) {
             </div>
           </div>
 
-          {/* Mobile Navigation */}
-          {isMobileMenuOpen && (
-            <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
-              <div className="flex flex-col gap-2">
-                {navLinks.map((link) => (
-                  <div key={link.name}>
-                    {link.children ? (
-                      <div className="space-y-1">
-                        <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                          {link.name}
+            {/* Mobile Navigation */}
+            {isMobileMenuOpen && (
+              <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
+                <div className="flex flex-col gap-2">
+                  {dynamicNavLinks.map((link) => (
+                    <div key={link.name}>
+                      {link.children ? (
+                        <div className="space-y-1">
+                          <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                            {link.name}
+                          </div>
+                          {link.children.map((child) => {
+                            const isExternal = (child as any).isExternal || isExternalLink(child.path);
+                            if (isExternal) {
+                              return (
+                                <a
+                                  key={child.name}
+                                  href={child.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={cn(
+                                    "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all text-foreground hover:bg-secondary flex items-center justify-between"
+                                  )}
+                                >
+                                  {child.name}
+                                  <FileDown className="w-4 h-4 opacity-50" />
+                                </a>
+                              );
+                            }
+                            return (
+                              <Link
+                                key={child.name}
+                                to={child.path}
+                                className={cn(
+                                  "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
+                                  location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
+                                )}
+                              >
+                                {child.name}
+                              </Link>
+                            );
+                          })}
                         </div>
-                        {link.children.map((child) => (
-                          <Link
-                            key={child.name}
-                            to={child.path}
-                            className={cn(
-                              "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
-                              location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
-                            )}
-                          >
-                            {child.name}
-                          </Link>
-                        ))}
-                      </div>
-                    ) : (
+                      ) : (
+
                       <Link
                         to={link.path}
                         className={cn(
