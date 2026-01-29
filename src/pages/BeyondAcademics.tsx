@@ -86,13 +86,14 @@ export default function BeyondAcademics() {
                 <p className="text-slate-500 font-medium animate-pulse">Loading enrichment programs...</p>
               </div>
             ) : sections && sections.length > 0 ? (
-              <motion.div 
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                className="space-y-40"
-              >
+                <motion.div 
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-100px" }}
+                  className="space-y-40"
+                >
+                  {sections.map((section, index) => (
                     <motion.div 
                       key={section.id} 
                       variants={itemVariants}
