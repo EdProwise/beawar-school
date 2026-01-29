@@ -33,7 +33,19 @@ export function AboutSection() {
               <FormattedContent 
                 content={
                   about?.main_description 
-                    ? about.main_description.split('\n').filter(p => p.trim()).slice(0, 2).join('\n\n')
+                    ? (() => {
+                        const text = about.main_description;
+                        const isHtml = /<[a-z][\s\S]*>/i.test(text);
+                        if (isHtml) {
+                          // Split by </p> and filter out empty or whitespace-only paragraphs
+                          const paragraphs = text.split(/<\/p>/i).filter(p => {
+                            const cleanP = p.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
+                            return cleanP.length > 0;
+                          });
+                          return paragraphs.slice(0, 2).map(p => p + "</p>").join("");
+                        }
+                        return text.split('\n').filter(p => p.trim()).slice(0, 2).join('\n\n');
+                      })()
                     : "We provide quality education for all students."
                 } 
                 className="text-lg text-muted-foreground"
