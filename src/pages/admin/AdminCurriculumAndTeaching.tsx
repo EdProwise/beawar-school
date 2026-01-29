@@ -126,7 +126,7 @@ export default function AdminCurriculumAndTeaching() {
   const [curActivities, setCurActivities] = useState<CurriculumActivity[]>([]);
 
   const [teachForm, setTeachForm] = useState<TeachingMethodContent>({
-    title: "What we do?",
+    title: "THINGS for our students and what we do",
     center_image: "https://images.unsplash.com/photo-1580894732444-8ecdead79730?auto=format&fit=crop&q=80&w=800"
   });
 

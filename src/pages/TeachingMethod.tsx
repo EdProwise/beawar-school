@@ -32,7 +32,7 @@ export default function TeachingMethod() {
   }
 
   const defaultContent = {
-    title: "What we do?",
+    title: "THINGS for our students and what we do",
     center_image: "https://images.unsplash.com/photo-1580894732444-8ecdead79730?auto=format&fit=crop&q=80&w=800"
   };
 
@@ -50,18 +50,27 @@ export default function TeachingMethod() {
   return (
     <div className="min-h-screen font-sans">
       <Header />
-      <main className="pt-20">
-        <section className="relative py-20 px-4 overflow-hidden bg-[#E0F7F6]">
-          {/* Decorative Wavy Background - Top */}
-          <div className="absolute top-0 left-0 w-full h-32 bg-white" style={{ clipPath: 'ellipse(100% 50% at 50% 0%)' }}></div>
-          
-          <div className="container mx-auto relative z-10 text-center mb-16">
-            <h3 className="text-sm font-bold tracking-widest text-gray-800 uppercase mb-2">THINGS FOR OUR STUDENTS</h3>
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-2">{pageData.title}</h2>
-            <div className="w-24 h-1.5 bg-yellow-400 mx-auto rounded-full"></div>
-          </div>
+        <main className="pb-20">
+          <section className="pt-40 pb-24 bg-[#A11B5A] relative overflow-hidden">
+            <div className="container mx-auto px-4 relative z-10 text-center">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-sm font-medium mb-6 backdrop-blur-sm">
+                Teaching Method
+              </span>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight">
+                {pageData.title}
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed font-medium">
+                Our pedagogical approach is designed to inspire curiosity and foster holistic development in every child.
+              </p>
+            </div>
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+              <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[100px]" />
+              <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-white rounded-full blur-[100px]" />
+            </div>
+          </section>
 
-          <div className="container mx-auto relative max-w-6xl">
+          <section className="relative py-20 px-4 overflow-hidden bg-white">
+            <div className="container mx-auto relative max-w-6xl">
             <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-0 relative">
               
                 {/* Left Cards */}
