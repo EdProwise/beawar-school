@@ -21,7 +21,15 @@ const navLinks = [
       { name: "Alumni", path: "/alumni" },
     ]
   },
-  { name: "Beyond Academics", path: "/beyond-academics" },
+  { 
+    name: "Beyond Academics", 
+    path: "/beyond-academics",
+    children: [
+      { name: "Beyond Academics", path: "/beyond-academics" },
+      { name: "Entrepreneur Skills", path: "/beyond-academics/entrepreneur-skills" },
+      { name: "Residential School", path: "/beyond-academics/residential-school" },
+    ]
+  },
   { name: "Admissions", path: "/admissions" },
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Gallery", path: "/gallery" },

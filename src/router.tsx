@@ -18,6 +18,8 @@ import TeachingMethod from "./pages/TeachingMethod";
 import Results from "./pages/Results";
 import Alumni from "./pages/Alumni";
 import BeyondAcademics from "./pages/BeyondAcademics";
+import EntrepreneurSkills from "./pages/EntrepreneurSkills";
+import ResidentialSchool from "./pages/ResidentialSchool";
 import NotFound from "./pages/NotFound";
 
 // Admin Pages
@@ -91,6 +93,16 @@ export const routers = [
       path: "/beyond-academics",
       name: 'beyond-academics',
       element: <BeyondAcademics />,
+    },
+    {
+      path: "/beyond-academics/entrepreneur-skills",
+      name: 'entrepreneur-skills',
+      element: <EntrepreneurSkills />,
+    },
+    {
+      path: "/beyond-academics/residential-school",
+      name: 'residential-school',
+      element: <ResidentialSchool />,
     },
     {
       path: "/extracurricular",

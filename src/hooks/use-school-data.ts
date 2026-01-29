@@ -692,17 +692,26 @@ export interface BeyondAcademicsSection {
   id: string;
   title: string;
   content: string;
+  image_url?: string;
+  video_url?: string;
+  category?: string;
   sort_order: number;
 }
 
-export function useBeyondAcademics() {
+export function useBeyondAcademics(category?: string) {
   return useQuery({
-    queryKey: ["beyond-academics"],
+    queryKey: ["beyond-academics", category],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("beyond_academics")
         .select("*")
         .order("sort_order", { ascending: true });
+        
+      if (category) {
+        query = query.eq("category", category);
+      }
+      
+      const { data, error } = await query;
       if (error) throw error;
       return data as BeyondAcademicsSection[];
     },
