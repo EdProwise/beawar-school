@@ -56,17 +56,26 @@ export function AladdinLamp() {
   return (
     <>
       {/* Hanging Lamp */}
-      <div className="fixed left-4 md:left-8 top-0 z-[100] pointer-events-none">
-        {/* The String */}
+      <div className="fixed left-4 md:left-8 top-0 z-[100] pointer-events-none flex flex-col items-center">
+        {/* The Premium Hanger (Chain) */}
         <div 
-          className="w-px h-24 md:h-32 mx-auto" 
-          style={{ backgroundColor: `${lampColor}4D` }} // 30% opacity
-        />
+          className="w-[3px] h-24 md:h-32 shadow-[0_0_10px_rgba(0,0,0,0.3)] relative"
+          style={{ 
+            background: `linear-gradient(to right, ${lampColor}88, ${lampColor}, ${lampColor}88)`,
+            boxShadow: `0 0 8px ${lampColor}44`
+          }}
+        >
+          {/* Subtle chain link texture */}
+          <div className="absolute inset-0 opacity-30" style={{ 
+            backgroundImage: `radial-gradient(circle at 1.5px 1.5px, white 0.5px, transparent 0.5px)`,
+            backgroundSize: '3px 6px'
+          }} />
+        </div>
         
         {/* The Lamp Container */}
         <motion.div
-          className="pointer-events-auto cursor-pointer relative"
-          initial={{ rotate: -5 }}
+          className="pointer-events-auto cursor-pointer relative -mt-1"
+          initial={{ rotate: -5, originY: 0 }}
           animate={{ rotate: [5, -5, 5] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           onClick={() => {
@@ -77,56 +86,28 @@ export function AladdinLamp() {
           {/* Notification Dot */}
           {hasNewOffers && (
             <motion.div 
-              className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full z-10 border-2 border-background"
-              animate={{ scale: [1, 1.2, 1] }}
+              className="absolute top-2 right-2 w-4 h-4 bg-red-500 rounded-full z-10 border-2 border-white shadow-lg"
+              animate={{ scale: [1, 1.2, 1], opacity: [1, 0.8, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
           )}
 
-          {/* Aladdin Lamp SVG */}
-          <div className="relative group">
-            <svg
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              style={{ color: lampColor }}
-              className="drop-shadow-[0_0_15px_rgba(var(--primary),0.5)] group-hover:scale-110 transition-transform duration-300"
-            >
-              <path
-                d="M21 13C21 16.866 17.866 20 14 20C10.134 20 7 16.866 7 13C7 10.7909 8.79086 9 11 9H14C17.866 9 21 12.134 21 13Z"
-                fill="currentColor"
-                fillOpacity="0.2"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <path
-                d="M7 13H3C2.44772 13 2 12.5523 2 12V11C2 10.4477 2.44772 10 3 10H5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M14 9V7C14 5.89543 13.1046 5 12 5C10.8954 5 10 5.89543 10 7V9"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M11 20L11 22M14 20L14 22"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M18 13C18 13 19 11 21 11"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <circle cx="14" cy="13" r="1" fill="currentColor" />
-            </svg>
+          {/* Premium Aladdin Lamp Image */}
+          <div className="relative group p-2">
+            <img
+              src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/fc57899a-cbde-403e-b59d-22e39f138b1f/ChatGPT-Image-Jan-30-2026-12_55_24-AM-1769714739191.png?width=400&height=400&resize=contain"
+              alt="Magic Lamp"
+              className="w-20 h-20 md:w-24 md:h-24 object-contain transition-all duration-500 group-hover:scale-110 group-hover:brightness-110"
+              style={{ 
+                filter: `drop-shadow(0 0 15px ${lampColor}66) drop-shadow(0 0 5px ${lampColor}AA)` 
+              }}
+            />
+            
+            {/* Sparkles Effect */}
+            <div className="absolute inset-0 pointer-events-none">
+              <Sparkles className="absolute top-0 right-0 w-4 h-4 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
+              <Sparkles className="absolute bottom-4 left-0 w-3 h-3 text-yellow-200 opacity-0 group-hover:opacity-100 transition-opacity animate-bounce delay-75" />
+            </div>
             
             {/* Tooltip */}
             <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
