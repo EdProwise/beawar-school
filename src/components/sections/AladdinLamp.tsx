@@ -17,20 +17,35 @@ export function AladdinLamp() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewOffers, setHasNewOffers] = useState(false);
 
-  const { data: offers = [] } = useQuery({
-    queryKey: ["offers"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("offers")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return data as Offer[];
-    },
-  });
+    const { data: offers = [] } = useQuery({
+      queryKey: ["offers"],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from("offers")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true });
+        if (error) throw error;
+        return data as Offer[];
+      },
+    });
 
-  useEffect(() => {
+    const { data: siteSettings } = useQuery({
+      queryKey: ["site-settings"],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from("site_settings")
+          .select("lamp_color")
+          .limit(1)
+          .maybeSingle();
+        if (error) throw error;
+        return data;
+      },
+    });
+
+    const lampColor = siteSettings?.lamp_color || "#FFD700";
+
+    useEffect(() => {
     if (offers.length > 0) {
       setHasNewOffers(true);
     }

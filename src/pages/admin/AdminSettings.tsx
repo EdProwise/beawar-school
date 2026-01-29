@@ -80,6 +80,7 @@ export default function AdminSettings() {
       tc_verify_url: "",
       affiliation_no: "",
       udise_code: "",
+      lamp_color: "#FFD700",
     });
 
     const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
@@ -111,10 +112,11 @@ export default function AdminSettings() {
           office_hours_weekday: settings.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM",
           office_hours_weekend: settings.office_hours_weekend || "Sat: 9:00 AM - 1:00 PM",
           tc_apply_url: settings.tc_apply_url || "",
-          tc_verify_url: settings.tc_verify_url || "",
-          affiliation_no: settings.affiliation_no || "",
-          udise_code: settings.udise_code || "",
-        });
+            tc_verify_url: settings.tc_verify_url || "",
+            affiliation_no: settings.affiliation_no || "",
+            udise_code: settings.udise_code || "",
+            lamp_color: settings.lamp_color || "#FFD700",
+          });
 
         // Initialize link types based on values
         const primaryPresets = ["/admissions", "/contact", "/about"];
@@ -314,25 +316,45 @@ export default function AdminSettings() {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="accent_color">Accent Color</Label>
-                  <div className="flex gap-3 mt-2">
-                    <input
-                      type="color"
-                      id="accent_color"
-                      value={formData.accent_color}
-                      onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
-                      className="w-14 h-10 rounded cursor-pointer border-0 p-0 overflow-hidden"
-                    />
-                    <Input
-                      value={formData.accent_color}
-                      onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
-                      placeholder="#d4a853"
-                      className="flex-1"
-                    />
+                  <div className="space-y-2">
+                    <Label htmlFor="accent_color">Accent Color</Label>
+                    <div className="flex gap-3 mt-2">
+                      <input
+                        type="color"
+                        id="accent_color"
+                        value={formData.accent_color}
+                        onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
+                        className="w-14 h-10 rounded cursor-pointer border-0 p-0 overflow-hidden"
+                      />
+                      <Input
+                        value={formData.accent_color}
+                        onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
+                        placeholder="#d4a853"
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="lamp_color">Hanging Lamp Color</Label>
+                    <div className="flex gap-3 mt-2">
+                      <input
+                        type="color"
+                        id="lamp_color"
+                        value={formData.lamp_color}
+                        onChange={(e) => setFormData({ ...formData, lamp_color: e.target.value })}
+                        className="w-14 h-10 rounded cursor-pointer border-0 p-0 overflow-hidden"
+                      />
+                      <Input
+                        value={formData.lamp_color}
+                        onChange={(e) => setFormData({ ...formData, lamp_color: e.target.value })}
+                        placeholder="#FFD700"
+                        className="flex-1"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">The color of the Aladdin Lamp on the homepage</p>
                   </div>
                 </div>
-              </div>
             </div>
           </TabsContent>
 
