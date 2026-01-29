@@ -9,17 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Pencil, Trash2, Tag } from "lucide-react";
-
-interface Offer {
-  id: string;
-  title: string;
-  description: string | null;
-  code: string | null;
-  discount: string | null;
-  is_active: boolean;
-  sort_order: number;
-}
+import { Loader2, Plus, Pencil, Trash2, Tag, Palette, Save } from "lucide-react";
 
 export default function AdminOffers() {
   const { toast } = useToast();
@@ -32,6 +22,40 @@ export default function AdminOffers() {
     code: "",
     discount: "",
     is_active: true,
+  });
+
+  const [lampColor, setLampColor] = useState("#4C0DC9");
+
+  const { data: settings } = useQuery({
+    queryKey: ["admin-site-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      if (data?.lamp_color) setLampColor(data.lamp_color);
+      return data;
+    },
+  });
+
+  const updateLampColorMutation = useMutation({
+    mutationFn: async (color: string) => {
+      if (settings?.id) {
+        const { error } = await supabase
+          .from("site_settings")
+          .update({ lamp_color: color })
+          .eq("id", settings.id);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-site-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["site-settings"] });
+      toast({ title: "Lamp color updated!" });
+    },
+    onError: () => toast({ title: "Error", variant: "destructive" }),
   });
 
   const { data: offers = [], isLoading } = useQuery({
@@ -198,6 +222,47 @@ export default function AdminOffers() {
             </form>
           </DialogContent>
         </Dialog>
+      </div>
+
+      {/* Lamp Color Quick Settings */}
+      <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <Palette className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-foreground">Aladdin Lamp Style</h3>
+              <p className="text-sm text-muted-foreground">Customize the hanging lamp's color on your homepage</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-xl border border-border">
+              <input
+                type="color"
+                value={lampColor}
+                onChange={(e) => setLampColor(e.target.value)}
+                className="w-10 h-10 rounded-lg cursor-pointer border-0 p-0 overflow-hidden"
+              />
+              <Input
+                value={lampColor}
+                onChange={(e) => setLampColor(e.target.value)}
+                className="w-28 h-10 font-mono text-sm bg-transparent border-0 focus-visible:ring-0"
+              />
+            </div>
+            <Button 
+              onClick={() => updateLampColorMutation.mutate(lampColor)}
+              disabled={updateLampColorMutation.isPending || lampColor === settings?.lamp_color}
+            >
+              {updateLampColorMutation.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Save className="w-4 h-4 mr-2" />
+              )}
+              Save Color
+            </Button>
+          </div>
+        </div>
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

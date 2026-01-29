@@ -17,35 +17,35 @@ export function AladdinLamp() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewOffers, setHasNewOffers] = useState(false);
 
-    const { data: offers = [] } = useQuery({
-      queryKey: ["offers"],
-      queryFn: async () => {
-        const { data, error } = await supabase
-          .from("offers")
-          .select("*")
-          .eq("is_active", true)
-          .order("sort_order", { ascending: true });
-        if (error) throw error;
-        return data as Offer[];
-      },
-    });
+  const { data: offers = [] } = useQuery({
+    queryKey: ["offers"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("offers")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as Offer[];
+    },
+  });
 
-    const { data: siteSettings } = useQuery({
-      queryKey: ["site-settings"],
-      queryFn: async () => {
-        const { data, error } = await supabase
-          .from("site_settings")
-          .select("lamp_color")
-          .limit(1)
-          .maybeSingle();
-        if (error) throw error;
-        return data;
-      },
-    });
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("lamp_color")
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
 
-    const lampColor = siteSettings?.lamp_color || "#FFD700";
+  const lampColor = settings?.lamp_color || "#4C0DC9";
 
-    useEffect(() => {
+  useEffect(() => {
     if (offers.length > 0) {
       setHasNewOffers(true);
     }
@@ -58,7 +58,10 @@ export function AladdinLamp() {
       {/* Hanging Lamp */}
       <div className="fixed left-4 md:left-8 top-0 z-[100] pointer-events-none">
         {/* The String */}
-        <div className="w-px h-24 md:h-32 bg-primary/30 mx-auto" />
+        <div 
+          className="w-px h-24 md:h-32 mx-auto" 
+          style={{ backgroundColor: `${lampColor}4D` }} // 30% opacity
+        />
         
         {/* The Lamp Container */}
         <motion.div
@@ -88,7 +91,8 @@ export function AladdinLamp() {
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
-              className="text-primary drop-shadow-[0_0_15px_rgba(var(--primary),0.5)] group-hover:scale-110 transition-transform duration-300"
+              style={{ color: lampColor }}
+              className="drop-shadow-[0_0_15px_rgba(var(--primary),0.5)] group-hover:scale-110 transition-transform duration-300"
             >
               <path
                 d="M21 13C21 16.866 17.866 20 14 20C10.134 20 7 16.866 7 13C7 10.7909 8.79086 9 11 9H14C17.866 9 21 12.134 21 13Z"
