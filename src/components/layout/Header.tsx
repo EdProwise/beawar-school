@@ -144,14 +144,14 @@ export interface HeaderProps {
                       <GraduationCap className="w-10 h-10 text-foreground" />
                     )}
                   </div>
-                  <div className="flex flex-col">
-                    <span className="font-heading font-bold text-xl text-foreground whitespace-nowrap">
-                      {schoolName}
-                    </span>
-                    <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-                      {tagline}
-                    </span>
-                  </div>
+                    <div className="flex flex-col">
+                      <span className="font-heading font-bold text-xl text-primary whitespace-nowrap">
+                        {schoolName}
+                      </span>
+                      <span className="text-xs font-medium text-primary whitespace-nowrap">
+                        {tagline}
+                      </span>
+                    </div>
                 </Link>
 
                 {/* Desktop Navigation Links (Center) */}

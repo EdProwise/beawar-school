@@ -143,10 +143,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <div className="w-10 h-10 flex items-center justify-center">
                 <GraduationCap className="w-8 h-8 text-foreground" />
               </div>
-              <div>
-                <p className="font-heading font-bold text-foreground">Orbit School</p>
-                <p className="text-xs text-muted-foreground">Admin Panel</p>
-              </div>
+                <div>
+                  <p className="font-heading font-bold text-primary">Orbit School</p>
+                  <p className="text-xs text-primary">Admin Panel</p>
+                </div>
             </Link>
           <button
             onClick={() => setSidebarOpen(false)}
