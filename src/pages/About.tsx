@@ -288,7 +288,7 @@ const About = () => {
                   <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
                     <span className="font-heading font-bold text-accent-foreground">{milestone.year}</span>
                   </div>
-                  <p className="text-primary-foreground/80 text-sm">{milestone.event}</p>
+                    <p className="text-primary-foreground/80 text-base md:text-lg font-medium break-words">{milestone.event}</p>
                 </div>
               ))}
             </div>
