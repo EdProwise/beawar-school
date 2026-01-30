@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { MapPin, Phone, Mail, Clock, Send, Facebook, Twitter, Instagram, Youtube, Loader2, ArrowRight, MessageSquare, Globe, Sparkles } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Send, Facebook, Linkedin, Instagram, Youtube, Loader2, ArrowRight, MessageSquare, Globe, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSubmitAdmissionInquiry, useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
 import { motion } from "framer-motion";
@@ -336,7 +336,7 @@ const Contact = () => {
                     <div className="flex flex-wrap gap-4">
                       {[
                         { icon: Facebook, url: settings?.facebook_url, label: 'Facebook' },
-                        { icon: Twitter, url: settings?.twitter_url, label: 'Twitter' },
+                        { icon: Linkedin, url: settings?.linkedin_url, label: 'Linkedin' },
                         { icon: Instagram, url: settings?.instagram_url, label: 'Instagram' },
                         { icon: Youtube, url: settings?.youtube_url, label: 'YouTube' }
                       ].map((social, i) => (

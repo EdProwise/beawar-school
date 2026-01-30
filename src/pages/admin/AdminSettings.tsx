@@ -63,7 +63,7 @@ export default function AdminSettings() {
       address: "",
       map_embed_url: "",
       facebook_url: "",
-      twitter_url: "",
+      linkedin_url: "",
       instagram_url: "",
       youtube_url: "",
       whatsapp_number: "",
@@ -95,12 +95,12 @@ export default function AdminSettings() {
           email: settings.email || "",
           phone: settings.phone || "",
           phone_secondary: settings.phone_secondary || "",
-          address: settings.address || "",
-          map_embed_url: settings.map_embed_url || "",
-          facebook_url: settings.facebook_url || "",
-          twitter_url: settings.twitter_url || "",
-          instagram_url: settings.instagram_url || "",
-          youtube_url: settings.youtube_url || "",
+            address: settings.address || "",
+            map_embed_url: settings.map_embed_url || "",
+            facebook_url: settings.facebook_url || "",
+            linkedin_url: settings.linkedin_url || "",
+            instagram_url: settings.instagram_url || "",
+            youtube_url: settings.youtube_url || "",
           whatsapp_number: settings.whatsapp_number || "",
           footer_text: settings.footer_text || "",
           primary_color: settings.primary_color || "#4C0DC9",
@@ -580,15 +580,15 @@ export default function AdminSettings() {
                     placeholder="https://facebook.com/yourschool"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="twitter_url">Twitter URL</Label>
-                  <Input
-                    id="twitter_url"
-                    value={formData.twitter_url}
-                    onChange={(e) => setFormData({ ...formData, twitter_url: e.target.value })}
-                    placeholder="https://twitter.com/yourschool"
-                  />
-                </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin_url">Linkedin URL</Label>
+                    <Input
+                      id="linkedin_url"
+                      value={formData.linkedin_url}
+                      onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
+                      placeholder="https://linkedin.com/school/yourschool"
+                    />
+                  </div>
                 <div className="space-y-2">
                   <Label htmlFor="instagram_url">Instagram URL</Label>
                   <Input

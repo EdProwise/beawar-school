@@ -718,9 +718,9 @@ export type Database = {
           school_name: string
           show_apply_button: boolean | null
           show_portal_button: boolean | null
-          tagline: string | null
-          twitter_url: string | null
-          updated_at: string | null
+            tagline: string | null
+            linkedin_url: string | null
+            updated_at: string | null
           whatsapp_number: string | null
           youtube_url: string | null
         }

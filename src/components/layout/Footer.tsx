@@ -5,10 +5,10 @@ import {
   MapPin, 
   Phone, 
   Mail, 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Youtube,
+    Facebook, 
+    Linkedin, 
+    Instagram, 
+    Youtube,
   ArrowRight,
   Loader2,
   ShieldCheck
@@ -90,10 +90,10 @@ export function Footer() {
               </p>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  {[Facebook, Twitter, Instagram, Youtube].map((Icon, idx) => {
+                  {[Facebook, Linkedin, Instagram, Youtube].map((Icon, idx) => {
                     const urls = [
                       settings?.facebook_url,
-                      settings?.twitter_url,
+                      settings?.linkedin_url,
                       settings?.instagram_url,
                       settings?.youtube_url
                     ];
