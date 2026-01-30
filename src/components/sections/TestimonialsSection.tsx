@@ -19,156 +19,133 @@ export function TestimonialsSection() {
     );
   }
 
-  // Only take first 4 testimonials
-  const limitedTestimonials = testimonials.slice(0, 4);
+    // Only take first 9 testimonials as requested
+    const limitedTestimonials = testimonials.slice(0, 9);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
+    // Distribute testimonials into two rows
+    let firstRow: Testimonial[] = [];
+    let secondRow: Testimonial[] = [];
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
+    if (limitedTestimonials.length <= 3) {
+      firstRow = limitedTestimonials;
+    } else {
+      const midPoint = Math.ceil(limitedTestimonials.length / 2);
+      firstRow = limitedTestimonials.slice(0, midPoint);
+      secondRow = limitedTestimonials.slice(midPoint);
+    }
 
-  return (
-    <section className="py-20 lg:py-32 bg-background relative overflow-hidden">
-      {/* Premium Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,transparent_0%,hsl(var(--secondary)/0.3)_100%)]" />
-      </div>
+    return (
+      <section className="py-10 lg:py-10 bg-secondary/50 relative overflow-hidden">
+        {/* Background Decoration */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
-      <div className="container relative z-10">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-semibold tracking-wide uppercase mb-6 border border-primary/20">
+        <div className="container relative mb-16">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
               Testimonials
             </span>
-            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 tracking-tight">
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
               What Our <span className="text-gradient-primary">Community</span> Says
             </h2>
-            <div className="w-24 h-1.5 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mb-8" />
-            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
-              Discover why families choose Orbit School for their children's future. 
-              Real stories from our dedicated parents and thriving students.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Grid Layout */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
-          {limitedTestimonials.map((testimonial) => (
-            <motion.div
-              key={testimonial.id}
-              variants={itemVariants}
-              className="group h-full"
-            >
-              <div className={cn(
-                "relative bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 h-full flex flex-col",
-                "shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500",
-                "hover:shadow-[0_20px_50px_rgba(var(--primary-rgb),0.1)] hover:-translate-y-2 hover:bg-card/60",
-                "group-hover:border-primary/20"
-              )}>
-                {/* Accent Line */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-primary to-accent rounded-b-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                {/* Quote Icon */}
-                <div className="mb-8 flex justify-between items-start">
-                  <div className="p-3 bg-primary/5 rounded-2xl group-hover:bg-primary/10 transition-colors duration-500">
-                    <Quote className="w-6 h-6 text-primary" />
-                  </div>
-                  <div className="flex gap-1">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-accent text-accent" />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Quote Text */}
-                <blockquote className="text-foreground/90 leading-relaxed mb-8 text-lg font-medium italic">
-                  "{testimonial.quote}"
-                </blockquote>
-
-                {/* Author Info */}
-                <div className="flex items-center gap-5 pt-8 border-t border-border/50">
-                  <div className="relative">
-                    {testimonial.author_image ? (
-                      <img
-                        src={testimonial.author_image}
-                        alt={testimonial.author_name}
-                        className="w-14 h-14 rounded-2xl object-cover border-2 border-white/20 shadow-sm"
-                      />
-                    ) : (
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center border-2 border-white/20">
-                        <span className="text-primary font-bold text-xl">
-                          {testimonial.author_name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-accent rounded-lg border-2 border-card flex items-center justify-center shadow-sm">
-                      <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-heading font-bold text-foreground text-base tracking-wide">
-                      {testimonial.author_name}
-                    </h4>
-                    <p className="text-sm text-muted-foreground font-medium">
-                      {testimonial.author_role}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Bottom CTA or Badge */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-20 text-center"
-        >
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-secondary/50 backdrop-blur-sm border border-border rounded-2xl">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-card bg-primary/10" />
-              ))}
-            </div>
-            <p className="text-sm font-medium text-muted-foreground">
-              Joined by <span className="text-foreground font-bold">500+</span> happy families this year
+            <p className="text-muted-foreground text-lg">
+              Hear from parents and students about their experience at Orbit School
             </p>
           </div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+
+        {/* Testimonials Marquee */}
+        <div className="flex flex-col gap-8">
+          {firstRow.length > 0 && (
+            <MarqueeRow 
+              items={firstRow} 
+              direction="right" 
+              speed={40} 
+            />
+          )}
+          
+          {secondRow.length > 0 && (
+            <MarqueeRow 
+              items={secondRow} 
+              direction="left" 
+              speed={30} 
+            />
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  interface MarqueeRowProps {
+    items: Testimonial[];
+    direction: "left" | "right";
+    speed: number;
+  }
+
+  function MarqueeRow({ items, direction, speed }: MarqueeRowProps) {
+    // Double the items for a seamless loop
+    const duplicatedItems = [...items, ...items];
+
+
+  return (
+    <div className="flex overflow-hidden select-none">
+      <motion.div
+        animate={{
+          x: direction === "right" ? ["-50%", "0%"] : ["0%", "-50%"],
+        }}
+        transition={{
+          duration: speed,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+        className="flex gap-6 px-3"
+      >
+        {duplicatedItems.map((testimonial, index) => (
+          <div
+            key={`${testimonial.id}-${index}`}
+            className={cn(
+              "flex-shrink-0 w-[350px] md:w-[400px] bg-card rounded-2xl p-6 lg:p-8 border-l-4 border-accent shadow-soft transition-all duration-300 hover:shadow-medium"
+            )}
+          >
+            {/* Quote Icon */}
+            <div className="mb-4">
+              <Quote className="w-8 h-8 text-primary-light" />
+            </div>
+
+            {/* Rating */}
+            <div className="flex gap-1 mb-4">
+              {Array.from({ length: testimonial.rating }).map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-accent text-accent" />
+              ))}
+            </div>
+
+            {/* Quote */}
+            <p className="text-foreground leading-relaxed mb-6 italic text-sm md:text-base line-clamp-4">
+              "{testimonial.quote}"
+            </p>
+
+            {/* Author */}
+            <div className="flex items-center gap-4">
+              {testimonial.author_image && (
+                <img
+                  src={testimonial.author_image}
+                  alt={testimonial.author_name}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-accent"
+                />
+              )}
+              <div>
+                <p className="font-heading font-semibold text-foreground text-sm">
+                  {testimonial.author_name}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {testimonial.author_role}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </motion.div>
+    </div>
   );
 }
