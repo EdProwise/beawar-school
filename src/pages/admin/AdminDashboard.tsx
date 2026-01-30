@@ -54,80 +54,41 @@ const AdminDashboard = () => {
   }, [user, authLoading, navigate]);
 
   // Fetch counts
-  const { data: newsCount = 0 } = useQuery({
-    queryKey: ["admin-news-count"],
-    queryFn: async () => {
-      const { count } = await supabase.from("news_events").select("*", { count: "exact", head: true });
-      return count || 0;
-    },
-  });
+    const { data: newsCount = 0 } = useQuery({
+      queryKey: ["admin-news-count"],
+      queryFn: async () => {
+        const { count } = await supabase.from("news_events").select("*", { count: "exact", head: true });
+        return count || 0;
+      },
+    });
+  
+    const { data: galleryCount = 0 } = useQuery({
+      queryKey: ["admin-gallery-count"],
+      queryFn: async () => {
+        const { count } = await supabase.from("gallery_items").select("*", { count: "exact", head: true });
+        return count || 0;
+      },
+    });
+  
+    const { data: testimonialCount = 0 } = useQuery({
+      queryKey: ["admin-testimonial-count"],
+      queryFn: async () => {
+        const { count } = await supabase.from("testimonials").select("*", { count: "exact", head: true });
+        return count || 0;
+      },
+    });
+  
+    const { data: newsletterCount = 0 } = useQuery({
+      queryKey: ["admin-newsletter-count"],
+      queryFn: async () => {
+        const { count } = await supabase.from("newsletter_subscriptions").select("*", { count: "exact", head: true });
+        return count || 0;
+      },
+    });
 
-  const { data: galleryCount = 0 } = useQuery({
-    queryKey: ["admin-gallery-count"],
-    queryFn: async () => {
-      const { count } = await supabase.from("gallery_items").select("*", { count: "exact", head: true });
-      return count || 0;
-    },
-  });
-
-  const { data: testimonialCount = 0 } = useQuery({
-    queryKey: ["admin-testimonial-count"],
-    queryFn: async () => {
-      const { count } = await supabase.from("testimonials").select("*", { count: "exact", head: true });
-      return count || 0;
-    },
-  });
-
-  const { data: admissionCount = 0 } = useQuery({
-    queryKey: ["admin-admission-count"],
-    queryFn: async () => {
-      const { count } = await supabase.from("admission_inquiries").select("*", { count: "exact", head: true });
-      return count || 0;
-    },
-  });
-
-  const { data: contactCount = 0 } = useQuery({
-    queryKey: ["admin-contact-count"],
-    queryFn: async () => {
-      const { count } = await supabase.from("contact_submissions").select("*", { count: "exact", head: true });
-      return count || 0;
-    },
-  });
-
-  const { data: newsletterCount = 0 } = useQuery({
-    queryKey: ["admin-newsletter-count"],
-    queryFn: async () => {
-      const { count } = await supabase.from("newsletter_subscriptions").select("*", { count: "exact", head: true });
-      return count || 0;
-    },
-  });
-
-  // Fetch recent activities
-  const { data: recentContacts = [] } = useQuery({
-    queryKey: ["admin-recent-contacts"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("contact_submissions")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(5);
-      return data || [];
-    },
-  });
-
-  const { data: recentAdmissions = [] } = useQuery({
-    queryKey: ["admin-recent-admissions"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("admission_inquiries")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(5);
-      return data || [];
-    },
-  });
-
-  if (authLoading) {
+    // Fetch recent activities
+  
+    if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -139,8 +100,6 @@ const AdminDashboard = () => {
     { title: "News & Events", value: newsCount, icon: Newspaper, color: "bg-primary", link: "/admin/news" },
     { title: "Gallery Items", value: galleryCount, icon: Image, color: "bg-green-500", link: "/admin/gallery" },
     { title: "Testimonials", value: testimonialCount, icon: MessageSquare, color: "bg-blue-500", link: "/admin/testimonials" },
-    { title: "Admission Inquiries", value: admissionCount, icon: Users, color: "bg-orange-500", link: "/admin/admissions" },
-    { title: "Contact Messages", value: contactCount, icon: Mail, color: "bg-pink-500", link: "/admin/contacts" },
     { title: "Newsletter Subs", value: newsletterCount, icon: Bell, color: "bg-accent", link: "/admin/newsletter" },
   ];
 
@@ -165,81 +124,10 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat) => (
             <StatCard key={stat.title} {...stat} />
           ))}
-        </div>
-
-        {/* Recent Activity */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Recent Contacts */}
-          <div className="bg-card rounded-xl border border-border">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <h2 className="font-heading font-semibold text-foreground flex items-center gap-2">
-                <Mail className="w-5 h-5 text-primary" />
-                Recent Contact Messages
-              </h2>
-              <Link to="/admin/contacts" className="text-sm text-primary hover:underline">
-                View All
-              </Link>
-            </div>
-            <div className="divide-y divide-border">
-              {recentContacts.length > 0 ? (
-                recentContacts.map((contact: { id: string; full_name: string; subject: string; created_at: string }) => (
-                  <div key={contact.id} className="p-4 hover:bg-secondary/50 transition-colors">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-medium text-foreground">{contact.full_name}</p>
-                        <p className="text-sm text-muted-foreground">{contact.subject}</p>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDate(contact.created_at)}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-8 text-center text-muted-foreground">
-                  No messages yet
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Recent Admissions */}
-          <div className="bg-card rounded-xl border border-border">
-            <div className="p-4 border-b border-border flex items-center justify-between">
-              <h2 className="font-heading font-semibold text-foreground flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                Recent Admission Inquiries
-              </h2>
-              <Link to="/admin/admissions" className="text-sm text-primary hover:underline">
-                View All
-              </Link>
-            </div>
-            <div className="divide-y divide-border">
-              {recentAdmissions.length > 0 ? (
-                recentAdmissions.map((admission: { id: string; parent_name: string; grade_applying: string; created_at: string }) => (
-                  <div key={admission.id} className="p-4 hover:bg-secondary/50 transition-colors">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-medium text-foreground">{admission.parent_name}</p>
-                        <p className="text-sm text-muted-foreground">Grade: {admission.grade_applying}</p>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDate(admission.created_at)}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-8 text-center text-muted-foreground">
-                  No inquiries yet
-                </div>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* Quick Actions */}

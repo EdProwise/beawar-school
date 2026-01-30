@@ -44,8 +44,6 @@ interface NavItem {
 
   const navItems: NavItem[] = [
   { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Admission Inquiries", path: "/admin/admissions", icon: Users },
-  { name: "Contact Message", path: "/admin/contacts", icon: Mail },
   { name: "About Content", path: "/admin/about", icon: Info },
   {
     name: "Academics",

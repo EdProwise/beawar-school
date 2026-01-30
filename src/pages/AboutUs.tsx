@@ -142,7 +142,7 @@ export function AboutUs() {
                         {about?.main_heading || "A Legacy of Educational Excellence"}
                       </h2>
 
-                      <div className="prose prose-lg text-muted-foreground mb-10 max-w-none">
+                      <div className="prose prose-lg text-black-foreground mb-10 max-w-none">
                         <FormattedContent 
                           content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`} 
                         />
