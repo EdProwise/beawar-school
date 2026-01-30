@@ -30,25 +30,26 @@ export function AboutSection() {
               {about?.main_heading || "Welcome to Our School"}
             </h2>
             <div className="mb-8">
-              <FormattedContent 
-                content={
-                  about?.main_description 
-                    ? (() => {
-                        const text = about.main_description;
-                        const isHtml = /<[a-z][\s\S]*>/i.test(text);
-                          if (isHtml) {
-                            // Split by </p> and keep the closing tag
-                            const paragraphs = text.split(/<\/p>/i).filter(p => p.trim() !== "").map(p => p + "</p>");
-                            // Take first 2 "blocks" - if one is empty it provides the space
-                            return paragraphs.slice(0, 3).join("");
-                          }
-                          // For plain text, keep empty lines for spacing
-                          return text.split('\n').slice(0, 3).join('\n');
-                      })()
-                    : "We provide quality education for all students."
-                } 
-                className="text-lg text-muted-foreground"
-              />
+                <FormattedContent 
+                  content={
+                    about?.main_description 
+                      ? (() => {
+                          const text = about.main_description;
+                          const isHtml = /<[a-z][\s\S]*>/i.test(text);
+                            if (isHtml) {
+                              // Split by </p> and keep the closing tag
+                              // We don't filter out empty paragraphs here to preserve spacing
+                              const paragraphs = text.split(/<\/p>/i).map(p => p.trim() ? p + "</p>" : "");
+                              // Take first 10 blocks to ensure we don't cut off content prematurely if there are spaces
+                              return paragraphs.slice(0, 10).join("");
+                            }
+                            // For plain text, keep empty lines for spacing
+                            return text.split('\n').slice(0, 10).join('\n');
+                        })()
+                      : "We provide quality education for all students."
+                  } 
+                  className="text-lg text-muted-foreground"
+                />
             </div>
 
               <Button variant="default" size="lg" asChild>
