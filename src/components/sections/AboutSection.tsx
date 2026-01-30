@@ -36,15 +36,14 @@ export function AboutSection() {
                     ? (() => {
                         const text = about.main_description;
                         const isHtml = /<[a-z][\s\S]*>/i.test(text);
-                        if (isHtml) {
-                          // Split by </p> and filter out empty or whitespace-only paragraphs
-                          const paragraphs = text.split(/<\/p>/i).filter(p => {
-                            const cleanP = p.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
-                            return cleanP.length > 0;
-                          });
-                          return paragraphs.slice(0, 2).map(p => p + "</p>").join("");
-                        }
-                        return text.split('\n').filter(p => p.trim()).slice(0, 2).join('\n\n');
+                          if (isHtml) {
+                            // Split by </p> and keep the closing tag
+                            const paragraphs = text.split(/<\/p>/i).filter(p => p.trim() !== "").map(p => p + "</p>");
+                            // Take first 2 "blocks" - if one is empty it provides the space
+                            return paragraphs.slice(0, 3).join("");
+                          }
+                          // For plain text, keep empty lines for spacing
+                          return text.split('\n').slice(0, 3).join('\n');
                       })()
                     : "We provide quality education for all students."
                 } 
