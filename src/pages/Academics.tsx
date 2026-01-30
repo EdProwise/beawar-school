@@ -149,6 +149,46 @@ const defaultPrograms = [
           </div>
         </section>
 
+        {/* Features */}
+        <section className="py-20 bg-background">
+          <div className="container">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
+                Why Choose Us
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                Academic Excellence at {schoolName}
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {displayExcellence.map((feature, index) => {
+                const IconComponent = iconMap[feature.icon_name || "Award"] || Award;
+                const style = cardStyles[index % cardStyles.length];
+                return (
+                  <div 
+                    key={feature.id} 
+                    className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
+                  >
+                    {/* Hover Gradient Overlay */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    
+                    <div className="relative z-10">
+                      <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
+                        <IconComponent className={`w-7 h-7 ${style.iconText}`} />
+                      </div>
+                      <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
+                    </div>
+
+                    {/* Bottom Accent Line */}
+                    <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* Programs */}
         <section className="py-20 bg-background">
           <div className="container">
@@ -218,46 +258,6 @@ const defaultPrograms = [
                 })}
               </div>
             )}
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="py-20 bg-background">
-          <div className="container">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
-                Why Choose Us
-              </span>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
-                Academic Excellence at {schoolName}
-              </h2>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {displayExcellence.map((feature, index) => {
-                const IconComponent = iconMap[feature.icon_name || "Award"] || Award;
-                const style = cardStyles[index % cardStyles.length];
-                return (
-                  <div 
-                    key={feature.id} 
-                    className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
-                  >
-                    {/* Hover Gradient Overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                    
-                    <div className="relative z-10">
-                      <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
-                        <IconComponent className={`w-7 h-7 ${style.iconText}`} />
-                      </div>
-                      <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
-                    </div>
-
-                    {/* Bottom Accent Line */}
-                    <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
-                  </div>
-                );
-              })}
-            </div>
           </div>
         </section>
 
