@@ -138,16 +138,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         )}
       >
         {/* Logo */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-border shrink-0">
-          <Link to="/admin/dashboard" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <p className="font-heading font-bold text-foreground">Orbit School</p>
-              <p className="text-xs text-muted-foreground">Admin Panel</p>
-            </div>
-          </Link>
+          <div className="h-16 flex items-center justify-between px-4 border-b border-border shrink-0">
+            <Link to="/admin/dashboard" className="flex items-center gap-3">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <GraduationCap className="w-8 h-8 text-foreground" />
+              </div>
+              <div>
+                <p className="font-heading font-bold text-foreground">Orbit School</p>
+                <p className="text-xs text-muted-foreground">Admin Panel</p>
+              </div>
+            </Link>
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden p-2 rounded-lg hover:bg-secondary"

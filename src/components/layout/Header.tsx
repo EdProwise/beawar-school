@@ -136,35 +136,23 @@ export interface HeaderProps {
         <div className="container mx-auto px-4">
             <div className="flex items-center justify-between gap-4">
               {/* Logo */}
-              <Link to="/" className="flex items-center gap-3 group shrink-0">
-                <div className={cn(
-                  "w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300",
-                  isScrolled || isSolid ? "bg-primary" : isLight ? "bg-primary/10 backdrop-blur-sm" : "bg-primary-foreground/10 backdrop-blur-sm"
-                )}>
-                  {settings?.logo_url ? (
-                    <img src={settings.logo_url} alt={schoolName} className="w-8 h-8 object-contain" />
-                  ) : (
-                    <GraduationCap className={cn(
-                      "w-7 h-7 transition-colors",
-                      isScrolled || isSolid ? "text-primary-foreground" : isLight ? "text-primary" : "text-primary-foreground"
-                    )} />
-                  )}
-                </div>
-                <div className="flex flex-col">
-                  <span className={cn(
-                    "font-heading font-bold text-xl transition-colors whitespace-nowrap",
-                    isScrolled || isSolid ? "text-primary" : isLight ? "text-primary" : "text-primary-foreground"
-                  )}>
-                    {schoolName}
-                  </span>
-                  <span className={cn(
-                    "text-xs font-medium transition-colors whitespace-nowrap",
-                    isScrolled || isSolid ? "text-muted-foreground" : isLight ? "text-slate-600" : "text-primary-foreground/70"
-                  )}>
-                    {tagline}
-                  </span>
-                </div>
-              </Link>
+                <Link to="/" className="flex items-center gap-3 group shrink-0">
+                  <div className="w-12 h-12 flex items-center justify-center transition-all duration-300">
+                    {settings?.logo_url ? (
+                      <img src={settings.logo_url} alt={schoolName} className="w-full h-full object-contain" />
+                    ) : (
+                      <GraduationCap className="w-10 h-10 text-foreground" />
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-heading font-bold text-xl text-foreground whitespace-nowrap">
+                      {schoolName}
+                    </span>
+                    <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+                      {tagline}
+                    </span>
+                  </div>
+                </Link>
 
                 {/* Desktop Navigation Links (Center) */}
                 <nav className="hidden lg:flex items-center justify-center flex-1 gap-1">
