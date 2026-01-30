@@ -27,7 +27,7 @@ export function FacilitiesSection() {
   const displayFacilities = facilities.length > 0 ? facilities : defaultFacilities;
 
   return (
-    <section className="py-20 lg:py-28 bg-background relative overflow-hidden">
+    <section className="py-10 lg:py-10 bg-background relative overflow-hidden">
       {/* Background */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary/3 rounded-full blur-3xl" />
 

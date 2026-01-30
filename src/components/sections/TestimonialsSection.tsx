@@ -19,8 +19,8 @@ export function TestimonialsSection() {
     );
   }
 
-  // Only take first 9 testimonials
-  const limitedTestimonials = testimonials.slice(0, 9);
+  // Only take first 4 testimonials
+  const limitedTestimonials = testimonials.slice(0, 4);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -76,22 +76,22 @@ export function TestimonialsSection() {
           </motion.div>
         </div>
 
-        {/* Masonry Grid */}
+        {/* Grid Layout */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
           {limitedTestimonials.map((testimonial) => (
             <motion.div
               key={testimonial.id}
               variants={itemVariants}
-              className="break-inside-avoid group"
+              className="group h-full"
             >
               <div className={cn(
-                "relative bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 lg:p-10",
+                "relative bg-card/40 backdrop-blur-md border border-white/10 rounded-3xl p-8 h-full flex flex-col",
                 "shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500",
                 "hover:shadow-[0_20px_50px_rgba(var(--primary-rgb),0.1)] hover:-translate-y-2 hover:bg-card/60",
                 "group-hover:border-primary/20"
