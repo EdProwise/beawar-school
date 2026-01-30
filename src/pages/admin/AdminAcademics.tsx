@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, Plus, Trash2, Award, Users, Clock, Target, CheckCircle, GraduationCap, Lightbulb, BookOpen } from "lucide-react";
 import { useAcademicExcellence, type AcademicExcellence } from "@/hooks/use-school-data";
@@ -163,15 +164,14 @@ export default function AdminAcademics() {
                         </div>
                       </div>
                     </div>
-                    <div>
-                      <Label>Description</Label>
-                      <Textarea
-                        value={highlight.description || ""}
-                        onChange={(e) => handleUpdateHighlight(highlight.id, { description: e.target.value })}
-                        rows={5}
-                        placeholder="Briefly describe this academic highlight..."
-                      />
-                    </div>
+                      <div>
+                        <RichTextEditor
+                          label="Description"
+                          value={highlight.description || ""}
+                          onChange={(content) => handleUpdateHighlight(highlight.id, { description: content })}
+                          placeholder="Briefly describe this academic highlight..."
+                        />
+                      </div>
                   </div>
                 </div>
               ))}

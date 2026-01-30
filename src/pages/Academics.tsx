@@ -176,9 +176,12 @@ const defaultPrograms = [
                       <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
                         <IconComponent className={`w-7 h-7 ${style.iconText}`} />
                       </div>
-                      <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
-                    </div>
+                        <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
+                        <FormattedContent 
+                          content={feature.description || ""} 
+                          className="text-muted-foreground leading-relaxed text-sm prose-p:mb-0" 
+                        />
+                      </div>
 
                     {/* Bottom Accent Line */}
                     <div className={`absolute bottom-0 left-0 h-1.5 w-0 bg-gradient-to-r ${style.gradient.replace('/20', '')} transition-all duration-500 group-hover:w-full`} />
