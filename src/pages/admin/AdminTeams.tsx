@@ -194,15 +194,25 @@ export default function AdminTeams() {
                         placeholder="e.g., Dr. Jane Smith"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor={`position-${member.id}`}>Position</Label>
-                      <Input
-                        id={`position-${member.id}`}
-                        value={member.position}
-                        onChange={(e) => handleUpdateMember(member.id, { position: e.target.value })}
-                        placeholder="e.g., Principal"
-                      />
-                    </div>
+                      <div>
+                        <Label htmlFor={`position-${member.id}`}>Position</Label>
+                        <Input
+                          id={`position-${member.id}`}
+                          value={member.position}
+                          onChange={(e) => handleUpdateMember(member.id, { position: e.target.value })}
+                          placeholder="e.g., Principal"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`email-${member.id}`}>Email ID</Label>
+                        <Input
+                          id={`email-${member.id}`}
+                          value={member.email || ""}
+                          onChange={(e) => handleUpdateMember(member.id, { email: e.target.value })}
+                          placeholder="e.g., jane.smith@school.com"
+                        />
+                      </div>
+
                     <div>
                       <RichTextEditor
                         label="Long Description"

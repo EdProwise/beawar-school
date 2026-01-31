@@ -743,6 +743,7 @@ export interface TeamMember {
   images: string[];
   is_active: boolean;
   sort_order: number;
+  email?: string;
 }
 
 export function useBranches() {

@@ -24,6 +24,15 @@ export function OurTeams() {
     member.position.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const cardStyles = [
+    { border: "border-indigo-500/20", accent: "bg-indigo-500", text: "text-indigo-600", light: "bg-indigo-50", shadow: "shadow-indigo-500/10" },
+    { border: "border-emerald-500/20", accent: "bg-emerald-500", text: "text-emerald-600", light: "bg-emerald-50", shadow: "shadow-emerald-500/10" },
+    { border: "border-amber-500/20", accent: "bg-amber-500", text: "text-amber-600", light: "bg-amber-50", shadow: "shadow-amber-500/10" },
+    { border: "border-rose-500/20", accent: "bg-rose-500", text: "text-rose-600", light: "bg-rose-50", shadow: "shadow-rose-500/10" },
+    { border: "border-cyan-500/20", accent: "bg-cyan-500", text: "text-cyan-600", light: "bg-cyan-50", shadow: "shadow-cyan-500/10" },
+    { border: "border-violet-500/20", accent: "bg-violet-500", text: "text-violet-600", light: "bg-violet-50", shadow: "shadow-violet-500/10" },
+  ];
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -77,45 +86,56 @@ export function OurTeams() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : filteredTeams.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {filteredTeams.map((member) => (
-                  <Card 
-                    key={member.id} 
-                    className="group overflow-hidden border-border bg-card hover:shadow-elegant transition-all duration-500 rounded-2xl flex flex-col cursor-pointer"
-                    onClick={() => setSelectedMember(member)}
-                  >
-                      <div className="aspect-[4/5] relative overflow-hidden">
-                        {member.images?.[0] ? (
-                          <img 
-                            src={member.images[0]} 
-                            alt={member.name}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-secondary/50 flex items-center justify-center">
-                            <Users className="w-16 h-16 text-muted-foreground/20" />
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {filteredTeams.map((member, idx) => {
+                    const style = cardStyles[idx % cardStyles.length];
+                    return (
+                      <Card 
+                        key={member.id} 
+                        className={`group overflow-hidden border ${style.border} bg-card hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 rounded-2xl flex flex-col cursor-pointer ${style.shadow}`}
+                        onClick={() => setSelectedMember(member)}
+                      >
+                        <div className="aspect-[4/5] relative overflow-hidden">
+                          {member.images?.[0] ? (
+                            <img 
+                              src={member.images[0]} 
+                              alt={member.name}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                          ) : (
+                            <div className={`w-full h-full ${style.light} flex items-center justify-center`}>
+                              <Users className={`w-16 h-16 ${style.text} opacity-20`} />
+                            </div>
+                          )}
+                          <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6`}>
+                            <span className="text-white text-sm font-medium flex items-center gap-2">
+                              Click to View Full Profile <Info className="w-4 h-4" />
+                            </span>
                           </div>
-                        )}
-                      </div>
-
-                      <CardContent className="p-6 text-center flex-1 flex flex-col">
-                        <div className="flex-1">
-                          <h3 className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                            {member.name}
-                          </h3>
-                          <p className="text-primary font-medium text-sm mb-3">
-                            {member.position}
-                          </p>
-                          <div className="w-12 h-1 bg-primary/20 mx-auto rounded-full group-hover:w-20 group-hover:bg-primary transition-all duration-500 mb-6" />
+                          <div className={`absolute top-4 left-4 ${style.accent} text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg`}>
+                            {member.position.split(' ')[0]}
+                          </div>
                         </div>
-                        <Button variant="gold" size="sm" className="w-full gap-2 mt-auto">
-                          <Info className="w-4 h-4" />
-                          View Profile
-                        </Button>
-                      </CardContent>
-                  </Card>
-                ))}
-              </div>
+
+                        <CardContent className="p-6 text-center flex-1 flex flex-col relative">
+                          <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-1.5 ${style.accent} rounded-full`} />
+                          <div className="flex-1">
+                            <h3 className={`text-xl font-bold text-foreground mb-1 group-hover:${style.text} transition-colors`}>
+                              {member.name}
+                            </h3>
+                            <p className={`${style.text} font-semibold text-sm mb-4`}>
+                              {member.position}
+                            </p>
+                          </div>
+                          <Button variant="outline" size="sm" className={`w-full gap-2 mt-auto border-2 ${style.border} hover:${style.accent} hover:text-white transition-all duration-300 font-bold rounded-xl group-hover:shadow-lg`}>
+                            View Profile
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+
             ) : (
               <div className="text-center py-20 bg-secondary/20 rounded-3xl border-2 border-dashed border-border">
                 <Users className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
@@ -161,16 +181,23 @@ export function OurTeams() {
                     <FormattedContent content={selectedMember.description} />
                   </div>
 
-                  <div className="mt-12 pt-8 border-t border-border flex flex-wrap gap-4">
-                    <Button variant="outline" size="sm" className="rounded-full pointer-events-none opacity-50">
-                      <Mail className="w-4 h-4 mr-2" />
-                      Contact via School
-                    </Button>
-                    <Button variant="outline" size="sm" className="rounded-full pointer-events-none opacity-50">
-                      <Phone className="w-4 h-4 mr-2" />
-                      Extension: --
-                    </Button>
-                  </div>
+                    <div className="mt-12 pt-8 border-t border-border flex flex-wrap gap-4">
+                      {selectedMember.email && (
+                        <a 
+                          href={`mailto:${selectedMember.email}`}
+                          className="flex items-center gap-3 px-6 py-3 bg-secondary/50 hover:bg-primary hover:text-white transition-all duration-300 rounded-2xl group shadow-sm hover:shadow-lg border border-border"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                            <Mail className="w-5 h-5 text-primary group-hover:text-white" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] uppercase font-bold tracking-wider opacity-60">Email Address</p>
+                            <p className="text-sm font-semibold">{selectedMember.email}</p>
+                          </div>
+                        </a>
+                      )}
+                    </div>
+
                 </div>
               </div>
             )}
