@@ -1,6 +1,7 @@
 import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
 import OurBranches from "./pages/OurBranches";
+import OurTeams from "./pages/OurTeams";
 import Academics from "./pages/Academics";
 import Extracurricular from "./pages/Extracurricular";
 import AdmissionProcess from "./pages/AdmissionProcess";
@@ -54,6 +55,7 @@ import AdminTeachingMethod from "./pages/admin/AdminTeachingMethod";
 import AdminResults from "./pages/admin/AdminResults";
 import AdminAlumni from "./pages/admin/AdminAlumni";
 import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
+import AdminTeams from "./pages/admin/AdminTeams";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
 
@@ -67,6 +69,11 @@ export const routers = [
       path: "/about-us",
       name: 'about-us',
       element: <AboutUs />,
+    },
+    {
+      path: "/our-teams",
+      name: 'our-teams',
+      element: <OurTeams />,
     },
     {
       path: "/our-branches",
@@ -255,13 +262,18 @@ export const routers = [
       name: 'admin-programs',
       element: <AdminPrograms />,
     },
-      {
-        path: "/admin/about",
-        name: 'admin-about',
-        element: <AdminAbout />,
-      },
-        {
-          path: "/admin/academics",
+          {
+            path: "/admin/about",
+            name: 'admin-about',
+            element: <AdminAbout />,
+          },
+          {
+            path: "/admin/teams",
+            name: 'admin-teams',
+            element: <AdminTeams />,
+          },
+          {
+            path: "/admin/academics",
           name: 'admin-academics',
           element: <AdminAcademics />,
         },

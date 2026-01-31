@@ -43,10 +43,17 @@ interface NavItem {
 }
 
   const navItems: NavItem[] = [
-  { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "About Content", path: "/admin/about", icon: Info },
-  {
-    name: "Academics",
+    { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    {
+      name: "About Content",
+      icon: Info,
+      children: [
+        { name: "About & Branches", path: "/admin/about", icon: Info },
+        { name: "Our Teams", path: "/admin/teams", icon: Users },
+      ]
+    },
+    {
+      name: "Academics",
     icon: GraduationCap,
       children: [
         { name: "Academic Programs", path: "/admin/programs", icon: FileText },

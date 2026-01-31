@@ -735,6 +735,16 @@ export interface Branch {
   sort_order: number;
 }
 
+export interface TeamMember {
+  id: string;
+  name: string;
+  position: string;
+  description: string;
+  images: string[];
+  is_active: boolean;
+  sort_order: number;
+}
+
 export function useBranches() {
   return useQuery({
     queryKey: ["branches"],
@@ -745,6 +755,20 @@ export function useBranches() {
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as Branch[];
+    },
+  });
+}
+
+export function useTeams() {
+  return useQuery({
+    queryKey: ["our_teams"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("our_teams")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as TeamMember[];
     },
   });
 }
