@@ -719,6 +719,50 @@ export function useBeyondAcademics(category?: string) {
   });
 }
 
+// Teaching Methods
+export interface TeachingMethodSection {
+  id: string;
+  title: string;
+  content: string;
+  image_url: string;
+  sort_order: number;
+}
+
+export interface TeachingMethodHero {
+  id: string;
+  title: string;
+  center_image: string;
+  description: string | null;
+}
+
+export function useTeachingMethods() {
+  return useQuery({
+    queryKey: ["teaching-methods"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("teaching_methods")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as TeachingMethodSection[];
+    },
+  });
+}
+
+export function useTeachingMethodHero() {
+  return useQuery({
+    queryKey: ["teaching-method-hero"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("teaching_method_content")
+        .select("*")
+        .maybeSingle();
+      if (error) throw error;
+      return data as TeachingMethodHero | null;
+    },
+  });
+}
+
 // Our Branches
 export interface Branch {
   id: string;
