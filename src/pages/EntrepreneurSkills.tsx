@@ -2,12 +2,28 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { useBeyondAcademics } from "@/hooks/use-school-data";
 import { FormattedContent } from "@/components/ui/formatted-content";
-import { Loader2, Zap, Sparkles, Lightbulb } from "lucide-react";
+import { Loader2, Zap, Sparkles, Lightbulb, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { ImageLightbox } from "@/components/ui/image-lightbox";
 
 export default function EntrepreneurSkills() {
   const { data, isLoading } = useBeyondAcademics("entrepreneur-skills");
   const sections = data;
+
+  const [lightbox, setLightbox] = useState<{
+    isOpen: boolean;
+    images: string[];
+    index: number;
+  }>({
+    isOpen: false,
+    images: [],
+    index: 0,
+  });
+
+  const openLightbox = (images: string[], index: number) => {
+    setLightbox({ isOpen: true, images, index });
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -133,24 +149,40 @@ export default function EntrepreneurSkills() {
                                 controls
                                 poster={section.image_url}
                               />
-                            ) : section.images && section.images.length > 0 ? (
-                              <div className="w-full h-full grid grid-cols-2 gap-2 p-2">
-                                {section.images.slice(0, 4).map((img, i) => (
-                                  <div key={i} className={`relative overflow-hidden rounded-xl ${section.images!.length === 1 ? 'col-span-2 row-span-2' : ''} ${section.images!.length === 2 ? 'row-span-2' : ''} ${section.images!.length === 3 && i === 0 ? 'row-span-2' : ''}`}>
-                                    <img 
-                                      src={img} 
-                                      alt={`${section.title} ${i + 1}`}
-                                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                                    />
+                              ) : section.images && section.images.length > 0 ? (
+                                <div className="w-full h-full grid grid-cols-2 gap-2 p-2">
+                                  {section.images.slice(0, 4).map((img, i) => (
+                                    <div 
+                                      key={i} 
+                                      className={`relative overflow-hidden rounded-xl cursor-pointer group/img ${section.images!.length === 1 ? 'col-span-2 row-span-2' : ''} ${section.images!.length === 2 ? 'row-span-2' : ''} ${section.images!.length === 3 && i === 0 ? 'row-span-2' : ''}`}
+                                      onClick={() => openLightbox(section.images!, i)}
+                                    >
+                                      <img 
+                                        src={img} 
+                                        alt={`${section.title} ${i + 1}`}
+                                        className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                                      />
+                                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                        <ZoomIn className="w-8 h-8 text-white shadow-lg" />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : section.image_url ? (
+                                <div 
+                                  className="w-full h-full cursor-pointer group/img relative overflow-hidden"
+                                  onClick={() => openLightbox([section.image_url!], 0)}
+                                >
+                                  <img 
+                                    src={section.image_url} 
+                                    alt={section.title}
+                                    className="w-full h-full object-cover transform group-hover/media:scale-105 transition-transform duration-700"
+                                  />
+                                  <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                    <ZoomIn className="w-10 h-10 text-white shadow-lg" />
                                   </div>
-                                ))}
-                              </div>
-                            ) : section.image_url ? (
-                            <img 
-                              src={section.image_url} 
-                              alt={section.title}
-                              className="w-full h-full object-cover transform group-hover/media:scale-105 transition-transform duration-700"
-                            />
+                                </div>
+
                           ) : (
                             <div className="w-full h-full flex flex-col items-center justify-center space-y-4 bg-gradient-to-br from-slate-50 to-slate-100">
                               <Zap className="w-16 h-16 text-slate-300" />
@@ -180,6 +212,12 @@ export default function EntrepreneurSkills() {
         </section>
       </main>
       <Footer />
+      <ImageLightbox 
+        images={lightbox.images}
+        initialIndex={lightbox.index}
+        isOpen={lightbox.isOpen}
+        onClose={() => setLightbox(prev => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }
