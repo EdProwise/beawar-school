@@ -5,7 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Save, Plus, Trash2, BookOpen, ClipboardList, Image as ImageIcon, CheckCircle, Star } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -297,49 +297,61 @@ export default function AdminCurriculumAndTeaching() {
                       <Label>Section Title</Label>
                       <Input value={curForm.preschool_title} onChange={e => setCurForm({...curForm, preschool_title: e.target.value})} />
                     </div>
-                    <div>
-                      <Label>Description</Label>
-                      <Textarea value={curForm.preschool_desc} onChange={e => setCurForm({...curForm, preschool_desc: e.target.value})} rows={3} />
+                      <div>
+                        <RichTextEditor 
+                          label="Description"
+                          value={curForm.preschool_desc} 
+                          onChange={content => setCurForm({...curForm, preschool_desc: content})} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-border">
+                    <h3 className="font-bold mb-3">Strongroots Program</h3>
+                    <div className="space-y-3">
+                      <div>
+                        <Label>Program Title</Label>
+                        <Input value={curForm.strongroots_title} onChange={e => setCurForm({...curForm, strongroots_title: e.target.value})} />
+                      </div>
+                      <div>
+                        <RichTextEditor 
+                          label="Description"
+                          value={curForm.strongroots_desc} 
+                          onChange={content => setCurForm({...curForm, strongroots_desc: content})} 
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-border">
-                  <h3 className="font-bold mb-3">Strongroots Program</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <Label>Program Title</Label>
-                      <Input value={curForm.strongroots_title} onChange={e => setCurForm({...curForm, strongroots_title: e.target.value})} />
-                    </div>
-                    <div>
-                      <Label>Description</Label>
-                      <Textarea value={curForm.strongroots_desc} onChange={e => setCurForm({...curForm, strongroots_desc: e.target.value})} rows={3} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* NEP & Admission Card */}
-              <div className="space-y-8">
-                <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" /> NEP 2020 Framework
-                  </h2>
-                  <div className="space-y-4">
-                    <div>
-                      <Label>Framework Title</Label>
-                      <Input value={curForm.nep_title} onChange={e => setCurForm({...curForm, nep_title: e.target.value})} />
-                    </div>
-                    <div>
-                      <Label>Paragraph 1 (Italic)</Label>
-                      <Textarea value={curForm.nep_desc1} onChange={e => setCurForm({...curForm, nep_desc1: e.target.value})} rows={4} />
-                    </div>
-                    <div>
-                      <Label>Paragraph 2</Label>
-                      <Textarea value={curForm.nep_desc2} onChange={e => setCurForm({...curForm, nep_desc2: e.target.value})} rows={4} />
+                {/* NEP & Admission Card */}
+                <div className="space-y-8">
+                  <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-4">
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" /> NEP 2020 Framework
+                    </h2>
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Framework Title</Label>
+                        <Input value={curForm.nep_title} onChange={e => setCurForm({...curForm, nep_title: e.target.value})} />
+                      </div>
+                      <div>
+                        <RichTextEditor 
+                          label="Paragraph 1 (Italic)"
+                          value={curForm.nep_desc1} 
+                          onChange={content => setCurForm({...curForm, nep_desc1: content})} 
+                        />
+                      </div>
+                      <div>
+                        <RichTextEditor 
+                          label="Paragraph 2"
+                          value={curForm.nep_desc2} 
+                          onChange={content => setCurForm({...curForm, nep_desc2: content})} 
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
 
                 <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-4">
                   <h2 className="text-xl font-bold flex items-center gap-2 text-[#A11B5A]">

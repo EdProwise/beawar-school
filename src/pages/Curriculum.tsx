@@ -4,6 +4,7 @@ import { Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
+import { FormattedContent } from "@/components/ui/formatted-content";
 
 export default function Curriculum() {
   const { data: content, isLoading: contentLoading } = useQuery({
@@ -125,45 +126,45 @@ export default function Curriculum() {
                 </div>
               </div>
 
-              <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900">{pageData.preschool_title}</h2>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {pageData.preschool_desc}
-                </p>
-                <ul className="space-y-4">
-                  {pageActivities.map((activity, idx) => (
-                    <li key={idx} className="flex gap-4 items-start group">
-                      <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-gray-900">
-                        <Check size={14} strokeWidth={4} />
-                      </div>
-                      <span className="text-gray-700 font-medium leading-tight group-hover:text-gray-900 transition-colors">
-                        {activity}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-black text-gray-900">{pageData.preschool_title}</h2>
+                  <div className="text-gray-600 leading-relaxed text-lg">
+                    <FormattedContent content={pageData.preschool_desc} />
+                  </div>
+                  <ul className="space-y-4">
+                    {pageActivities.map((activity, idx) => (
+                      <li key={idx} className="flex gap-4 items-start group">
+                        <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-gray-900">
+                          <Check size={14} strokeWidth={4} />
+                        </div>
+                        <span className="text-gray-700 font-medium leading-tight group-hover:text-gray-900 transition-colors">
+                          {activity}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-black text-gray-900 uppercase">{pageData.strongroots_title}</h2>
+                  <div className="text-gray-600 leading-relaxed text-lg">
+                    <FormattedContent content={pageData.strongroots_desc} />
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900 uppercase">{pageData.strongroots_title}</h2>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {pageData.strongroots_desc}
-                </p>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 space-y-12">
-              <div className="space-y-6">
-                <h2 className="text-2xl font-black text-gray-900 leading-tight">
-                  {pageData.nep_title}
-                </h2>
-                <p className="text-gray-600 leading-relaxed text-lg italic">
-                  {pageData.nep_desc1}
-                </p>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {pageData.nep_desc2}
-                </p>
-              </div>
+              <div className="lg:col-span-5 space-y-12">
+                <div className="space-y-6">
+                  <h2 className="text-2xl font-black text-gray-900 leading-tight">
+                    {pageData.nep_title}
+                  </h2>
+                  <div className="text-gray-600 leading-relaxed text-lg italic">
+                    <FormattedContent content={pageData.nep_desc1} />
+                  </div>
+                  <div className="text-gray-600 leading-relaxed text-lg">
+                    <FormattedContent content={pageData.nep_desc2} />
+                  </div>
+                </div>
 
               <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 sticky top-32">
                 <div className="bg-[#A11B5A] py-6 text-center">
