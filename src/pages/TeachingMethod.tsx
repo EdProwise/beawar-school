@@ -50,7 +50,17 @@ export default function TeachingMethod() {
 
   const pageTitle = heroData?.title || "Our Teaching Methodology";
   const pageDescription = heroData?.description || "Our pedagogical approach is designed to inspire curiosity and foster holistic development in every child.";
-  const heroImages = heroData?.images && heroData.images.length > 0 ? heroData.images : [heroData?.center_image || "/classroom.png"];
+  
+  // Robust image logic: combine center_image with images array, filtering duplicates
+  const getHeroImages = () => {
+    const images = [...(heroData?.images || [])];
+    if (heroData?.center_image && !images.includes(heroData.center_image)) {
+      images.unshift(heroData.center_image);
+    }
+    return images.length > 0 ? images : ["/classroom.png"];
+  };
+  
+  const heroImages = getHeroImages();
 
   return (
     <div className="min-h-screen bg-background">
@@ -91,15 +101,15 @@ export default function TeachingMethod() {
                   </div>
                 </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, x: -100 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="relative group"
-                >
-                  <div className="relative z-10">
+                <div className="relative group">
+                  <motion.div
+                    initial={{ opacity: 0, x: -100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="relative z-10"
+                  >
                     {heroImages.length > 1 ? (
-                      <Carousel className="w-full">
+                      <Carousel className="w-full" opts={{ loop: true }}>
                         <CarouselContent>
                           {heroImages.map((img, idx) => (
                             <CarouselItem key={idx}>
@@ -112,15 +122,18 @@ export default function TeachingMethod() {
                                   alt={`Teaching Method Hero ${idx + 1}`} 
                                   className="w-full h-full object-cover transition-transform group-hover/item:scale-110 duration-700"
                                 />
-                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
-                                  <ZoomIn className="w-12 h-12 text-white" />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                                  <ZoomIn className="w-12 h-12 mb-2" />
+                                  <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
                                 </div>
                               </div>
                             </CarouselItem>
                           ))}
                         </CarouselContent>
-                        <CarouselPrevious className="left-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
-                        <CarouselNext className="right-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+                        <div className="hidden md:block">
+                          <CarouselPrevious className="left-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+                          <CarouselNext className="right-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+                        </div>
                       </Carousel>
                     ) : (
                       <div 
@@ -132,16 +145,17 @@ export default function TeachingMethod() {
                           alt="Teaching Method" 
                           className="w-full h-full object-cover transition-transform group-hover/item:scale-110 duration-700"
                         />
-                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center">
-                          <ZoomIn className="w-12 h-12 text-white" />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                          <ZoomIn className="w-12 h-12 mb-2" />
+                          <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
                         </div>
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                   {/* Decorative Elements */}
                   <div className="absolute -top-6 -right-6 w-32 h-32 bg-accent/20 rounded-full blur-3xl animate-pulse" />
                   <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-primary-light/20 rounded-full blur-3xl animate-pulse" />
-                </motion.div>
+                </div>
               </div>
             </div>
           </section>
@@ -162,18 +176,30 @@ export default function TeachingMethod() {
                 {methods.map((method, index) => {
                   const isEven = index % 2 === 0;
                   const IconComponent = iconMap[Object.keys(iconMap)[index % Object.keys(iconMap).length]] || BookOpen;
-                  const methodImages = method.images && method.images.length > 0 ? method.images : [method.image_url || "/classroom.png"];
+                  
+                  // Combine image_url with images array
+                  const getMethodImages = () => {
+                    const images = [...(method.images || [])];
+                    if (method.image_url && !images.includes(method.image_url)) {
+                      images.unshift(method.image_url);
+                    }
+                    return images.length > 0 ? images : ["/classroom.png"];
+                  };
+                  
+                  const methodImages = getMethodImages();
 
                   return (
-                      <motion.div 
+                      <div 
                         key={method.id}
-                        initial={{ opacity: 0, x: -100 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-100px" }}
-                        transition={{ duration: 0.8, delay: index * 0.1 }}
                         className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
                       >
-                      <div className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}>
+                      <motion.div 
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}
+                      >
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center">
                             <IconComponent className="w-6 h-6 text-primary" />
@@ -195,13 +221,20 @@ export default function TeachingMethod() {
                               <ArrowRight className="w-4 h-4 ml-2" />
                             </Link>
                           </Button>
-                      </div>
-                      <div className={`${isEven ? '' : 'lg:order-1'}`}>
+                      </motion.div>
+                      
+                      <motion.div 
+                        initial={{ opacity: 0, x: -100 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        className={`${isEven ? '' : 'lg:order-1'}`}
+                      >
                         <div className="relative group">
                           <div className="absolute inset-0 bg-primary/5 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0" />
                           <div className="relative z-10">
                             {methodImages.length > 1 ? (
-                              <Carousel className="w-full">
+                              <Carousel className="w-full" opts={{ loop: true }}>
                                 <CarouselContent>
                                   {methodImages.map((img, idx) => (
                                     <CarouselItem key={idx}>
@@ -214,15 +247,18 @@ export default function TeachingMethod() {
                                           alt={`${method.title} ${idx + 1}`}
                                           className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
                                         />
-                                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center rounded-[2rem]">
-                                          <ZoomIn className="w-12 h-12 text-white" />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-[2rem]">
+                                          <ZoomIn className="w-12 h-12 mb-2" />
+                                          <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
                                         </div>
                                       </div>
                                     </CarouselItem>
                                   ))}
                                 </CarouselContent>
-                                <CarouselPrevious className="left-4" />
-                                <CarouselNext className="right-4" />
+                                <div className="hidden md:block">
+                                  <CarouselPrevious className="left-4" />
+                                  <CarouselNext className="right-4" />
+                                </div>
                               </Carousel>
                             ) : (
                               <div 
@@ -234,53 +270,54 @@ export default function TeachingMethod() {
                                   alt={method.title}
                                   className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
                                 />
-                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/item:opacity-100 transition-opacity flex items-center justify-center rounded-[2rem]">
-                                  <ZoomIn className="w-12 h-12 text-white" />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-[2rem]">
+                                  <ZoomIn className="w-12 h-12 mb-2" />
+                                  <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
                                 </div>
                               </div>
                             )}
                           </div>
                           <div className={`absolute -bottom-6 ${isEven ? '-right-6' : '-left-6'} w-32 h-32 bg-accent/20 rounded-full blur-3xl -z-10`} />
                         </div>
-                        </div>
-                      </motion.div>
+                        </motion.div>
+                      </div>
                   );
                 })}
               </div>
             </div>
           </section>
 
-        {/* CTA Section */}
-        <section className="py-24 bg-primary relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
-          </div>
-          <div className="container relative text-center">
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-primary-foreground mb-8">
-              Experience the {schoolName} Way
-            </h2>
-            <p className="text-primary-foreground/80 mb-12 max-w-2xl mx-auto text-lg">
-              Join our community of lifelong learners and give your child the foundation they deserve with our innovative teaching methods.
-            </p>
-            <div className="flex flex-wrap gap-6 justify-center">
-              <Button variant="hero-gold" size="lg" className="h-14 px-10 text-lg" asChild>
-                <Link to="/admissions/process">Apply Now</Link>
-              </Button>
-              <Button variant="hero" size="lg" className="h-14 px-10 text-lg" asChild>
-                <Link to="/contact">Book a Tour</Link>
-              </Button>
+          {/* CTA Section */}
+          <section className="py-24 bg-primary relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
             </div>
-          </div>
-        </section>
-      </main>
-      <Footer />
-      
-      <ImageLightbox 
-        images={lightboxImages}
-        isOpen={lightboxOpen}
-        initialIndex={lightboxIndex}
-        onClose={() => setLightboxOpen(false)}
-      />
+            <div className="container relative text-center">
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-primary-foreground mb-8">
+                Experience the {schoolName} Way
+              </h2>
+              <p className="text-primary-foreground/80 mb-12 max-w-2xl mx-auto text-lg">
+                Join our community of lifelong learners and give your child the foundation they deserve with our innovative teaching methods.
+              </p>
+              <div className="flex flex-wrap gap-6 justify-center">
+                <Button variant="hero-gold" size="lg" className="h-14 px-10 text-lg" asChild>
+                  <Link to="/admissions/process">Apply Now</Link>
+                </Button>
+                <Button variant="hero" size="lg" className="h-14 px-10 text-lg" asChild>
+                  <Link to="/contact">Book a Tour</Link>
+                </Button>
+              </div>
+            </div>
+          </section>
+        </main>
+        <Footer />
+        
+        <ImageLightbox 
+          images={lightboxImages}
+          isOpen={lightboxOpen}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxOpen(false)}
+        />
     </div>
   );
 }
