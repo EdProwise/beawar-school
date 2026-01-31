@@ -84,35 +84,35 @@ export function OurTeams() {
                     className="group overflow-hidden border-border bg-card hover:shadow-elegant transition-all duration-500 rounded-2xl flex flex-col cursor-pointer"
                     onClick={() => setSelectedMember(member)}
                   >
-                    <div className="aspect-[4/5] relative overflow-hidden">
-                      {member.images?.[0] ? (
-                        <img 
-                          src={member.images[0]} 
-                          alt={member.name}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-secondary/50 flex items-center justify-center">
-                          <Users className="w-16 h-16 text-muted-foreground/20" />
+                      <div className="aspect-[4/5] relative overflow-hidden">
+                        {member.images?.[0] ? (
+                          <img 
+                            src={member.images[0]} 
+                            alt={member.name}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-secondary/50 flex items-center justify-center">
+                            <Users className="w-16 h-16 text-muted-foreground/20" />
+                          </div>
+                        )}
+                      </div>
+
+                      <CardContent className="p-6 text-center flex-1 flex flex-col">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+                            {member.name}
+                          </h3>
+                          <p className="text-primary font-medium text-sm mb-3">
+                            {member.position}
+                          </p>
+                          <div className="w-12 h-1 bg-primary/20 mx-auto rounded-full group-hover:w-20 group-hover:bg-primary transition-all duration-500 mb-6" />
                         </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                        <Button variant="gold" size="sm" className="w-full gap-2">
+                        <Button variant="gold" size="sm" className="w-full gap-2 mt-auto">
                           <Info className="w-4 h-4" />
                           View Profile
                         </Button>
-                      </div>
-                    </div>
-
-                    <CardContent className="p-6 text-center">
-                      <h3 className="text-xl font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                        {member.name}
-                      </h3>
-                      <p className="text-primary font-medium text-sm mb-3">
-                        {member.position}
-                      </p>
-                      <div className="w-12 h-1 bg-primary/20 mx-auto rounded-full group-hover:w-20 group-hover:bg-primary transition-all duration-500" />
-                    </CardContent>
+                      </CardContent>
                   </Card>
                 ))}
               </div>
