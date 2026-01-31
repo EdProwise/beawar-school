@@ -197,7 +197,7 @@ const Facilities = () => {
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button variant="hero-gold" size="lg" asChild>
-                  <Link to="/admissions">Apply Now</Link>
+                  <Link to="/admissions/process">Apply Now</Link>
                 </Button>
                 <Button variant="hero" size="lg" asChild>
                   <Link to="/contact">Contact Us</Link>

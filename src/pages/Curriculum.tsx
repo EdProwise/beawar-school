@@ -180,7 +180,7 @@ export default function Curriculum() {
                   </div>
                   <Button 
                     className="w-full py-8 text-xl font-black bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-2xl shadow-lg shadow-yellow-200 transition-all active:scale-95"
-                    onClick={() => window.location.href = '/admissions'}
+                    onClick={() => window.location.href = '/admissions/process'}
                   >
                     {pageData.admission_btn_text}
                   </Button>

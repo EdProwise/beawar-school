@@ -40,7 +40,7 @@ const navLinks = [
   },
     { 
       name: "Admissions", 
-      path: "/admissions",
+      path: "/admissions/process",
       children: [
         { name: "Admission Process", path: "/admissions/process" },
         { name: "Fees Structure", path: "/admissions/fees-structure" },

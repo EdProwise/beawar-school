@@ -71,7 +71,7 @@ export default function AdminSettings() {
       primary_color: "#4C0DC9",
       accent_color: "#d4a853",
       cta_primary_text: "Apply Now",
-      cta_primary_link: "/admissions",
+      cta_primary_link: "/admissions/process",
       cta_secondary_text: "Portal",
       cta_secondary_link: "/students",
       office_hours_weekday: "Mon - Fri: 8:00 AM - 5:00 PM",
@@ -106,7 +106,7 @@ export default function AdminSettings() {
           primary_color: settings.primary_color || "#4C0DC9",
           accent_color: settings.accent_color || "#d4a853",
           cta_primary_text: settings.cta_primary_text || "Apply Now",
-          cta_primary_link: settings.cta_primary_link || "/admissions",
+          cta_primary_link: settings.cta_primary_link || "/admissions/process",
           cta_secondary_text: settings.cta_secondary_text || "Portal",
           cta_secondary_link: settings.cta_secondary_link || "/students",
           office_hours_weekday: settings.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM",
@@ -119,7 +119,7 @@ export default function AdminSettings() {
           });
 
         // Initialize link types based on values
-        const primaryPresets = ["/admissions", "/contact", "/about"];
+        const primaryPresets = ["/admissions/process", "/contact", "/about-us"];
         const secondaryPresets = ["/students", "/teachers", "/parents", ...portals.map((p: any) => p.login_url)];
         
         setPrimaryLinkType(primaryPresets.includes(settings.cta_primary_link) ? "preset" : "custom");
@@ -391,7 +391,7 @@ export default function AdminSettings() {
                         <SelectValue placeholder="Select a page or enter custom link" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="/admissions">Admissions (/admissions)</SelectItem>
+                        <SelectItem value="/admissions/process">Admissions (/admissions/process)</SelectItem>
                         <SelectItem value="/contact">Contact (/contact)</SelectItem>
                         <SelectItem value="/about">About (/about)</SelectItem>
                         <SelectItem value="custom">Custom Link / HTTPS URL</SelectItem>
@@ -406,11 +406,11 @@ export default function AdminSettings() {
                         value={formData.cta_primary_link}
                         onChange={(e) => {
                           setFormData({ ...formData, cta_primary_link: e.target.value });
-                          if (!["/admissions", "/contact", "/about"].includes(e.target.value)) {
-                            setPrimaryLinkType("custom");
+                          if (!["/admissions/process", "/contact", "/about-us"].includes(e.target.value)) {
+                            setFormData(prev => ({ ...prev, cta_primary_link: e.target.value }));
                           }
                         }}
-                        placeholder="https://... or /admissions"
+                        placeholder="https://... or /admissions/process"
                         className="pr-10"
                       />
                       <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />

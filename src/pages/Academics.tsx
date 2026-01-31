@@ -238,7 +238,7 @@ const defaultPrograms = [
                             </div>
 
                           <Button asChild>
-                          <Link to="/admissions">
+                          <Link to="/admissions/process">
                             Apply for {program.title}
                             <ArrowRight className="w-4 h-4" />
                           </Link>
@@ -278,7 +278,7 @@ const defaultPrograms = [
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button variant="hero-gold" size="lg" asChild>
-                <Link to="/admissions">Apply Now</Link>
+                <Link to="/admissions/process">Apply Now</Link>
               </Button>
               <Button variant="hero" size="lg" asChild>
                 <Link to="/contact">Contact Us</Link>

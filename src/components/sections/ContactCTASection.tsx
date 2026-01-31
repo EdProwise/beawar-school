@@ -83,7 +83,7 @@ export function ContactCTASection() {
 
             <div className="flex flex-wrap gap-4">
               <Button variant="hero-gold" size="lg" asChild>
-                <Link to="/admissions">
+                <Link to="/admissions/process">
                   Apply Now
                   <ArrowRight className="w-5 h-5" />
                 </Link>
