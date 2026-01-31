@@ -165,12 +165,12 @@ export default function AdminCurriculumAndTeaching() {
   // Mutations
   const saveCurriculumMutation = useMutation({
     mutationFn: async () => {
-      // Save Main Content
-      if (curForm.id) {
-        await supabase.from("curriculum_content").update(curForm).eq("id", curForm.id);
-      } else {
-        await supabase.from("curriculum_content").insert([curForm]);
-      }
+      // Save Main Content using upsert for singleton pattern
+      const { data: savedContent, error: curError } = await supabase
+        .from("curriculum_content")
+        .upsert(curForm, { onConflict: 'id' });
+      
+      if (curError) throw curError;
 
       // Save Gallery
       const existingGalIds = curriculumGallery?.map(g => g.id) || [];
@@ -207,17 +207,25 @@ export default function AdminCurriculumAndTeaching() {
       queryClient.invalidateQueries({ queryKey: ["admin-curriculum-gallery"] });
       queryClient.invalidateQueries({ queryKey: ["admin-curriculum-activities"] });
       toast({ title: "Curriculum saved successfully" });
+    },
+    onError: (error: any) => {
+      console.error("Save curriculum error:", error);
+      toast({ 
+        title: "Error saving curriculum", 
+        description: error.message || "Please check your connection and try again",
+        variant: "destructive" 
+      });
     }
   });
 
   const saveTeachingMutation = useMutation({
     mutationFn: async () => {
-      // Save Main Content
-      if (teachForm.id) {
-        await supabase.from("teaching_method_content").update(teachForm).eq("id", teachForm.id);
-      } else {
-        await supabase.from("teaching_method_content").insert([teachForm]);
-      }
+      // Save Main Content using upsert
+      const { error: teachError } = await supabase
+        .from("teaching_method_content")
+        .upsert(teachForm, { onConflict: 'id' });
+        
+      if (teachError) throw teachError;
 
       // Save Cards (always upsert by position)
       for (const card of teachCards) {
@@ -233,6 +241,14 @@ export default function AdminCurriculumAndTeaching() {
       queryClient.invalidateQueries({ queryKey: ["admin-teaching-content"] });
       queryClient.invalidateQueries({ queryKey: ["admin-teaching-cards"] });
       toast({ title: "Teaching Method saved successfully" });
+    },
+    onError: (error: any) => {
+      console.error("Save teaching error:", error);
+      toast({ 
+        title: "Error saving teaching method", 
+        description: error.message || "Please check your connection and try again",
+        variant: "destructive" 
+      });
     }
   });
 

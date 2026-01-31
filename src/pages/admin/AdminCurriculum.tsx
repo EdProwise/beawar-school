@@ -130,13 +130,13 @@ export default function AdminCurriculum() {
                     placeholder="e.g., Primary Curriculum"
                   />
                 </div>
-                <div>
-                  <Label>Content</Label>
-                  <RichTextEditor
-                    content={section.content}
-                    onChange={(content) => handleUpdateSection(section.id, { content })}
-                  />
-                </div>
+                  <div>
+                    <Label>Content</Label>
+                    <RichTextEditor
+                      value={section.content}
+                      onChange={(content) => handleUpdateSection(section.id, { content })}
+                    />
+                  </div>
               </div>
             </div>
           ))}

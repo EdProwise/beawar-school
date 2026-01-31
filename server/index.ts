@@ -322,6 +322,8 @@ app.post('/api/:table/upsert', async (req, res) => {
     const { data, onConflict } = req.body;
     const Model = getModel(table);
     
+    console.log(`Upserting to ${table}, conflict key: ${onConflict || 'id'}`);
+    
     const items = Array.isArray(data) ? data : [data];
     const conflictKey = onConflict || 'id';
 
@@ -329,7 +331,12 @@ app.post('/api/:table/upsert', async (req, res) => {
     for (const item of items) {
       const filter: any = {};
       // Support finding by the conflict key
-      filter[conflictKey] = item[conflictKey];
+      if (item[conflictKey]) {
+        filter[conflictKey] = item[conflictKey];
+      } else {
+        // If no conflict key value, it will insert a new one
+        filter._id = new mongoose.Types.ObjectId();
+      }
       
       const result = await Model.findOneAndUpdate(
         filter,
