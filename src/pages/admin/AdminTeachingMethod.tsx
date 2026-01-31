@@ -26,6 +26,7 @@ export default function AdminTeachingMethod() {
   const [heroForm, setHeroForm] = useState<Partial<TeachingMethodHero>>({
     title: "",
     center_image: "",
+    images: [],
     description: ""
   });
 
@@ -33,6 +34,7 @@ export default function AdminTeachingMethod() {
     title: "",
     content: "",
     image_url: "",
+    images: [] as string[],
   });
 
   // Initialize hero form when data is loaded
@@ -41,6 +43,7 @@ export default function AdminTeachingMethod() {
       setHeroForm({
         title: heroData.title,
         center_image: heroData.center_image,
+        images: heroData.images || [],
         description: heroData.description || ""
       });
     }
@@ -97,6 +100,7 @@ export default function AdminTeachingMethod() {
       title: "",
       content: "",
       image_url: "",
+      images: [],
     });
     setEditingItem(null);
     setIsDialogOpen(false);
@@ -108,6 +112,7 @@ export default function AdminTeachingMethod() {
       title: item.title,
       content: item.content || "",
       image_url: item.image_url || "",
+      images: item.images || [],
     });
     setIsDialogOpen(true);
   };
@@ -163,13 +168,16 @@ export default function AdminTeachingMethod() {
                   onChange={(content) => setFormData({ ...formData, content })}
                 />
               </div>
-              <div>
-                <Label>Method Image</Label>
-                <FileUpload
-                  currentUrl={formData.image_url}
-                  onUpload={(url) => setFormData({ ...formData, image_url: url })}
-                />
-              </div>
+                <div>
+                  <Label>Method Images</Label>
+                  <FileUpload
+                    multiple
+                    currentUrl={formData.image_url}
+                    currentUrls={formData.images}
+                    onUpload={(url) => setFormData({ ...formData, image_url: url })}
+                    onMultiUpload={(urls) => setFormData({ ...formData, images: urls })}
+                  />
+                </div>
               <div className="flex gap-2 justify-end">
                 <Button type="button" variant="outline" onClick={resetForm}>Cancel</Button>
                 <Button type="submit" disabled={saveMethodMutation.isPending}>
@@ -220,14 +228,17 @@ export default function AdminTeachingMethod() {
                   Save Hero Section
                 </Button>
               </div>
-              <div className="space-y-2">
-                <Label>Hero Image</Label>
-                <FileUpload
-                  currentUrl={heroForm.center_image || (heroData?.center_image || "")}
-                  onUpload={(url) => setHeroForm({ ...heroForm, center_image: url })}
-                  className="aspect-video rounded-xl"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label>Hero Images</Label>
+                  <FileUpload
+                    multiple
+                    currentUrl={heroForm.center_image || (heroData?.center_image || "")}
+                    currentUrls={heroForm.images || (heroData?.images || [])}
+                    onUpload={(url) => setHeroForm({ ...heroForm, center_image: url })}
+                    onMultiUpload={(urls) => setHeroForm({ ...heroForm, images: urls })}
+                    className="aspect-video rounded-xl"
+                  />
+                </div>
             </div>
           </CardContent>
         </Card>
@@ -236,12 +247,17 @@ export default function AdminTeachingMethod() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {methods.map((method, index) => (
             <div key={method.id} className="bg-card rounded-xl border border-border overflow-hidden relative group flex flex-col shadow-sm hover:shadow-md transition-all">
-              <div className="aspect-video relative overflow-hidden">
-                <img 
-                  src={method.image_url || "/classroom.png"} 
-                  alt={method.title}
-                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
-                />
+                <div className="aspect-video relative overflow-hidden">
+                  <img 
+                    src={method.image_url || (method.images && method.images[0]) || "/classroom.png"} 
+                    alt={method.title}
+                    className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                  />
+                  {method.images && method.images.length > 1 && (
+                    <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+                      {method.images.length} images
+                    </div>
+                  )}
                 <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                   <Button variant="secondary" size="icon" className="h-8 w-8 bg-white/90 hover:bg-white" onClick={() => handleEdit(method)}>
                     <Pencil className="w-4 h-4 text-foreground" />

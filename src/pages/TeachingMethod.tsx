@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { useTeachingMethods, useTeachingMethodHero, useSiteSettings } from "@/hooks/use-school-data";
 import { Link } from "react-router-dom";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const iconMap: Record<string, React.ElementType> = {
   BookOpen, Target, Users, Heart, Award, Sparkles
@@ -29,7 +36,7 @@ export default function TeachingMethod() {
 
   const pageTitle = heroData?.title || "Our Teaching Methodology";
   const pageDescription = heroData?.description || "Our pedagogical approach is designed to inspire curiosity and foster holistic development in every child.";
-  const heroImage = heroData?.center_image || "/classroom.png";
+  const heroImages = heroData?.images && heroData.images.length > 0 ? heroData.images : [heroData?.center_image || "/classroom.png"];
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,16 +60,34 @@ export default function TeachingMethod() {
           </div>
         </section>
 
-        {/* Hero Image Section (Optional, based on Academic Programs Page style) */}
+        {/* Hero Image Section */}
         <section className="py-20 bg-background border-b border-border/50">
           <div className="container">
             <div className="relative max-w-5xl mx-auto">
-              <img 
-                src={heroImage} 
-                alt="Teaching Method" 
-                className="rounded-3xl shadow-strong w-full aspect-[21/9] object-cover"
-              />
-              <div className="absolute -bottom-4 -right-4 bg-accent px-8 py-4 rounded-2xl shadow-strong border border-white/20 backdrop-blur-md">
+              {heroImages.length > 1 ? (
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {heroImages.map((img, idx) => (
+                      <CarouselItem key={idx}>
+                        <img 
+                          src={img} 
+                          alt={`Teaching Method Hero ${idx + 1}`} 
+                          className="rounded-3xl shadow-strong w-full aspect-[21/9] object-cover"
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-4" />
+                  <CarouselNext className="right-4" />
+                </Carousel>
+              ) : (
+                <img 
+                  src={heroImages[0]} 
+                  alt="Teaching Method" 
+                  className="rounded-3xl shadow-strong w-full aspect-[21/9] object-cover"
+                />
+              )}
+              <div className="absolute -bottom-4 -right-4 bg-accent px-8 py-4 rounded-2xl shadow-strong border border-white/20 backdrop-blur-md z-20">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                     <Sparkles className="w-5 h-5 text-primary" />
@@ -90,6 +115,7 @@ export default function TeachingMethod() {
               {methods.map((method, index) => {
                 const isEven = index % 2 === 0;
                 const IconComponent = iconMap[Object.keys(iconMap)[index % Object.keys(iconMap).length]] || BookOpen;
+                const methodImages = method.images && method.images.length > 0 ? method.images : [method.image_url || "/classroom.png"];
 
                 return (
                   <div 
@@ -122,11 +148,31 @@ export default function TeachingMethod() {
                     <div className={`${isEven ? '' : 'lg:order-1'}`}>
                       <div className="relative group">
                         <div className="absolute inset-0 bg-primary/5 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0" />
-                        <img 
-                          src={method.image_url || "/classroom.png"} 
-                          alt={method.title}
-                          className="rounded-[2rem] shadow-strong w-full object-cover aspect-video relative z-10 border-4 border-white transition-transform group-hover:scale-[1.02]"
-                        />
+                        <div className="relative z-10">
+                          {methodImages.length > 1 ? (
+                            <Carousel className="w-full">
+                              <CarouselContent>
+                                {methodImages.map((img, idx) => (
+                                  <CarouselItem key={idx}>
+                                    <img 
+                                      src={img} 
+                                      alt={`${method.title} ${idx + 1}`}
+                                      className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white"
+                                    />
+                                  </CarouselItem>
+                                ))}
+                              </CarouselContent>
+                              <CarouselPrevious className="left-4" />
+                              <CarouselNext className="right-4" />
+                            </Carousel>
+                          ) : (
+                            <img 
+                              src={methodImages[0]} 
+                              alt={method.title}
+                              className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover:scale-[1.02]"
+                            />
+                          )}
+                        </div>
                         <div className={`absolute -bottom-6 ${isEven ? '-right-6' : '-left-6'} w-32 h-32 bg-accent/20 rounded-full blur-3xl -z-10`} />
                       </div>
                     </div>

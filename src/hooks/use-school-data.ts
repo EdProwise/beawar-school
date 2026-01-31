@@ -725,6 +725,7 @@ export interface TeachingMethodSection {
   title: string;
   content: string;
   image_url: string;
+  images?: string[];
   sort_order: number;
 }
 
@@ -732,6 +733,7 @@ export interface TeachingMethodHero {
   id: string;
   title: string;
   center_image: string;
+  images?: string[];
   description: string | null;
 }
 
