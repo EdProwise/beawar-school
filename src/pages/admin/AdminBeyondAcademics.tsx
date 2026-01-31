@@ -201,12 +201,11 @@ export default function AdminBeyondAcademics() {
                       </div>
                       
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <Label className="flex items-center gap-2 mb-2">
-                              <ImageIcon className="w-4 h-4" />
-                              {activeTab === "entrepreneur-skills" || activeTab === "residential-school" ? "Multiple Images" : "Main Image"}
-                            </Label>
-                            {activeTab === "entrepreneur-skills" || activeTab === "residential-school" ? (
+                            <div>
+                              <Label className="flex items-center gap-2 mb-2">
+                                <ImageIcon className="w-4 h-4" />
+                                Multiple Images
+                              </Label>
                               <FileUpload
                                 accept="image"
                                 multiple={true}
@@ -219,14 +218,7 @@ export default function AdminBeyondAcademics() {
                                   }
                                 }}
                               />
-                            ) : (
-                              <FileUpload
-                                accept="image"
-                                currentUrl={section.image_url}
-                                onUpload={(url) => handleUpdateSection(section.id, { image_url: url })}
-                              />
-                            )}
-                          </div>
+                            </div>
                           <div>
                           <Label className="flex items-center gap-2 mb-2">
                             <VideoIcon className="w-4 h-4" />
