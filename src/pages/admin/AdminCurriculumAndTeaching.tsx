@@ -163,16 +163,22 @@ export default function AdminCurriculumAndTeaching() {
   }, [teachingCards]);
 
   // Mutations
-  const saveCurriculumMutation = useMutation({
-    mutationFn: async () => {
-      // Save Main Content using upsert for singleton pattern
-      const { data: savedContent, error: curError } = await supabase
-        .from("curriculum_content")
-        .upsert(curForm, { onConflict: 'id' });
-      
-      if (curError) throw curError;
+    const saveCurriculumMutation = useMutation({
+      mutationFn: async () => {
+        // Save Main Content using upsert for singleton pattern
+        const { data: savedContent, error: curError } = await supabase
+          .from("curriculum_content")
+          .upsert(curForm, { onConflict: 'id' });
+        
+        if (curError) throw curError;
+        
+        // Update local state with the saved content (which now has an ID)
+        if (savedContent) {
+          setCurForm(prev => ({ ...prev, ...(Array.isArray(savedContent) ? savedContent[0] : savedContent) }));
+        }
 
-      // Save Gallery
+        // Save Gallery
+
       const existingGalIds = curriculumGallery?.map(g => g.id) || [];
       const currentGalIds = curGallery.map(g => g.id).filter(id => !id.startsWith("temp-"));
       const galToDelete = existingGalIds.filter(id => !currentGalIds.includes(id));
@@ -218,16 +224,22 @@ export default function AdminCurriculumAndTeaching() {
     }
   });
 
-  const saveTeachingMutation = useMutation({
-    mutationFn: async () => {
-      // Save Main Content using upsert
-      const { error: teachError } = await supabase
-        .from("teaching_method_content")
-        .upsert(teachForm, { onConflict: 'id' });
-        
-      if (teachError) throw teachError;
+    const saveTeachingMutation = useMutation({
+      mutationFn: async () => {
+        // Save Main Content using upsert
+        const { data: savedContent, error: teachError } = await supabase
+          .from("teaching_method_content")
+          .upsert(teachForm, { onConflict: 'id' });
+          
+        if (teachError) throw teachError;
 
-      // Save Cards (always upsert by position)
+        // Update local state with the saved content
+        if (savedContent) {
+          setTeachForm(prev => ({ ...prev, ...(Array.isArray(savedContent) ? savedContent[0] : savedContent) }));
+        }
+
+        // Save Cards (always upsert by position)
+
       for (const card of teachCards) {
         const { id, ...rest } = card;
         if (id && !id.startsWith('c')) {

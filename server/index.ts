@@ -321,19 +321,17 @@ app.post('/api/:table/upsert', async (req, res) => {
     const { table } = req.params;
     const { data, onConflict } = req.body;
     const Model = getModel(table);
+    const conflictKey = onConflict || 'id';
     
-    console.log(`Upserting to ${table}, conflict key: ${onConflict || 'id'}`);
+    console.log(`Upserting to ${table}, conflict key: ${conflictKey}`);
     
     const items = Array.isArray(data) ? data : [data];
-    const conflictKey = onConflict || 'id';
 
     const results = [];
     for (const item of items) {
       let filter: any = {};
-      // Remove _id from item to avoid duplicate key errors on insert
       const { _id, ...itemData } = item;
       
-      // Support finding by the conflict key
       if (item[conflictKey]) {
         const val = item[conflictKey];
         if (conflictKey === 'id' || conflictKey === '_id') {
@@ -341,13 +339,15 @@ app.post('/api/:table/upsert', async (req, res) => {
             { id: val },
             { _id: mongoose.isValidObjectId(val) ? val : undefined }
           ].filter(q => q._id !== undefined || q.id !== undefined);
+          console.log(`Searching by ${conflictKey}: ${val}, Filter:`, JSON.stringify(filter));
         } else {
           filter[conflictKey] = val;
         }
       } else {
-        // If no conflict key value, it will insert a new one
         filter._id = new mongoose.Types.ObjectId();
+        console.log(`No conflict key found, creating new record with _id: ${filter._id}`);
       }
+
       
       const result = await Model.findOneAndUpdate(
         filter,
