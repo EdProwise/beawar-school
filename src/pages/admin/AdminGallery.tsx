@@ -73,6 +73,21 @@ const AdminGallery = () => {
     },
   });
 
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (category: string) => {
+      const { error } = await supabase.from("gallery_items").delete().eq("category", category);
+      if (error) throw error;
+    },
+    onSuccess: (_, category) => {
+      queryClient.invalidateQueries({ queryKey: ["admin-gallery"] });
+      queryClient.invalidateQueries({ queryKey: ["gallery-categories"] });
+      toast({ 
+        title: "Category Deleted", 
+        description: `All items in "${category}" have been deleted.` 
+      });
+    },
+  });
+
   const togglePublishMutation = useMutation({
     mutationFn: async ({ id, is_published }: { id: string; is_published: boolean }) => {
       const { error } = await supabase
@@ -122,13 +137,28 @@ const AdminGallery = () => {
           <div className="space-y-12">
             {categoriesToShow.map((category) => (
               <div key={category} className="space-y-4">
-                <div className="flex items-center justify-between border-b border-border pb-2">
-                  <h2 className="text-xl font-bold capitalize">{category}</h2>
-                  <Button variant="outline" size="sm" onClick={() => handleAdd(category)}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Images to {category}
-                  </Button>
-                </div>
+                  <div className="flex items-center justify-between border-b border-border pb-2">
+                    <h2 className="text-xl font-bold capitalize">{category}</h2>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="sm" onClick={() => handleAdd(category)}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Images
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-destructive hover:bg-destructive/10"
+                        onClick={() => {
+                          if (confirm(`Are you sure you want to delete the entire "${category}" category and all its images?`)) {
+                            deleteCategoryMutation.mutate(category);
+                          }
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete Category
+                      </Button>
+                    </div>
+                  </div>
                 
                 {(!groupedItems[category] || groupedItems[category].length === 0) ? (
                   <div className="bg-card rounded-xl border border-dashed border-border p-8 text-center text-muted-foreground">

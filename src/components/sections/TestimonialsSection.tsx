@@ -35,7 +35,7 @@ export function TestimonialsSection() {
     }
 
     return (
-      <section className="py-10 lg:py-10 bg-secondary/50 relative overflow-hidden">
+      <section className="py-5 lg:py-5 bg-secondary/50 relative overflow-hidden">
         {/* Background Decoration */}
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -47,7 +47,7 @@ export function TestimonialsSection() {
               Testimonials
             </span>
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-              What Our <span className="text-gradient-primary">Community</span> Says
+              What Our <span className="text-gradient-primary">Students</span> Says
             </h2>
             <p className="text-muted-foreground text-lg">
               Hear from parents and students about their experience at Orbit School

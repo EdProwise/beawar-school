@@ -60,7 +60,7 @@ export function HeroSection() {
             alt={slide.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/90 via-primary/80 to-primary/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/45 via-primary/40 to-primary/35" />
         </div>
       ))}
 
