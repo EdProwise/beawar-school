@@ -186,7 +186,9 @@ class MongoDBQueryBuilder {
 
   upsert(values: any, options?: { onConflict?: string }) {
     this.method = 'UPSERT';
-    this.body = values;
+    // Remove _id from body to avoid MongoDB duplicate key errors
+    const { _id, ...rest } = values;
+    this.body = rest;
     if (options?.onConflict) {
       this.params.set('onConflict', options.onConflict);
     }
