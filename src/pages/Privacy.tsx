@@ -117,28 +117,38 @@ const Privacy = () => {
                     <div className="flex justify-center py-12">
                       <Loader2 className="w-10 h-10 animate-spin text-primary" />
                     </div>
-                    ) : (
-                      <div className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:text-[#1A1A1A] prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6">
-                        {currentPage?.content && (
-                          <div id="introduction" className="mb-12 border-b border-border pb-12 ql-snow">
-                            <div className="ql-editor !p-0" dangerouslySetInnerHTML={{ __html: currentPage.content }} />
-                          </div>
-                        )}
-    
-                        <div className="space-y-16">
-                          {sections.map((section, index) => (
-                            <div key={index} id={`section-${index}`} className="scroll-mt-32">
-                              <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-6">
-                                {index + 1}. {section.title}
-                              </h2>
-                              <div className="ql-snow">
-                                <div className="ql-editor !p-0" dangerouslySetInnerHTML={{ __html: section.content }} />
-                              </div>
+                      ) : (
+                        <div className="">
+                          <style>{`
+                            .ql-editor {
+                              font-size: 1rem;
+                              line-height: 1.5;
+                              padding: 0;
+                            }
+                            .ql-editor p {
+                              margin-bottom: 0;
+                            }
+                          `}</style>
+                          {currentPage?.content && (
+                            <div id="introduction" className="mb-12 border-b border-border pb-12 ql-snow">
+                              <div className="ql-editor" dangerouslySetInnerHTML={{ __html: currentPage.content }} />
                             </div>
-                          ))}
+                          )}
+      
+                          <div className="space-y-16">
+                            {sections.map((section, index) => (
+                              <div key={index} id={`section-${index}`} className="scroll-mt-32">
+                                <h2 className="font-heading text-3xl font-bold text-[#1A1A1A] mb-6">
+                                  {index + 1}. {section.title}
+                                </h2>
+                                <div className="ql-snow">
+                                  <div className="ql-editor" dangerouslySetInnerHTML={{ __html: section.content }} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
                 </div>
               </div>
