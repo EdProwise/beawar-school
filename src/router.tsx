@@ -188,6 +188,11 @@ export const routers = [
     },
     // Admin Routes
     {
+      path: "/login/admin",
+      name: 'login-admin',
+      element: <AdminLogin />,
+    },
+    {
       path: "/admin/login",
       name: 'admin-login',
       element: <AdminLogin />,
