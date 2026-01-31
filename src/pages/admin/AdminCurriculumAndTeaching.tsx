@@ -40,21 +40,6 @@ interface CurriculumActivity {
   sort_order: number;
 }
 
-interface TeachingMethodContent {
-  id?: string;
-  title: string;
-  center_image: string;
-}
-
-interface TeachingMethodCard {
-  id: string;
-  title: string;
-  content: string;
-  link_text?: string;
-  link_url?: string;
-  position: number; // 0, 1, 2, 3
-}
-
 export default function AdminCurriculumAndTeaching() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -87,25 +72,6 @@ export default function AdminCurriculumAndTeaching() {
     }
   });
 
-  // Teaching Method Data
-  const { data: teachingContent, isLoading: teachingLoading } = useQuery({
-    queryKey: ["admin-teaching-content"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("teaching_method_content").select("*").maybeSingle();
-      if (error) throw error;
-      return data as TeachingMethodContent;
-    }
-  });
-
-  const { data: teachingCards, isLoading: cardsLoading } = useQuery({
-    queryKey: ["admin-teaching-cards"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("teaching_method_cards").select("*").order("position", { ascending: true });
-      if (error) throw error;
-      return data as TeachingMethodCard[];
-    }
-  });
-
   // Local States
   const [curForm, setCurForm] = useState<CurriculumContent>({
     title: "Orbit Education Pathway",
@@ -126,13 +92,6 @@ export default function AdminCurriculumAndTeaching() {
   const [curGallery, setCurGallery] = useState<CurriculumGallery[]>([]);
   const [curActivities, setCurActivities] = useState<CurriculumActivity[]>([]);
 
-  const [teachForm, setTeachForm] = useState<TeachingMethodContent>({
-    title: "THINGS for our students and what we do",
-    center_image: "https://images.unsplash.com/photo-1580894732444-8ecdead79730?auto=format&fit=crop&q=80&w=800"
-  });
-
-  const [teachCards, setTeachCards] = useState<TeachingMethodCard[]>([]);
-
   useEffect(() => {
     if (curriculumContent) setCurForm(curriculumContent);
   }, [curriculumContent]);
@@ -144,23 +103,6 @@ export default function AdminCurriculumAndTeaching() {
   useEffect(() => {
     if (curriculumActivities) setCurActivities(curriculumActivities);
   }, [curriculumActivities]);
-
-  useEffect(() => {
-    if (teachingContent) setTeachForm(teachingContent);
-  }, [teachingContent]);
-
-  useEffect(() => {
-    if (teachingCards && teachingCards.length > 0) setTeachCards(teachingCards);
-    else {
-      // Initialize 4 cards if not exists
-      setTeachCards([
-        { id: 'c0', position: 0, title: 'Teaching with Passion', content: 'Our instructors inspire from the heart, going beyond textbooks.' },
-        { id: 'c1', position: 1, title: 'Tech-Enhanced Classrooms', content: 'Our digital facilities create an engaging learning environment.' },
-        { id: 'c2', position: 2, title: 'Interactive Clubs', content: 'Students form groups to foster curiosity and hands-on experiences.', link_text: 'Skill Development Clubs', link_url: '/extracurricular' },
-        { id: 'c3', position: 3, title: 'Love-Centric Learning', content: 'We cultivate love for knowledge, making learning a joyous journey.' }
-      ]);
-    }
-  }, [teachingCards]);
 
   // Mutations
     const saveCurriculumMutation = useMutation({
@@ -224,46 +166,6 @@ export default function AdminCurriculumAndTeaching() {
     }
   });
 
-    const saveTeachingMutation = useMutation({
-      mutationFn: async () => {
-        // Save Main Content using upsert
-        const { data: savedContent, error: teachError } = await supabase
-          .from("teaching_method_content")
-          .upsert(teachForm, { onConflict: 'id' });
-          
-        if (teachError) throw teachError;
-
-        // Update local state with the saved content
-        if (savedContent) {
-          setTeachForm(prev => ({ ...prev, ...(Array.isArray(savedContent) ? savedContent[0] : savedContent) }));
-        }
-
-        // Save Cards (always upsert by position)
-
-      for (const card of teachCards) {
-        const { id, ...rest } = card;
-        if (id && !id.startsWith('c')) {
-           await supabase.from("teaching_method_cards").update(rest).eq("id", id);
-        } else {
-           await supabase.from("teaching_method_cards").insert([rest]);
-        }
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-teaching-content"] });
-      queryClient.invalidateQueries({ queryKey: ["admin-teaching-cards"] });
-      toast({ title: "Teaching Method saved successfully" });
-    },
-    onError: (error: any) => {
-      console.error("Save teaching error:", error);
-      toast({ 
-        title: "Error saving teaching method", 
-        description: error.message || "Please check your connection and try again",
-        variant: "destructive" 
-      });
-    }
-  });
-
   // Handlers
   const handleAddGallery = () => {
     setCurGallery([...curGallery, { id: `temp-${Date.now()}`, image_url: "", sort_order: curGallery.length }]);
@@ -273,7 +175,7 @@ export default function AdminCurriculumAndTeaching() {
     setCurActivities([...curActivities, { id: `temp-${Date.now()}`, text: "", sort_order: curActivities.length }]);
   };
 
-  if (curriculumLoading || galleryLoading || activitiesLoading || teachingLoading || cardsLoading) {
+  if (curriculumLoading || galleryLoading || activitiesLoading) {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center h-64">
@@ -287,21 +189,12 @@ export default function AdminCurriculumAndTeaching() {
     <AdminLayout>
       <div className="max-w-6xl pb-20">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Curriculum & Teaching Method</h1>
-          <p className="text-muted-foreground">Manage the content for your educational pathway and teaching style</p>
+          <h1 className="text-3xl font-bold text-foreground">Curriculum & Teaching</h1>
+          <p className="text-muted-foreground">Manage the content for your educational pathway</p>
         </div>
 
-        <Tabs defaultValue="curriculum" className="space-y-8">
-          <TabsList className="bg-card border border-border">
-            <TabsTrigger value="curriculum" className="flex gap-2">
-              <BookOpen className="w-4 h-4" /> Curriculum
-            </TabsTrigger>
-            <TabsTrigger value="teaching" className="flex gap-2">
-              <ClipboardList className="w-4 h-4" /> Teaching Method
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="curriculum" className="space-y-8">
+        <div className="space-y-8">
+          <div className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Main Content Card */}
               <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-4">
@@ -472,87 +365,8 @@ export default function AdminCurriculumAndTeaching() {
                 Save Curriculum Changes
               </Button>
             </div>
-          </TabsContent>
-
-          <TabsContent value="teaching" className="space-y-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Teaching Hero Content */}
-              <div className="bg-card rounded-xl border border-border p-6 shadow-sm space-y-4">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <ClipboardList className="w-5 h-5 text-primary" /> Hero Section
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <Label>Section Title</Label>
-                    <Input value={teachForm.title} onChange={e => setTeachForm({...teachForm, title: e.target.value})} />
-                  </div>
-                  <div>
-                    <Label>Center Image URL (High quality)</Label>
-                    <Input value={teachForm.center_image} onChange={e => setTeachForm({...teachForm, center_image: e.target.value})} />
-                    <p className="text-[10px] text-muted-foreground mt-1">Recommended size: Portrait (4:5 ratio)</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Teaching Cards Info */}
-              <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-                 <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
-                  <Star className="w-5 h-5 text-yellow-500" /> Layout Instructions
-                </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  The Teaching Method page uses a fixed 4-card layout around the central image:
-                    <br /><br />
-                    - <strong>Card 1 & 2</strong>: Appear on the LEFT side.
-                    <br />
-                    - <strong>Card 3 & 4</strong>: Appear on the RIGHT side.
-                    <br /><br />
-                    All cards support an optional external link for additional details or relevant pages.
-                  </p>
-                </div>
-              </div>
-
-              {/* 4 Cards Management */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {teachCards.map((card, idx) => (
-                  <div key={card.id} className="bg-card rounded-xl border border-border p-6 shadow-md space-y-4 relative">
-                    <div className="absolute top-4 right-4 bg-primary/10 text-primary text-[10px] font-black px-2 py-1 rounded">
-                      CARD {idx + 1} ({idx < 2 ? 'LEFT' : 'RIGHT'})
-                    </div>
-                      <div className="space-y-3 pt-2">
-                        <div>
-                          <Label>Card Title</Label>
-                          <Input value={card.title} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, title: e.target.value} : c))} />
-                        </div>
-                        <div>
-                          <RichTextEditor 
-                            label="Card Content"
-                            value={card.content} 
-                            onChange={content => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, content: content} : c))} 
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 pt-2">
-                        <div>
-                          <Label>Link Text (Optional)</Label>
-                          <Input value={card.link_text || ""} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, link_text: e.target.value} : c))} />
-                        </div>
-                        <div>
-                          <Label>Link URL</Label>
-                          <Input value={card.link_url || ""} onChange={e => setTeachCards(teachCards.map(c => c.id === card.id ? {...c, link_url: e.target.value} : c))} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-            <div className="flex justify-end pt-4">
-              <Button size="lg" onClick={() => saveTeachingMutation.mutate()} disabled={saveTeachingMutation.isPending}>
-                {saveTeachingMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                Save Teaching Method Changes
-              </Button>
-            </div>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
     </AdminLayout>
   );
