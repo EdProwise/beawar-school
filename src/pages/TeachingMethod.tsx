@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { motion } from "framer-motion";
 import { 
   BookOpen, Target, Users, Heart, ArrowRight, Loader2, Award, Sparkles 
 } from "lucide-react";
@@ -41,65 +42,86 @@ export default function TeachingMethod() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main>
-        {/* Hero Section */}
-        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden text-primary-foreground">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
-          </div>
-          <div className="container relative text-center">
-            <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4 uppercase tracking-wider">
-              Our Pedagogy
-            </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              {pageTitle}
-            </h1>
-            <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              {pageDescription}
-            </p>
-          </div>
-        </section>
-
-        {/* Hero Image Section */}
-        <section className="py-20 bg-background border-b border-border/50">
-          <div className="container">
-            <div className="relative max-w-5xl mx-auto">
-              {heroImages.length > 1 ? (
-                <Carousel className="w-full">
-                  <CarouselContent>
-                    {heroImages.map((img, idx) => (
-                      <CarouselItem key={idx}>
-                        <img 
-                          src={img} 
-                          alt={`Teaching Method Hero ${idx + 1}`} 
-                          className="rounded-3xl shadow-strong w-full aspect-[21/9] object-cover"
-                        />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious className="left-4" />
-                  <CarouselNext className="right-4" />
-                </Carousel>
-              ) : (
-                <img 
-                  src={heroImages[0]} 
-                  alt="Teaching Method" 
-                  className="rounded-3xl shadow-strong w-full aspect-[21/9] object-cover"
-                />
-              )}
-              <div className="absolute -bottom-4 -right-4 bg-accent px-8 py-4 rounded-2xl shadow-strong border border-white/20 backdrop-blur-md z-20">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-primary" />
+        <main>
+          {/* Hero Section */}
+          <section className="pt-32 pb-20 lg:pt-48 lg:pb-32 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden text-primary-foreground">
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
+            </div>
+            <div className="container relative">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <motion.div 
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-center lg:text-left"
+                >
+                  <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4 uppercase tracking-wider">
+                    Our Pedagogy
+                  </span>
+                  <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                    {pageTitle}
+                  </h1>
+                  <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto lg:mx-0 mb-8">
+                    {pageDescription}
+                  </p>
+                  <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <Button variant="hero-gold" asChild>
+                      <Link to="/admissions">Join Our School</Link>
+                    </Button>
+                    <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
+                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                        <Sparkles className="w-4 h-4 text-primary-foreground" />
+                      </div>
+                      <p className="text-sm font-medium">Innovation in Education</p>
+                    </div>
                   </div>
-                  <p className="text-accent-foreground font-bold text-lg">Innovation in Education</p>
-                </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="relative"
+                >
+                  <div className="relative z-10">
+                    {heroImages.length > 1 ? (
+                      <Carousel className="w-full">
+                        <CarouselContent>
+                          {heroImages.map((img, idx) => (
+                            <CarouselItem key={idx}>
+                              <div className="aspect-[4/3] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
+                                <img 
+                                  src={img} 
+                                  alt={`Teaching Method Hero ${idx + 1}`} 
+                                  className="w-full h-full object-cover transition-transform hover:scale-105 duration-700"
+                                />
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="left-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+                        <CarouselNext className="right-4 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+                      </Carousel>
+                    ) : (
+                      <div className="aspect-[4/3] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
+                        <img 
+                          src={heroImages[0]} 
+                          alt="Teaching Method" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  {/* Decorative Elements */}
+                  <div className="absolute -top-6 -right-6 w-32 h-32 bg-accent/20 rounded-full blur-3xl" />
+                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-primary-light/20 rounded-full blur-3xl" />
+                </motion.div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Methods Section */}
+          {/* Methods Section */}
         <section className="py-20 bg-background">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-16">
@@ -112,16 +134,20 @@ export default function TeachingMethod() {
             </div>
 
             <div className="space-y-24">
-              {methods.map((method, index) => {
-                const isEven = index % 2 === 0;
-                const IconComponent = iconMap[Object.keys(iconMap)[index % Object.keys(iconMap).length]] || BookOpen;
-                const methodImages = method.images && method.images.length > 0 ? method.images : [method.image_url || "/classroom.png"];
+                {methods.map((method, index) => {
+                  const isEven = index % 2 === 0;
+                  const IconComponent = iconMap[Object.keys(iconMap)[index % Object.keys(iconMap).length]] || BookOpen;
+                  const methodImages = method.images && method.images.length > 0 ? method.images : [method.image_url || "/classroom.png"];
 
-                return (
-                  <div 
-                    key={method.id} 
-                    className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
-                  >
+                  return (
+                    <motion.div 
+                      key={method.id}
+                      initial={{ opacity: 0, x: -50 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.6, delay: index * 0.1 }}
+                      className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
+                    >
                     <div className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}>
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center">
@@ -175,13 +201,13 @@ export default function TeachingMethod() {
                         </div>
                         <div className={`absolute -bottom-6 ${isEven ? '-right-6' : '-left-6'} w-32 h-32 bg-accent/20 rounded-full blur-3xl -z-10`} />
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
         {/* CTA Section */}
         <section className="py-24 bg-primary relative overflow-hidden">
