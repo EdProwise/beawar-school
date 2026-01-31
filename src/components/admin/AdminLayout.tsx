@@ -52,17 +52,18 @@ interface NavItem {
         { name: "Our Teams", path: "/admin/teams", icon: Users },
       ]
     },
-    {
-      name: "Academics",
-    icon: GraduationCap,
-      children: [
-        { name: "Academic Programs", path: "/admin/programs", icon: FileText },
-        { name: "Why Choose Us", path: "/admin/academics", icon: Star },
-        { name: "Curriculum & Teaching", path: "/admin/curriculum-teaching", icon: BookOpen },
-        { name: "Results", path: "/admin/results-manage", icon: BarChart3 },
-        { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
-      ]
-  },
+      {
+        name: "Academics",
+      icon: GraduationCap,
+        children: [
+          { name: "Academic Programs", path: "/admin/programs", icon: FileText },
+          { name: "Why Choose Us", path: "/admin/academics", icon: Star },
+          { name: "Curriculum & Teaching", path: "/admin/curriculum-teaching", icon: BookOpen },
+          { name: "Teaching Method", path: "/admin/teaching-method", icon: BookOpen },
+          { name: "Results", path: "/admin/results-manage", icon: BarChart3 },
+          { name: "Alumni", path: "/admin/alumni-manage", icon: Users },
+        ]
+    },
     { 
       name: "Beyond Academics", 
       icon: Zap,
