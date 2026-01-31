@@ -128,15 +128,27 @@ export default function ResidentialSchool() {
                         <div className="absolute -inset-6 bg-gradient-to-tr from-[#A11B5A]/10 to-yellow-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />
                         <div className={`absolute -inset-4 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 transition-transform duration-700 ${index % 2 === 1 ? '-rotate-2 group-hover/media:-rotate-1' : 'rotate-2 group-hover/media:rotate-1'}`} />
                         
-                        <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden border border-white/50 shadow-xl bg-slate-100">
-                          {section.video_url ? (
-                            <video 
-                              src={section.video_url} 
-                              className="w-full h-full object-cover"
-                              controls
-                              poster={section.image_url}
-                            />
-                          ) : section.image_url ? (
+                          <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden border border-white/50 shadow-xl bg-slate-100">
+                            {section.video_url ? (
+                              <video 
+                                src={section.video_url} 
+                                className="w-full h-full object-cover"
+                                controls
+                                poster={section.image_url}
+                              />
+                            ) : section.images && section.images.length > 0 ? (
+                              <div className="w-full h-full grid grid-cols-2 gap-2 p-2">
+                                {section.images.slice(0, 4).map((img, i) => (
+                                  <div key={i} className={`relative overflow-hidden rounded-xl ${section.images!.length === 1 ? 'col-span-2 row-span-2' : ''} ${section.images!.length === 2 ? 'row-span-2' : ''} ${section.images!.length === 3 && i === 0 ? 'row-span-2' : ''}`}>
+                                    <img 
+                                      src={img} 
+                                      alt={`${section.title} ${i + 1}`}
+                                      className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            ) : section.image_url ? (
                             <img 
                               src={section.image_url} 
                               alt={section.title}

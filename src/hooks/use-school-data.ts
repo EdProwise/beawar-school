@@ -693,6 +693,7 @@ export interface BeyondAcademicsSection {
   title: string;
   content: string;
   image_url?: string;
+  images?: string[];
   video_url?: string;
   category?: string;
   sort_order: number;

@@ -17,6 +17,7 @@ interface BeyondAcademicsSection {
   title: string;
   content: string;
   image_url?: string;
+  images?: string[];
   video_url?: string;
   category?: string;
   sort_order: number;
@@ -121,6 +122,7 @@ export default function AdminBeyondAcademics() {
       title: "New Section",
       content: "",
       image_url: "",
+      images: [],
       video_url: "",
       category: activeTab,
       sort_order: sections.length
@@ -198,19 +200,34 @@ export default function AdminBeyondAcademics() {
                         />
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <Label className="flex items-center gap-2 mb-2">
-                            <ImageIcon className="w-4 h-4" />
-                            Image
-                          </Label>
-                          <FileUpload
-                            accept="image"
-                            currentUrl={section.image_url}
-                            onUpload={(url) => handleUpdateSection(section.id, { image_url: url })}
-                          />
-                        </div>
-                        <div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <Label className="flex items-center gap-2 mb-2">
+                              <ImageIcon className="w-4 h-4" />
+                              {activeTab === "entrepreneur-skills" || activeTab === "residential-school" ? "Multiple Images" : "Main Image"}
+                            </Label>
+                            {activeTab === "entrepreneur-skills" || activeTab === "residential-school" ? (
+                              <FileUpload
+                                accept="image"
+                                multiple={true}
+                                currentUrls={section.images || []}
+                                onMultiUpload={(urls) => handleUpdateSection(section.id, { images: urls })}
+                                onUpload={(url) => {
+                                  const currentImages = section.images || [];
+                                  if (!currentImages.includes(url)) {
+                                    handleUpdateSection(section.id, { images: [...currentImages, url] });
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <FileUpload
+                                accept="image"
+                                currentUrl={section.image_url}
+                                onUpload={(url) => handleUpdateSection(section.id, { image_url: url })}
+                              />
+                            )}
+                          </div>
+                          <div>
                           <Label className="flex items-center gap-2 mb-2">
                             <VideoIcon className="w-4 h-4" />
                             Video

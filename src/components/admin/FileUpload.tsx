@@ -9,6 +9,7 @@ interface FileUploadProps {
   onMultiUpload?: (urls: string[]) => void;
   accept?: "image" | "video" | "document" | "all";
   currentUrl?: string;
+  currentUrls?: string[];
   className?: string;
   multiple?: boolean;
 }
@@ -18,12 +19,13 @@ export function FileUpload({
   onMultiUpload,
   accept = "image", 
   currentUrl, 
+  currentUrls = [],
   className,
   multiple = false
 }: FileUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentUrl || null);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [previews, setPreviews] = useState<string[]>(currentUrls);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
