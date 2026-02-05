@@ -1,5 +1,5 @@
 ## Project Summary
-A school management system called "Orbit School" with a frontend for the public and an administrative dashboard for managing content, inquiries, admissions, and settings.
+A school website builder called "Orbit School Website Builder" with a frontend for the public and an administrative dashboard for managing content, inquiries, admissions, and settings.
 
 ## Tech Stack
 - Frontend: React, Vite, Tailwind CSS, Lucide React
