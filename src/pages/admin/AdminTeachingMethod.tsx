@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import AdminLayout from "@/components/admin/AdminLayout";
@@ -38,7 +38,7 @@ export default function AdminTeachingMethod() {
   });
 
   // Initialize hero form when data is loaded
-  useState(() => {
+  useEffect(() => {
     if (heroData) {
       setHeroForm({
         title: heroData.title,
@@ -47,7 +47,7 @@ export default function AdminTeachingMethod() {
         description: heroData.description || ""
       });
     }
-  });
+  }, [heroData]);
 
   const saveMethodMutation = useMutation({
     mutationFn: async (data: Partial<TeachingMethodSection>) => {
@@ -200,47 +200,47 @@ export default function AdminTeachingMethod() {
             </CardTitle>
             <CardDescription>Configure the main heading and image for the Teaching Method page</CardDescription>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Page Title</Label>
-                  <Input
-                    value={heroForm.title || (heroData?.title || "")}
-                    onChange={(e) => setHeroForm({ ...heroForm, title: e.target.value })}
-                    placeholder="Enter page title"
-                  />
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Page Title</Label>
+                    <Input
+                      value={heroForm.title || ""}
+                      onChange={(e) => setHeroForm({ ...heroForm, title: e.target.value })}
+                      placeholder="Enter page title"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Page Description</Label>
+                    <Input
+                      value={heroForm.description || ""}
+                      onChange={(e) => setHeroForm({ ...heroForm, description: e.target.value })}
+                      placeholder="Enter short introduction"
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => saveHeroMutation.mutate(heroForm)} 
+                    disabled={saveHeroMutation.isPending}
+                    className="w-full md:w-auto"
+                  >
+                    {saveHeroMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+                    Save Hero Section
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                  <Label>Page Description</Label>
-                  <Input
-                    value={heroForm.description || (heroData?.description || "")}
-                    onChange={(e) => setHeroForm({ ...heroForm, description: e.target.value })}
-                    placeholder="Enter short introduction"
-                  />
-                </div>
-                <Button 
-                  onClick={() => saveHeroMutation.mutate(heroForm)} 
-                  disabled={saveHeroMutation.isPending}
-                  className="w-full md:w-auto"
-                >
-                  {saveHeroMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-                  Save Hero Section
-                </Button>
+                  <div className="space-y-2">
+                    <Label>Hero Images</Label>
+                    <FileUpload
+                      multiple
+                      currentUrl={heroForm.center_image || ""}
+                      currentUrls={heroForm.images || []}
+                      onUpload={(url) => setHeroForm({ ...heroForm, center_image: url })}
+                      onMultiUpload={(urls) => setHeroForm({ ...heroForm, images: urls })}
+                      className="aspect-video rounded-xl"
+                    />
+                  </div>
               </div>
-                <div className="space-y-2">
-                  <Label>Hero Images</Label>
-                  <FileUpload
-                    multiple
-                    currentUrl={heroForm.center_image || (heroData?.center_image || "")}
-                    currentUrls={heroForm.images || (heroData?.images || [])}
-                    onUpload={(url) => setHeroForm({ ...heroForm, center_image: url })}
-                    onMultiUpload={(urls) => setHeroForm({ ...heroForm, images: urls })}
-                    className="aspect-video rounded-xl"
-                  />
-                </div>
-            </div>
-          </CardContent>
+            </CardContent>
         </Card>
 
         {/* Methods Grid */}

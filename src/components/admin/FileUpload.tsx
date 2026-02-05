@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, X, Loader2, Image, Video, FileText, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/mongodb/client";
@@ -28,6 +28,16 @@ export function FileUpload({
   const [previews, setPreviews] = useState<string[]>(currentUrls);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  // Sync preview state with currentUrl prop changes
+  useEffect(() => {
+    setPreview(currentUrl || null);
+  }, [currentUrl]);
+
+  // Sync previews state with currentUrls prop changes
+  useEffect(() => {
+    setPreviews(currentUrls);
+  }, [currentUrls]);
 
   const getAcceptTypes = () => {
     switch (accept) {
@@ -95,11 +105,12 @@ export function FileUpload({
         uploadedUrls.push(publicUrl);
       }
 
-      if (multiple) {
-        setPreviews([...previews, ...uploadedUrls]);
-        if (onMultiUpload) onMultiUpload(uploadedUrls);
-        toast({ title: `${files.length} file(s) uploaded successfully!` });
-      } else {
+        if (multiple) {
+          const newPreviews = [...previews, ...uploadedUrls];
+          setPreviews(newPreviews);
+          if (onMultiUpload) onMultiUpload(newPreviews);
+          toast({ title: `${files.length} file(s) uploaded successfully!` });
+        } else {
         const url = uploadedUrls[0];
         setPreview(url);
         onUpload(url);
