@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, X, Loader2, Image, Video, FileText, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/mongodb/client";
+import { supabase } from "@/integrations/supabase/client";
+import { supabase as mongoClient } from "@/integrations/mongodb/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
@@ -54,12 +55,6 @@ export function FileUpload({
     }
   };
 
-  const getBucket = (mimeType: string) => {
-    if (mimeType.startsWith("image/")) return "images";
-    if (mimeType.startsWith("video/")) return "videos";
-    return "documents";
-  };
-
   const getFileType = (mimeType: string): "image" | "video" | "document" => {
     if (mimeType.startsWith("image/")) return "image";
     if (mimeType.startsWith("video/")) return "video";
@@ -75,25 +70,24 @@ export function FileUpload({
 
     try {
       for (const file of files) {
-        const bucket = getBucket(file.type);
         const fileType = getFileType(file.type);
         const fileExt = file.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const fileName = `${fileType}s/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-        // Upload to Supabase Storage
+        // Upload to Supabase Storage (school-assets bucket)
         const { error: uploadError } = await supabase.storage
-          .from(bucket)
+          .from("school-assets")
           .upload(fileName, file);
 
         if (uploadError) throw uploadError;
 
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
-          .from(bucket)
+          .from("school-assets")
           .getPublicUrl(fileName);
 
-        // Save to media library
-        await supabase.from("media_library").insert({
+        // Save to media library (MongoDB)
+        await mongoClient.from("media_library").insert({
           file_name: fileName,
           original_name: file.name,
           file_type: fileType,
