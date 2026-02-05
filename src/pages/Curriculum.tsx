@@ -43,7 +43,7 @@ export default function Curriculum() {
   }
 
     const defaultContent = {
-    title: "Orbit Education Pathway",
+    title: "Education Pathway",
     main_image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=1200",
     preschool_title: "Fun and Educational Preschool Activities",
     preschool_desc: "Preschool activities aim to foster learning, creativity, and development in children aged 3-5. These activities encompass arts and crafts, storytelling, music, sensory play, outdoor play and many many more like :",
@@ -91,7 +91,7 @@ export default function Curriculum() {
               Curriculum
             </span>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight">
-              Orbit Education Pathway
+              Education Pathway
             </h1>
             <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed font-medium">
               Discover our comprehensive curriculum designed to nurture every student's potential from pre-primary to higher secondary.
