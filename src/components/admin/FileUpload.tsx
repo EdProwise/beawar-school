@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, X, Loader2, Image, Video, FileText, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { supabase as mongoClient } from "@/integrations/mongodb/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface FileUploadProps {
@@ -67,44 +65,34 @@ export function FileUpload({
     return "document";
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length === 0) return;
 
-    setUploading(true);
-    const uploadedUrls: string[] = [];
+      setUploading(true);
+      const uploadedUrls: string[] = [];
 
-    try {
-      for (const file of files) {
-        const bucket = getBucket(file.type);
-        const fileType = getFileType(file.type);
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      try {
+        for (const file of files) {
+          // Upload to local server
+          const formData = new FormData();
+          formData.append('file', file);
 
-        // Upload to Supabase Storage
-        const { error: uploadError } = await supabase.storage
-          .from(bucket)
-          .upload(fileName, file);
+          const response = await fetch('/api/storage/upload', {
+            method: 'POST',
+            body: formData,
+          });
 
-        if (uploadError) throw uploadError;
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Upload failed');
+          }
 
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from(bucket)
-          .getPublicUrl(fileName);
+          const result = await response.json();
+          const publicUrl = `/uploads/${result.data.path}`;
 
-        // Save to media library
-        await supabase.from("media_library").insert({
-          file_name: fileName,
-          original_name: file.name,
-          file_type: fileType,
-          file_url: publicUrl,
-          file_size: file.size,
-          mime_type: file.type,
-        });
-
-        uploadedUrls.push(publicUrl);
-      }
+          uploadedUrls.push(publicUrl);
+        }
 
         if (multiple) {
           const newPreviews = [...previews, ...uploadedUrls];
@@ -112,18 +100,18 @@ export function FileUpload({
           if (onMultiUpload) onMultiUpload(newPreviews);
           toast({ title: `${files.length} file(s) uploaded successfully!` });
         } else {
-        const url = uploadedUrls[0];
-        setPreview(url);
-        onUpload(url);
-        toast({ title: "File uploaded successfully!" });
+          const url = uploadedUrls[0];
+          setPreview(url);
+          onUpload(url);
+          toast({ title: "File uploaded successfully!" });
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast({ title: "Upload failed", description: error instanceof Error ? error.message : "Unknown error", variant: "destructive" });
+      } finally {
+        setUploading(false);
       }
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast({ title: "Upload failed", variant: "destructive" });
-    } finally {
-      setUploading(false);
-    }
-  };
+    };
 
   const handleRemove = () => {
     setPreview(null);
