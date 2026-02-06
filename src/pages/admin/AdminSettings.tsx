@@ -76,12 +76,13 @@ export default function AdminSettings() {
       cta_secondary_link: "/students",
       office_hours_weekday: "Mon - Fri: 8:00 AM - 5:00 PM",
       office_hours_weekend: "Sat: 9:00 AM - 1:00 PM",
-      tc_apply_url: "",
-      tc_verify_url: "",
-      affiliation_no: "",
-      udise_code: "",
-      lamp_color: "#4C0DC9",
-    });
+    tc_apply_url: "",
+    tc_verify_url: "",
+    affiliation_no: "",
+    udise_code: "",
+    lamp_color: "#4C0DC9",
+    copyright_text: "",
+  });
 
     const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
     const [secondaryLinkType, setSecondaryLinkType] = useState<string>("preset");
@@ -116,6 +117,7 @@ export default function AdminSettings() {
             affiliation_no: settings.affiliation_no || "",
             udise_code: settings.udise_code || "",
             lamp_color: settings.lamp_color || "#4C0DC9",
+            copyright_text: settings.copyright_text || "",
           });
 
         // Initialize link types based on values
@@ -618,18 +620,31 @@ export default function AdminSettings() {
                 <h2 className="text-xl font-semibold">Footer Settings</h2>
               </div>
               
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="md:col-span-2 space-y-2">
-                  <Label htmlFor="footer_text">Footer Description</Label>
-                  <Textarea
-                    id="footer_text"
-                    value={formData.footer_text}
-                    onChange={(e) => setFormData({ ...formData, footer_text: e.target.value })}
-                    rows={3}
-                  />
-                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="footer_text">Footer Description</Label>
+                    <Textarea
+                      id="footer_text"
+                      value={formData.footer_text}
+                      onChange={(e) => setFormData({ ...formData, footer_text: e.target.value })}
+                      rows={3}
+                    />
+                  </div>
 
-                <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30 md:col-span-2">
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="copyright_text">Copyright Text</Label>
+                    <Input
+                      id="copyright_text"
+                      value={formData.copyright_text}
+                      onChange={(e) => setFormData({ ...formData, copyright_text: e.target.value })}
+                      placeholder="All Copyright © 2026 PRJ Gyanjaya. All Rights Reserved."
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Leave empty to use default: "All Copyright © {new Date().getFullYear()} [School Name]. All Rights Reserved."
+                    </p>
+                  </div>
+
+                  <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30 md:col-span-2">
                   <div className="flex items-center gap-2 mb-2">
                     <ShieldCheck className="w-4 h-4 text-primary" />
                     <h3 className="font-medium text-foreground">Transfer Certificate (TC) Links</h3>

@@ -46,9 +46,11 @@ export function Footer() {
     const emailAddress = settings?.email || "info@orbitschool.edu";
     
     const tcLinks = [
-      { name: "Apply for TC", path: settings?.tc_apply_url || "#" },
-      { name: "Verify TC", path: settings?.tc_verify_url || "#" },
-    ];
+        { name: "Apply for TC", path: settings?.tc_apply_url || "#" },
+        { name: "Verify TC", path: settings?.tc_verify_url || "#" },
+      ];
+      
+      const copyrightText = settings?.copyright_text || `All Copyright © ${new Date().getFullYear()} ${schoolName}. All Rights Reserved.`;
 
   const topographyPattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 10C10 10 10 0 20 0S30 10 40 10 50 0 60 0 70 10 80 10 90 0 100 0' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 30C10 30 10 20 20 20S30 30 40 30 50 20 60 20 70 30 80 30 90 20 100 20' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 50C10 50 10 40 20 40S30 50 40 50 50 40 60 40 70 50 80 50 90 40 100 40' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 70C10 70 10 60 20 60S30 70 40 70 50 60 60 60 70 70 80 70 90 60 100 60' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3Cpath d='M0 90C10 90 10 80 20 80S30 90 40 90 50 80 60 80 70 90 80 90 90 80 100 80' fill='none' stroke='%23ffffff' stroke-opacity='0.03' stroke-width='1'/%3E%3C/svg%3E")`;
 
@@ -207,9 +209,9 @@ export function Footer() {
         <div className="relative z-10 border-t border-white/5 py-6" style={{ backgroundColor: '#161320' }}>
           <div className="container">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-gray-500 text-sm">
-                All Copyright © {new Date().getFullYear()} {schoolName}. All Rights Reserved.
-              </p>
+                <p className="text-gray-500 text-sm">
+                  {copyrightText}
+                </p>
             <div className="flex items-center gap-8">
               <Link to="/privacy" className="text-gray-500 hover:text-white text-sm transition-colors">
                 Privacy & Policy

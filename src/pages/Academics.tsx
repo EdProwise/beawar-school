@@ -128,7 +128,7 @@ const defaultPrograms = [
 
     return (
 
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       <Header />
       <main>
         {/* Hero */}
@@ -150,7 +150,7 @@ const defaultPrograms = [
         </section>
 
         {/* Features */}
-        <section className="py-20 bg-background">
+        <section className="py-20 bg-white">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
@@ -193,7 +193,7 @@ const defaultPrograms = [
         </section>
 
         {/* Programs */}
-        <section className="py-20 bg-background">
+        <section className="py-20 bg-white">
           <div className="container">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">

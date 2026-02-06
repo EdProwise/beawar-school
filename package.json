@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-    "scripts": {
-      "dev": "concurrently \"vite\" \"nodemon --watch server --exec tsx server/index.ts\"",
-      "server": "nodemon --watch server --exec tsx server/index.ts",
-      "build": "NODE_ENV=development vite build --mode development",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"nodemon --watch server --exec tsx server/index.ts\"",
+    "server": "nodemon --watch server --exec tsx server/index.ts",
+    "build": "NODE_ENV=development vite build --mode development",
     "build:prod": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -50,6 +50,7 @@
     "cors": "^2.8.6",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
+    "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "express": "^5.2.1",
     "framer-motion": "^12.23.12",

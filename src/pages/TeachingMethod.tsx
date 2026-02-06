@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
@@ -17,6 +17,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
+import Autoplay from "embla-carousel-autoplay";
 
 const iconMap: Record<string, React.ElementType> = {
   BookOpen, Target, Users, Heart, Award, Sparkles
@@ -109,9 +110,19 @@ export default function TeachingMethod() {
                     className="relative z-10"
                   >
                     {heroImages.length > 1 ? (
-                      <Carousel className="w-full" opts={{ loop: true }}>
-                        <CarouselContent>
-                          {heroImages.map((img, idx) => (
+                        <Carousel 
+                          className="w-full" 
+                          opts={{ loop: true }}
+                          plugins={[
+                            Autoplay({
+                              delay: 3000,
+                              stopOnInteraction: false,
+                              stopOnMouseEnter: true,
+                            }),
+                          ]}
+                        >
+                          <CarouselContent>
+                            {heroImages.map((img, idx) => (
                             <CarouselItem key={idx}>
                               <div 
                                 className="aspect-[4/3] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl relative cursor-pointer group/item"

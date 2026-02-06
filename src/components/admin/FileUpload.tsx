@@ -53,65 +53,54 @@ export function FileUpload({
     }
   };
 
-  const getBucket = (mimeType: string) => {
-    if (mimeType.startsWith("image/")) return "images";
-    if (mimeType.startsWith("video/")) return "videos";
-    return "documents";
-  };
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
-  const getFileType = (mimeType: string): "image" | "video" | "document" => {
-    if (mimeType.startsWith("image/")) return "image";
-    if (mimeType.startsWith("video/")) return "video";
-    return "document";
-  };
+    setUploading(true);
+    const uploadedUrls: string[] = [];
 
-    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      if (files.length === 0) return;
+    try {
+      for (const file of files) {
+        // Upload to local server using /api/storage/upload endpoint
+        const formData = new FormData();
+        formData.append('file', file);
 
-      setUploading(true);
-      const uploadedUrls: string[] = [];
+        const response = await fetch('/api/storage/upload', {
+          method: 'POST',
+          body: formData,
+        });
 
-      try {
-        for (const file of files) {
-          // Upload to local server
-          const formData = new FormData();
-          formData.append('file', file);
-
-          const response = await fetch('/api/storage/upload', {
-            method: 'POST',
-            body: formData,
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Upload failed');
-          }
-
-          const result = await response.json();
-          const publicUrl = `/uploads/${result.data.path}`;
-
-          uploadedUrls.push(publicUrl);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Upload failed');
         }
 
-        if (multiple) {
-          const newPreviews = [...previews, ...uploadedUrls];
-          setPreviews(newPreviews);
-          if (onMultiUpload) onMultiUpload(newPreviews);
-          toast({ title: `${files.length} file(s) uploaded successfully!` });
-        } else {
-          const url = uploadedUrls[0];
-          setPreview(url);
-          onUpload(url);
-          toast({ title: "File uploaded successfully!" });
-        }
-      } catch (error) {
-        console.error("Upload error:", error);
-        toast({ title: "Upload failed", description: error instanceof Error ? error.message : "Unknown error", variant: "destructive" });
-      } finally {
-        setUploading(false);
+        const result = await response.json();
+        
+        // The server returns the file path in result.data.path
+        const publicUrl = `/uploads/${result.data.path}`;
+        uploadedUrls.push(publicUrl);
       }
-    };
+
+      if (multiple) {
+        const newPreviews = [...previews, ...uploadedUrls];
+        setPreviews(newPreviews);
+        if (onMultiUpload) onMultiUpload(newPreviews);
+        toast({ title: `${files.length} file(s) uploaded successfully!` });
+      } else {
+        const url = uploadedUrls[0];
+        setPreview(url);
+        onUpload(url);
+        toast({ title: "File uploaded successfully!" });
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({ title: "Upload failed", variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleRemove = () => {
     setPreview(null);
