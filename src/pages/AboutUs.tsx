@@ -5,7 +5,6 @@ import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, 
 import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones, useStatistics } from "@/hooks/use-school-data";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, any> = {
   Award,
@@ -90,15 +89,9 @@ export function AboutUs() {
   const yearsOfExcellence = about?.years_of_excellence || 25;
   const foundingYear = new Date().getFullYear() - yearsOfExcellence;
 
-    return (
-      <div className="min-h-screen">
-        <SEOHead
-          title="About Us"
-          description={`Learn about ${schoolName} - our history, mission, vision, and the values that drive excellence in education.`}
-          keywords="about Beawar School, school history, mission, vision, values"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About Us", path: "/about-us" }])}
-        />
-        <Header />
+  return (
+    <div className="min-h-screen">
+      <Header />
       <main>
         {/* Hero */}
         <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
@@ -204,11 +197,10 @@ export function AboutUs() {
                   
                   <div className="relative rounded-[2rem] overflow-hidden shadow-2xl">
                     <img 
-                        src={about?.main_image_url || "/hero_campus.png"} 
-                        alt={schoolName}
-                        loading="lazy"
-                        className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                      />
+                      src={about?.main_image_url || "/hero_campus.png"} 
+                      alt={schoolName}
+                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                    />
                     
                     {/* Premium Floating Badge */}
                     <div className="absolute bottom-6 right-6 bg-primary/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">

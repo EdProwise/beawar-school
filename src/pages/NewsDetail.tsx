@@ -4,7 +4,6 @@ import { Footer } from "@/components/layout/Footer";
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNewsBySlug } from "@/hooks/use-school-data";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export function NewsDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -45,19 +44,11 @@ export function NewsDetail() {
     );
   }
 
-    return (
-      <div className="min-h-screen flex flex-col">
-        <SEOHead
-          title={news.title}
-          description={news.content ? news.content.replace(/<[^>]*>/g, '').slice(0, 160) : 'Read the latest news from Beawar School.'}
-          keywords={`${news.category}, news, Beawar School`}
-          ogType="article"
-          ogImage={news.image_url || undefined}
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "News", path: "/news" }, { name: news.title, path: `/news/${slug}` }])}
-        />
-        <Header />
-        <main className="flex-1 pt-32 pb-20">
-          <div className="container max-w-4xl">
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 pt-32 pb-20">
+        <div className="container max-w-4xl">
           <Button variant="ghost" asChild className="mb-8 hover:bg-secondary">
             <Link to="/news" className="flex items-center gap-2 text-muted-foreground">
               <ArrowLeft className="w-4 h-4" /> Back to News

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormattedContent } from "@/components/ui/formatted-content";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export function OurTeams() {
   const { data: settings } = useSiteSettings();
@@ -35,17 +34,11 @@ export function OurTeams() {
   ];
 
   return (
-      <div className="min-h-screen">
-        <SEOHead
-          title="Our Team"
-          description="Meet the dedicated teachers and staff at Beawar School who are committed to providing quality education and student success."
-          keywords="school team, teachers, faculty, staff, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Our Team", path: "/our-teams" }])}
-        />
-        <Header />
-        <main>
-          {/* Hero */}
-          <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
+    <div className="min-h-screen">
+      <Header />
+      <main>
+        {/* Hero */}
+        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>
@@ -104,12 +97,11 @@ export function OurTeams() {
                       >
                         <div className="aspect-[4/5] relative overflow-hidden">
                           {member.images?.[0] ? (
-                              <img 
-                                src={member.images[0]} 
-                                alt={member.name}
-                                loading="lazy"
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              />
+                            <img 
+                              src={member.images[0]} 
+                              alt={member.name}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
                           ) : (
                             <div className={`w-full h-full ${style.light} flex items-center justify-center`}>
                               <Users className={`w-16 h-16 ${style.text} opacity-20`} />
@@ -164,12 +156,11 @@ export function OurTeams() {
               <div className="grid md:grid-cols-5 h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
                 <div className="md:col-span-2 aspect-[4/5] md:aspect-auto relative bg-secondary/30">
                   {selectedMember.images?.[0] ? (
-                      <img 
-                        src={selectedMember.images[0]} 
-                        alt={selectedMember.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
+                    <img 
+                      src={selectedMember.images[0]} 
+                      alt={selectedMember.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <Users className="w-24 h-24 text-muted-foreground/20" />

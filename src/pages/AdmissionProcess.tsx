@@ -4,7 +4,6 @@ import { Footer } from "@/components/layout/Footer";
 import { CheckCircle, ArrowRight, HelpCircle, Loader2, FileText, Building, ClipboardList, GraduationCap, Users, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSubmitAdmissionInquiry, useAdmissionSteps, useAdmissionFaqs, useAdmissionSettings } from "@/hooks/use-school-data";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 import {
   Accordion,
   AccordionContent,
@@ -106,12 +105,6 @@ const AdmissionProcess = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHead
-          title="Admission Process"
-          description="Everything you need to know about the admission process, requirements, and enrollment at Beawar School."
-          keywords="admission process, enrollment, apply, Beawar School admissions"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Admissions", path: "/admissions/process" }])}
-        />
       <Header />
       <main>
         {/* Hero */}

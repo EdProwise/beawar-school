@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { useGalleryItems } from "@/hooks/use-school-data";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -45,12 +44,6 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHead
-          title="Gallery"
-          description="Browse photos and videos from events, activities, and campus life at Beawar School."
-          keywords="school gallery, photos, events, campus, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Gallery", path: "/gallery" }])}
-        />
       <Header />
       <main>
         {/* Hero */}

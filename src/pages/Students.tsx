@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { LogIn, CheckCircle, Loader2, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 const Students = () => {
   const { data: portal, isLoading } = useQuery({
@@ -31,12 +30,6 @@ const Students = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHead
-          title="Student Portal"
-          description="Access the student portal at Beawar School for resources, assignments, and more."
-          keywords="student portal, student login, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Students", path: "/students" }])}
-        />
       <Header />
       <main>
         {/* Hero */}

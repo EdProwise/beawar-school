@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { Calendar, ArrowRight, Clock, Bell, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNewsEvents, useFeaturedNews, useUpcomingEvents, useSubscribeNewsletter } from "@/hooks/use-school-data";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 const News = () => {
   const [email, setEmail] = useState("");
@@ -50,12 +49,6 @@ const News = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHead
-          title="News & Events"
-          description="Stay updated with the latest news, events, and announcements from Beawar School."
-          keywords="school news, events, announcements, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "News", path: "/news" }])}
-        />
       <Header />
       <main>
         {/* Hero */}

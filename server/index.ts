@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { isCrawler, injectMetaTags } from './seo.js';
 
 dotenv.config();
 
@@ -364,28 +363,6 @@ app.post('/api/:table/upsert', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// Production: Serve built SPA with crawler-aware meta tag injection
-const distPath = path.join(process.cwd(), 'dist');
-if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath, { index: false }));
-  
-  app.get('*', (req, res) => {
-    const indexPath = path.join(distPath, 'index.html');
-    if (!fs.existsSync(indexPath)) {
-      return res.status(404).send('Not found');
-    }
-    
-    let html = fs.readFileSync(indexPath, 'utf8');
-    const userAgent = req.headers['user-agent'] || '';
-    
-    // Inject SEO meta tags for all requests (crawlers and browsers)
-    html = injectMetaTags(html, req.path);
-    
-    res.setHeader('Content-Type', 'text/html');
-    res.send(html);
-  });
-}
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

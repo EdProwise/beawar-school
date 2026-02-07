@@ -6,7 +6,6 @@ import { Loader2, Zap, Home, ShieldCheck, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export default function ResidentialSchool() {
   const { data, isLoading } = useBeyondAcademics("residential-school");
@@ -50,12 +49,6 @@ export default function ResidentialSchool() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
-      <SEOHead
-          title="Residential School"
-          description="Learn about the residential school facilities and boarding life at Beawar School."
-          keywords="residential school, boarding, hostel, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Beyond Academics", path: "/beyond-academics" }, { name: "Residential School", path: "/beyond-academics/residential-school" }])}
-        />
       <Header />
       <main>
         {/* Hero Section */}
@@ -167,12 +160,11 @@ export default function ResidentialSchool() {
                                       className={`relative overflow-hidden rounded-xl cursor-pointer group/img ${section.images!.length === 1 ? 'col-span-2 row-span-2' : ''} ${section.images!.length === 2 ? 'row-span-2' : ''} ${section.images!.length === 3 && i === 0 ? 'row-span-2' : ''}`}
                                       onClick={() => openLightbox(section.images!, i)}
                                     >
-                                        <img 
-                                          src={img} 
-                                          alt={`${section.title} ${i + 1}`}
-                                          loading="lazy"
-                                          className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                                        />
+                                      <img 
+                                        src={img} 
+                                        alt={`${section.title} ${i + 1}`}
+                                        className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                                      />
                                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                                         <ZoomIn className="w-8 h-8 text-white shadow-lg" />
                                       </div>
@@ -184,12 +176,11 @@ export default function ResidentialSchool() {
                                   className="w-full h-full cursor-pointer group/img relative overflow-hidden"
                                   onClick={() => openLightbox([section.image_url!], 0)}
                                 >
-                                    <img 
-                                      src={section.image_url} 
-                                      alt={section.title}
-                                      loading="lazy"
-                                      className="w-full h-full object-cover transform group-hover/media:scale-105 transition-transform duration-700"
-                                    />
+                                  <img 
+                                    src={section.image_url} 
+                                    alt={section.title}
+                                    className="w-full h-full object-cover transform group-hover/media:scale-105 transition-transform duration-700"
+                                  />
                                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                                     <ZoomIn className="w-10 h-10 text-white shadow-lg" />
                                   </div>

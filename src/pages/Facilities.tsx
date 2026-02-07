@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 import { 
   Monitor, BookOpen, Dumbbell, FlaskConical, Bus, Laptop, Music, Palette, 
   ArrowRight, Building, Wifi, Utensils, Shield, Loader2, X
@@ -52,12 +51,6 @@ const Facilities = () => {
 
   return (
     <div className="min-h-screen">
-      <SEOHead
-          title="Infrastructure & Facilities"
-          description="Explore the modern infrastructure and world-class facilities available at Beawar School."
-          keywords="school facilities, infrastructure, campus, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Infrastructure", path: "/infrastructure" }])}
-        />
       <Header />
       <main>
         {/* Hero */}
@@ -110,13 +103,12 @@ const Facilities = () => {
                           
                           {/* Image section */}
                           <div className="relative h-52 overflow-hidden">
-                              <img 
-                                src={facility.image_url || "/placeholder.svg"} 
-                                alt={facility.title}
-                                loading="lazy"
-                                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 cursor-pointer"
-                                onClick={() => setSelectedImage(facility.image_url)}
-                              />
+                            <img 
+                              src={facility.image_url || "/placeholder.svg"} 
+                              alt={facility.title}
+                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 cursor-pointer"
+                              onClick={() => setSelectedImage(facility.image_url)}
+                            />
                               {/* Gradient overlay */}
                               <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80 pointer-events-none`} />
                             
@@ -159,13 +151,12 @@ const Facilities = () => {
                                           }
                                         }}
                                       >
-                                          <img 
-                                            src={img} 
-                                            alt={`${facility.title} ${idx + 1}`} 
-                                            loading="lazy"
-                                            className="w-full h-full object-cover"
-                                            draggable={false}
-                                          />
+                                        <img 
+                                          src={img} 
+                                          alt={`${facility.title} ${idx + 1}`} 
+                                          className="w-full h-full object-cover"
+                                          draggable={false}
+                                        />
                                       </div>
                                     ))}
                                   </div>
@@ -239,12 +230,11 @@ const Facilities = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                        <img 
-                          src="/hero_campus.png" 
-                          alt="Campus overview" 
-                          loading="lazy"
-                          className="w-full h-full object-cover"
-                        />
+                      <img 
+                        src="/hero_campus.png" 
+                        alt="Campus" 
+                        className="w-full h-full object-cover"
+                      />
                     )}
                   </div>
                 </div>

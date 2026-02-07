@@ -12,7 +12,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 interface AlumniProfile {
   id: string;
@@ -124,12 +123,6 @@ export default function Alumni() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <SEOHead
-          title="Alumni"
-          description="Connect with the alumni network of Beawar School and see where our graduates are making an impact."
-          keywords="alumni, graduates, school alumni, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Alumni", path: "/alumni" }])}
-        />
       <Header />
       <main>
         {/* Hero */}

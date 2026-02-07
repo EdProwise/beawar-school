@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 import { 
   BookOpen, Target, Users, Heart, ArrowRight, Loader2, Award, Sparkles, ZoomIn 
 } from "lucide-react";
@@ -66,12 +65,6 @@ export default function TeachingMethod() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead
-          title="Teaching Methods"
-          description="Learn about the innovative teaching methods and pedagogical approaches at Beawar School."
-          keywords="teaching methods, pedagogy, learning approach, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Teaching Methods", path: "/teaching-method" }])}
-        />
       <Header />
         <main>
           {/* Hero Section */}
@@ -136,11 +129,10 @@ export default function TeachingMethod() {
                                 onClick={() => openLightbox(heroImages, idx)}
                               >
                                 <img 
-                                    src={img} 
-                                    alt={`Teaching Method Hero ${idx + 1}`} 
-                                    loading="lazy"
-                                    className="w-full h-full object-cover transition-transform group-hover/item:scale-110 duration-700"
-                                  />
+                                  src={img} 
+                                  alt={`Teaching Method Hero ${idx + 1}`} 
+                                  className="w-full h-full object-cover transition-transform group-hover/item:scale-110 duration-700"
+                                />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
                                   <ZoomIn className="w-12 h-12 mb-2" />
                                   <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
@@ -159,12 +151,11 @@ export default function TeachingMethod() {
                         className="aspect-[4/3] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl relative cursor-pointer group/item"
                         onClick={() => openLightbox(heroImages, 0)}
                       >
-                          <img 
-                            src={heroImages[0]} 
-                            alt="Teaching Method" 
-                            loading="lazy"
-                            className="w-full h-full object-cover transition-transform group-hover/item:scale-110 duration-700"
-                          />
+                        <img 
+                          src={heroImages[0]} 
+                          alt="Teaching Method" 
+                          className="w-full h-full object-cover transition-transform group-hover/item:scale-110 duration-700"
+                        />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
                           <ZoomIn className="w-12 h-12 mb-2" />
                           <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
@@ -262,12 +253,11 @@ export default function TeachingMethod() {
                                         className="relative cursor-pointer group/item overflow-hidden rounded-[2rem]"
                                         onClick={() => openLightbox(methodImages, idx)}
                                       >
-                                          <img 
-                                            src={img} 
-                                            alt={`${method.title} ${idx + 1}`}
-                                            loading="lazy"
-                                            className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
-                                          />
+                                        <img 
+                                          src={img} 
+                                          alt={`${method.title} ${idx + 1}`}
+                                          className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
+                                        />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-[2rem]">
                                           <ZoomIn className="w-12 h-12 mb-2" />
                                           <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
@@ -286,12 +276,11 @@ export default function TeachingMethod() {
                                 className="relative cursor-pointer group/item overflow-hidden rounded-[2rem]"
                                 onClick={() => openLightbox(methodImages, 0)}
                               >
-                                  <img 
-                                    src={methodImages[0]} 
-                                    alt={method.title}
-                                    loading="lazy"
-                                    className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
-                                  />
+                                <img 
+                                  src={methodImages[0]} 
+                                  alt={method.title}
+                                  className="rounded-[2rem] shadow-strong w-full object-cover aspect-video border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
+                                />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-[2rem]">
                                   <ZoomIn className="w-12 h-12 mb-2" />
                                   <span className="text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>

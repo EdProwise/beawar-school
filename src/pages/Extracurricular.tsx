@@ -1,7 +1,6 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 import { 
   Music, Trophy, Camera, Palette, Globe, Heart, 
   Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight, Loader2, Play
@@ -123,12 +122,6 @@ export function Extracurricular() {
   
     return (
       <div className="min-h-screen overflow-x-hidden">
-        <SEOHead
-          title="Extracurricular Activities"
-          description="Explore the wide range of extracurricular activities offered at Beawar School."
-          keywords="extracurricular, sports, arts, clubs, Beawar School"
-          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Extracurricular", path: "/extracurricular" }])}
-        />
         <Header />
         <main>
           {/* Hero - Removed redundant spacer to allow header overlay */}
@@ -226,12 +219,11 @@ export function Extracurricular() {
                                 </div>
                               ) : (
                                 <div className="relative">
-                                    <img 
-                                      src={category.image_url || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop"} 
-                                      alt={category.title}
-                                      loading="lazy"
-                                      className="rounded-2xl shadow-strong w-full h-[400px] object-cover"
-                                    />
+                                  <img 
+                                    src={category.image_url || "https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop"} 
+                                    alt={category.title}
+                                    className="rounded-2xl shadow-strong w-full h-[400px] object-cover"
+                                  />
                                   <div className="absolute -bottom-4 -right-4 bg-accent px-6 py-3 rounded-xl shadow-strong">
                                     <p className="text-accent-foreground font-semibold">{category.title}</p>
                                   </div>
