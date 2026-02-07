@@ -1,0 +1,205 @@
+-- Contact Form Submissions
+CREATE TABLE contact_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  full_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'read', 'replied')),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public insert on contact_submissions"
+  ON contact_submissions FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated read on contact_submissions"
+  ON contact_submissions FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Admission Inquiries
+CREATE TABLE admission_inquiries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  parent_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  grade_applying TEXT NOT NULL,
+  message TEXT,
+  status TEXT DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'scheduled', 'enrolled', 'rejected')),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE admission_inquiries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public insert on admission_inquiries"
+  ON admission_inquiries FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Allow authenticated read on admission_inquiries"
+  ON admission_inquiries FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Newsletter Subscriptions
+CREATE TABLE newsletter_subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE newsletter_subscriptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public insert on newsletter_subscriptions"
+  ON newsletter_subscriptions FOR INSERT
+  TO anon, authenticated
+  WITH CHECK (true);
+
+-- News & Events (CMS)
+CREATE TABLE news_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  excerpt TEXT,
+  content TEXT,
+  category TEXT NOT NULL CHECK (category IN ('announcement', 'achievement', 'event', 'notice')),
+  image_url TEXT,
+  event_date TIMESTAMPTZ,
+  event_time TEXT,
+  event_location TEXT,
+  is_featured BOOLEAN DEFAULT false,
+  is_published BOOLEAN DEFAULT true,
+  author_id UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE news_events ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read published news"
+  ON news_events FOR SELECT
+  TO anon, authenticated
+  USING (is_published = true);
+
+CREATE POLICY "Allow authenticated full access"
+  ON news_events FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Gallery Items (CMS)
+CREATE TABLE gallery_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  category TEXT NOT NULL CHECK (category IN ('campus', 'events', 'sports', 'academics', 'labs', 'arts')),
+  image_url TEXT NOT NULL,
+  description TEXT,
+  is_published BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE gallery_items ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read published gallery"
+  ON gallery_items FOR SELECT
+  TO anon, authenticated
+  USING (is_published = true);
+
+CREATE POLICY "Allow authenticated full access to gallery"
+  ON gallery_items FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- User Profiles (for portal users)
+CREATE TABLE profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  full_name TEXT,
+  role TEXT NOT NULL CHECK (role IN ('admin', 'teacher', 'student', 'parent')),
+  phone TEXT,
+  avatar_url TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view own profile"
+  ON profiles FOR SELECT
+  TO authenticated
+  USING (auth.uid() = id);
+
+CREATE POLICY "Users can update own profile"
+  ON profiles FOR UPDATE
+  TO authenticated
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+
+CREATE POLICY "Admins can view all profiles"
+  ON profiles FOR SELECT
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
+    )
+  );
+
+-- Trigger to create profile on signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name, role)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    COALESCE(NEW.raw_user_meta_data->>'role', 'parent')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Testimonials Table
+CREATE TABLE testimonials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  quote TEXT NOT NULL,
+  author_name TEXT NOT NULL,
+  author_role TEXT NOT NULL,
+  author_image TEXT,
+  rating INTEGER DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
+  is_published BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read published testimonials"
+  ON testimonials FOR SELECT
+  TO anon, authenticated
+  USING (is_published = true);
+
+CREATE POLICY "Allow authenticated full access to testimonials"
+  ON testimonials FOR ALL
+  TO authenticated
+  USING (true)
+  WITH CHECK (true);
+
+-- Enable realtime for key tables
+ALTER PUBLICATION supabase_realtime ADD TABLE news_events;
+ALTER PUBLICATION supabase_realtime ADD TABLE gallery_items;

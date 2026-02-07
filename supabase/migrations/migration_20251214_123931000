@@ -1,0 +1,4 @@
+-- Add office hours to site settings
+ALTER TABLE site_settings 
+ADD COLUMN IF NOT EXISTS office_hours_weekday TEXT DEFAULT 'Mon - Fri: 8:00 AM - 5:00 PM',
+ADD COLUMN IF NOT EXISTS office_hours_weekend TEXT DEFAULT 'Sat: 9:00 AM - 1:00 PM';
