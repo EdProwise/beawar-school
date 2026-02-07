@@ -117,7 +117,7 @@ const Admissions = () => {
               Admissions
             </span>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Join the PRJ GyanJaya Family
+              Join the Orbit Family
             </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto mb-8">
               Begin your child's journey to excellence. Applications are now open.

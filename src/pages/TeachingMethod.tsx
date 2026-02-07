@@ -39,7 +39,7 @@ export default function TeachingMethod() {
     setLightboxOpen(true);
   };
 
-  const schoolName = settings?.school_name || "PRJ GyanJaya";
+  const schoolName = settings?.school_name || "Orbit School";
 
   if (heroLoading || methodsLoading) {
     return (

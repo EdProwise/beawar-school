@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 export function OurBranches() {
   const { data: settings } = useSiteSettings();
   const { data: branches, isLoading } = useBranches();
-  const schoolName = settings?.school_name || "PRJ GyanJaya";
+  const schoolName = settings?.school_name || "Orbit School";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("all");

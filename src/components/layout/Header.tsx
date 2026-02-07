@@ -68,7 +68,7 @@ export interface HeaderProps {
     const isLight = false;
     const isSolid = true;
   
-    const schoolName = settings?.school_name || "PRJ GyanJaya";
+    const schoolName = settings?.school_name || "Orbit School";
     const tagline = settings?.tagline || "Excellence in Education";
   
     const isExternalLink = (url: string) => {

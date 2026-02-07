@@ -573,12 +573,12 @@ export default function AdminAbout() {
                 </div>
               </div>
 
-              {/* Why Choose PRJ GyanJaya (Highlights) */}
+              {/* Why Choose Orbit International (Highlights) */}
               <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold flex items-center gap-2">
                     <Award className="w-5 h-5 text-primary" />
-                    Why Choose PRJ GyanJaya
+                    Why Choose Orbit International
                   </h2>
                   <Button type="button" variant="outline" size="sm" onClick={handleAddHighlight}>
                     <Plus className="w-4 h-4 mr-2" />

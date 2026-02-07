@@ -27,7 +27,7 @@ const Privacy = () => {
   const defaultPrivacy = {
     page_title: "Privacy Policy",
     last_updated: "January 2026",
-    content: "<p>PRJ GyanJaya is committed to protecting the privacy and security of our students, parents, and staff. This policy outlines how we collect, use, and safeguard your personal information.</p>",
+    content: "<p>Orbit School is committed to protecting the privacy and security of our students, parents, and staff. This policy outlines how we collect, use, and safeguard your personal information.</p>",
     sections: [
       {
         title: "Information Collection",

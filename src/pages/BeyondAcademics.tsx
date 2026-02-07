@@ -210,7 +210,7 @@ interface BeyondAcademicsSection {
                             ) : (
                               <div className="w-full h-full flex flex-col items-center justify-center space-y-4 bg-gradient-to-br from-slate-50 to-slate-100">
                                 <Zap className="w-16 h-16 text-slate-300" />
-                                <p className="text-slate-400 font-medium tracking-widest uppercase text-xs">PRJ GyanJaya Excellence</p>
+                                <p className="text-slate-400 font-medium tracking-widest uppercase text-xs">Orbit School Excellence</p>
                               </div>
                             )}
                             

@@ -39,9 +39,9 @@ const AdminLogin = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-foreground/10 backdrop-blur-sm mb-4">
             <GraduationCap className="w-8 h-8 text-primary-foreground" />
           </div>
-            <h1 className="font-heading text-2xl font-bold text-primary-foreground">
-              PRJ GyanJaya
-            </h1>
+          <h1 className="font-heading text-2xl font-bold text-primary-foreground">
+            Orbit School
+          </h1>
           <p className="text-primary-foreground/70 text-sm">Admin Portal</p>
         </div>
 
@@ -63,7 +63,7 @@ const AdminLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 rounded-lg border border-border bg-background focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                  placeholder="admin@prjgyanjaya.edu"
+                  placeholder="admin@orbitschool.edu"
                   required
                 />
               </div>

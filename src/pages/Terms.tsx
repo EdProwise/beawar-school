@@ -27,7 +27,7 @@ const Terms = () => {
   const defaultTerms = {
     page_title: "Terms & Conditions",
     last_updated: "January 2026",
-    content: "<p>By accessing PRJ GyanJaya's services and website, you agree to comply with the following terms and conditions.</p>",
+    content: "<p>By accessing Orbit School's services and website, you agree to comply with the following terms and conditions.</p>",
     sections: [
       {
         title: "Admission & Enrollment",
@@ -72,7 +72,7 @@ const Terms = () => {
                   {currentPage?.page_title || "Terms & Conditions"}
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  These terms and conditions outline the rules and regulations for the use of PRJ GyanJaya's website and services.
+                  These terms and conditions outline the rules and regulations for the use of Orbit School's website and services.
                 </p>
                 {currentPage?.last_updated && (
                   <div className="mt-8 flex items-center gap-2 text-sm text-muted-foreground">
