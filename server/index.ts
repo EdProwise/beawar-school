@@ -137,6 +137,15 @@ app.post('/api/auth/signup', async (req, res) => {
     const { email, password, data } = req.body;
     const User = getModel('users');
     
+    // Check if an admin already exists when trying to register as admin
+    if (data?.role === 'admin') {
+      const Profile = getModel('profiles');
+      const adminCount = await Profile.countDocuments({ role: 'admin' });
+      if (adminCount > 0) {
+        return res.status(403).json({ error: 'An admin account already exists. Only one admin is allowed.' });
+      }
+    }
+    
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
@@ -151,6 +160,17 @@ app.post('/api/auth/signup', async (req, res) => {
     await new Profile({ id, email, ...data }).save();
     
     res.json({ user: { id, email }, session: { access_token: 'mock-token', user: { id, email } } });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Check if admin exists
+app.get('/api/auth/admin-exists', async (req, res) => {
+  try {
+    const Profile = getModel('profiles');
+    const adminCount = await Profile.countDocuments({ role: 'admin' });
+    res.json({ exists: adminCount > 0 });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
