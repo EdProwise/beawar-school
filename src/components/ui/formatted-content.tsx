@@ -13,20 +13,10 @@ export function FormattedContent({ content, className }: FormattedContentProps) 
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
     if (isHtml) {
-    return (
-      <div 
-        className={cn(
-          "prose prose-slate max-w-none prose-p:leading-relaxed break-words [overflow-wrap:anywhere]",
-          "[&_img]:max-w-full [&_img]:h-auto",
-          "[&_table]:block [&_table]:overflow-x-auto [&_table]:max-w-full",
-          "[&_iframe]:max-w-full [&_iframe]:h-auto",
-          "[&_pre]:overflow-x-auto [&_pre]:max-w-full",
-          "[&_video]:max-w-full [&_video]:h-auto",
-          "[&>*]:max-w-full",
-          "overflow-hidden",
-          className
-        )}
-      >
+      return (
+        <div 
+          className={cn("prose prose-slate max-w-none prose-p:leading-relaxed break-words", className)}
+        >
           <style dangerouslySetInnerHTML={{ __html: `
             .prose p:empty::before {
               content: "";

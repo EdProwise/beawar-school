@@ -6,8 +6,18 @@ import { motion } from "framer-motion";
 export function TestimonialsSection() {
   const { data: testimonials = [], isLoading } = useTestimonials();
 
-  if (isLoading) return null;
-  if (testimonials.length === 0) return null;
+  if (isLoading || testimonials.length === 0) {
+    return (
+      <section className="py-20 lg:py-28 bg-secondary/50">
+        <div className="container">
+          <div className="text-center">
+            <div className="h-8 bg-secondary rounded w-48 mx-auto mb-4 animate-pulse" />
+            <div className="h-12 bg-secondary rounded w-96 mx-auto animate-pulse" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
     // Only take first 9 testimonials as requested
     const limitedTestimonials = testimonials.slice(0, 9);
@@ -30,20 +40,20 @@ export function TestimonialsSection() {
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
-          <div className="container relative mb-12 sm:mb-16">
-            {/* Section Header */}
-            <div className="text-center max-w-3xl mx-auto">
-              <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
-                Testimonials
-              </span>
-              <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-                What Our <span className="text-gradient-primary">Community</span> Says
-              </h2>
-              <p className="text-muted-foreground text-base sm:text-lg">
-                Hear from parents and students about their experience at Orbit School
-              </p>
-            </div>
+        <div className="container relative mb-16">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto">
+            <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
+              Testimonials
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              What Our <span className="text-gradient-primary">Students</span> Says
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Hear from parents and students about their experience at Orbit School
+            </p>
           </div>
+        </div>
 
         {/* Testimonials Marquee */}
         <div className="flex flex-col gap-8">
