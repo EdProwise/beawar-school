@@ -1,13 +1,15 @@
 import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { Calendar, Clock, MapPin, ArrowLeft, Share2, Loader2 } from "lucide-react";
+import { Calendar, Clock, MapPin, ArrowLeft, Share2, Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNewsBySlug } from "@/hooks/use-school-data";
+import { useState } from "react";
 
 export function NewsDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { data: news, isLoading } = useNewsBySlug(slug);
+  const [showVideo, setShowVideo] = useState(false);
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "N/A";
@@ -79,15 +81,42 @@ export function NewsDetail() {
               {news.title}
             </h1>
 
-            {news.image_url && (
-              <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl">
-                <img
-                  src={news.image_url}
-                  alt={news.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
+            {(news.image_url || news.video_url) && (
+                <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl">
+                  {news.video_url && showVideo ? (
+                    <video
+                      src={news.video_url}
+                      controls
+                      autoPlay
+                      className="w-full h-full object-cover"
+                    />
+                  ) : news.image_url ? (
+                    <>
+                      <img
+                        src={news.image_url}
+                        alt={news.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {news.video_url && (
+                        <button
+                          onClick={() => setShowVideo(true)}
+                          className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors group"
+                        >
+                          <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Play className="w-8 h-8 text-primary ml-1" />
+                          </div>
+                        </button>
+                      )}
+                    </>
+                  ) : news.video_url ? (
+                    <video
+                      src={news.video_url}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                  ) : null}
+                </div>
+              )}
 
             <div 
               className="prose prose-lg max-w-none prose-headings:font-heading prose-headings:font-bold prose-p:text-muted-foreground prose-p:leading-relaxed prose-img:rounded-xl break-words"

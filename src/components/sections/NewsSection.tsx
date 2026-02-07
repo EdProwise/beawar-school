@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Calendar, ArrowRight, MapPin, Clock } from "lucide-react";
+import { Calendar, ArrowRight, MapPin, Clock, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNewsEvents, useUpcomingEvents } from "@/hooks/use-school-data";
 
