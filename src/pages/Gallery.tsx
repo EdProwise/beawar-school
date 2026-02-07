@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { X, ChevronLeft, ChevronRight, Play, Video } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGalleryItems } from "@/hooks/use-school-data";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
-
-const isVideoUrl = (url: string) => /\.(mp4|webm|ogg|mov)$/i.test(url);
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -102,96 +100,65 @@ const Gallery = () => {
                 <p className="text-muted-foreground">No images found in this category.</p>
               </div>
             ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {galleryItems.map((item) => {
-                    const itemIsVideo = item.media_type === "video" || isVideoUrl(item.image_url);
-                    return (
-                    <div
-                      key={item.id}
-                      onClick={() => openLightbox(item.id)}
-                      className="group relative aspect-square overflow-hidden rounded-xl cursor-pointer"
-                    >
-                      {itemIsVideo ? (
-                        <>
-                          <video
-                            src={item.image_url}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            muted
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm border border-white/20 group-hover:scale-110 transition-transform">
-                              <Play className="w-6 h-6 text-white ml-1" fill="white" />
-                            </div>
-                          </div>
-                          <div className="absolute top-3 left-3 px-2 py-1 rounded bg-black/70 text-white text-xs flex items-center gap-1">
-                            <Video className="w-3 h-3" /> Video
-                          </div>
-                        </>
-                      ) : (
-                        <img
-                          src={item.image_url}
-                          alt={item.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                        <div>
-                          <p className="text-primary-foreground font-semibold">{item.title}</p>
-                          <p className="text-primary-foreground/70 text-sm capitalize">{item.category}</p>
-                        </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {galleryItems.map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => openLightbox(item.id)}
+                    className="group relative aspect-square overflow-hidden rounded-xl cursor-pointer"
+                  >
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                      <div>
+                        <p className="text-primary-foreground font-semibold">{item.title}</p>
+                        <p className="text-primary-foreground/70 text-sm capitalize">{item.category}</p>
                       </div>
                     </div>
-                    );
-                  })}
-                </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </section>
 
         {/* Lightbox */}
-          {selectedImage !== null && selectedItem && (
-            <div className="fixed inset-0 z-50 bg-primary-dark/95 flex items-center justify-center p-4">
-              <button
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground transition-colors z-10"
-              >
-                <X className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => navigateLightbox("prev")}
-                className="absolute left-4 p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground transition-colors"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => navigateLightbox("next")}
-                className="absolute right-4 p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground transition-colors"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-              <div className="max-w-4xl w-full">
-                {(selectedItem.media_type === "video" || isVideoUrl(selectedItem.image_url)) ? (
-                  <video
-                    key={selectedItem.id}
-                    src={selectedItem.image_url}
-                    className="w-full rounded-xl"
-                    controls
-                    autoPlay
-                  />
-                ) : (
-                  <img
-                    src={selectedItem.image_url}
-                    alt={selectedItem.title}
-                    className="w-full rounded-xl"
-                  />
-                )}
-                <div className="text-center mt-4">
-                  <p className="text-primary-foreground font-semibold text-lg">{selectedItem.title}</p>
-                  <p className="text-primary-foreground/70 capitalize">{selectedItem.category}</p>
-                </div>
+        {selectedImage !== null && selectedItem && (
+          <div className="fixed inset-0 z-50 bg-primary-dark/95 flex items-center justify-center p-4">
+            <button
+              onClick={closeLightbox}
+              className="absolute top-4 right-4 p-2 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => navigateLightbox("prev")}
+              className="absolute left-4 p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => navigateLightbox("next")}
+              className="absolute right-4 p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground transition-colors"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+            <div className="max-w-4xl w-full">
+              <img
+                src={selectedItem.image_url}
+                alt={selectedItem.title}
+                className="w-full rounded-xl"
+              />
+              <div className="text-center mt-4">
+                <p className="text-primary-foreground font-semibold text-lg">{selectedItem.title}</p>
+                <p className="text-primary-foreground/70 capitalize">{selectedItem.category}</p>
               </div>
             </div>
-          )}
+          </div>
+        )}
       </main>
       <Footer />
     </div>

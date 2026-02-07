@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { GraduationCap, Mail, Lock, User, Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,28 +13,9 @@ const AdminRegister = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isCheckingAdmin, setIsCheckingAdmin] = useState(true);
   const [error, setError] = useState("");
   const { signUp } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAdminExists = async () => {
-      try {
-        const response = await fetch("/api/auth/admin-exists");
-        const data = await response.json();
-        if (data.exists) {
-          // Redirect to login if admin already exists
-          navigate("/admin/login", { replace: true });
-        }
-      } catch (error) {
-        console.error("Error checking admin existence:", error);
-      } finally {
-        setIsCheckingAdmin(false);
-      }
-    };
-    checkAdminExists();
-  }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -64,15 +45,6 @@ const AdminRegister = () => {
       setIsLoading(false);
     }
   };
-
-  // Show loading while checking admin existence
-  if (isCheckingAdmin) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-dark via-primary to-primary-dark flex items-center justify-center p-4">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-foreground" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-dark via-primary to-primary-dark flex items-center justify-center p-4">

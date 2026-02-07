@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Eye, EyeOff, Loader2, Video } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, EyeOff, Loader2 } from "lucide-react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
-import { FileUpload } from "@/components/admin/FileUpload";
 import { supabase } from "@/integrations/mongodb/client";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -17,7 +16,6 @@ interface NewsEvent {
   content: string | null;
   category: string;
   image_url: string | null;
-  video_url: string | null;
   event_date: string | null;
   event_location: string | null;
   is_featured: boolean;
@@ -119,32 +117,25 @@ const AdminNews = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                    {items.map((item) => (
-                      <tr key={item.id} className="hover:bg-secondary/30 transition-colors">
-                        <td className="p-4">
-                          <div className="flex items-center gap-3">
-                            {item.image_url && (
-                              <img
-                                src={item.image_url}
-                                alt={item.title}
-                                className="w-12 h-12 rounded-lg object-cover"
-                              />
+                  {items.map((item) => (
+                    <tr key={item.id} className="hover:bg-secondary/30 transition-colors">
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          {item.image_url && (
+                            <img
+                              src={item.image_url}
+                              alt={item.title}
+                              className="w-12 h-12 rounded-lg object-cover"
+                            />
+                          )}
+                          <div>
+                            <p className="font-medium text-foreground">{item.title}</p>
+                            {item.is_featured && (
+                              <span className="text-xs text-accent font-medium">Featured</span>
                             )}
-                            <div>
-                              <p className="font-medium text-foreground">{item.title}</p>
-                              <div className="flex items-center gap-2">
-                                {item.is_featured && (
-                                  <span className="text-xs text-accent font-medium">Featured</span>
-                                )}
-                                {item.video_url && (
-                                  <span className="flex items-center gap-1 text-xs text-blue-600 font-medium">
-                                    <Video className="w-3 h-3" /> Video
-                                  </span>
-                                )}
-                              </div>
-                            </div>
                           </div>
-                        </td>
+                        </div>
+                      </td>
                       <td className="p-4">
                         <span className="px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary capitalize">
                           {item.category}
@@ -232,7 +223,6 @@ function NewsModal({ item, onClose, onSuccess }: NewsModalProps) {
     content: item?.content || "",
     category: item?.category || "announcement",
     image_url: item?.image_url || "",
-    video_url: item?.video_url || "",
     event_date: item?.event_date?.split("T")[0] || "",
     event_location: item?.event_location || "",
     is_featured: item?.is_featured || false,
@@ -268,7 +258,6 @@ function NewsModal({ item, onClose, onSuccess }: NewsModalProps) {
         content: formData.content || null,
         category: formData.category,
         image_url: formData.image_url || null,
-        video_url: formData.video_url || null,
         event_date: formData.event_date || null,
         event_location: formData.event_location || null,
         is_featured: formData.is_featured,
@@ -341,41 +330,33 @@ function NewsModal({ item, onClose, onSuccess }: NewsModalProps) {
               />
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Category *</label>
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
-                >
-                  <option value="announcement">Announcement</option>
-                  <option value="achievement">Achievement</option>
-                  <option value="event">Event</option>
-                  <option value="notice">Notice</option>
-                </select>
-              </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Category *</label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
+              >
+                <option value="announcement">Announcement</option>
+                <option value="achievement">Achievement</option>
+                <option value="event">Event</option>
+                <option value="notice">Notice</option>
+              </select>
             </div>
-            
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Featured Image</label>
-                <FileUpload
-                  accept="image"
-                  currentUrl={formData.image_url}
-                  onUpload={(url) => setFormData({ ...formData, image_url: url })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Video (Optional)</label>
-                <FileUpload
-                  accept="video"
-                  currentUrl={formData.video_url}
-                  onUpload={(url) => setFormData({ ...formData, video_url: url })}
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Image URL</label>
+              <input
+                type="url"
+                name="image_url"
+                value={formData.image_url}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
+                placeholder="/sports.png or https://..."
+              />
             </div>
+          </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Event Date</label>

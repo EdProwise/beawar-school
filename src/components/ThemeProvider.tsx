@@ -88,32 +88,5 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   }, [settings?.primary_color, settings?.accent_color]);
 
-  // Load WhatsApp button script dynamically
-  useEffect(() => {
-    const scriptId = 'whatsapp-button-script';
-    
-    // Remove existing script if any
-    const existingScript = document.getElementById(scriptId);
-    if (existingScript) {
-      existingScript.remove();
-    }
-    
-    // Add new script if URL is configured
-    if (settings?.whatsapp_button_url) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = settings.whatsapp_button_url;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-    
-    return () => {
-      const script = document.getElementById(scriptId);
-      if (script) {
-        script.remove();
-      }
-    };
-  }, [settings?.whatsapp_button_url]);
-
   return <>{children}</>;
 }

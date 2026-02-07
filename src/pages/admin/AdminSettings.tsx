@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Palette, ExternalLink, Globe, Layout, Info, Phone as PhoneIcon, Share2, ShieldCheck, MessageCircle } from "lucide-react";
+import { Loader2, Save, Palette, ExternalLink, Globe, Layout, Info, Phone as PhoneIcon, Share2, ShieldCheck } from "lucide-react";
 import { FileUpload } from "@/components/admin/FileUpload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -82,7 +82,6 @@ export default function AdminSettings() {
     udise_code: "",
     lamp_color: "#4C0DC9",
     copyright_text: "",
-    whatsapp_button_url: "",
   });
 
     const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
@@ -119,7 +118,6 @@ export default function AdminSettings() {
             udise_code: settings.udise_code || "",
             lamp_color: settings.lamp_color || "#4C0DC9",
             copyright_text: settings.copyright_text || "",
-            whatsapp_button_url: settings.whatsapp_button_url || "",
           });
 
         // Initialize link types based on values
@@ -222,10 +220,6 @@ export default function AdminSettings() {
             <TabsTrigger value="footer" className="gap-2">
               <Globe className="w-4 h-4" />
               Footer
-            </TabsTrigger>
-            <TabsTrigger value="whatsapp" className="gap-2">
-              <MessageCircle className="w-4 h-4" />
-              WhatsApp Button
             </TabsTrigger>
           </TabsList>
 
@@ -700,42 +694,10 @@ export default function AdminSettings() {
                     </div>
                   </div>
                 </div>
-                </div>
-              </div>
-            </TabsContent>
-
-          <TabsContent value="whatsapp">
-            <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <MessageCircle className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-semibold">WhatsApp Button</h2>
-              </div>
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="whatsapp_button_url">WhatsApp Button Script URL</Label>
-                  <Input
-                    id="whatsapp_button_url"
-                    value={formData.whatsapp_button_url}
-                    onChange={(e) => setFormData({ ...formData, whatsapp_button_url: e.target.value })}
-                    placeholder="https://edprowisebooster.edprowise.com/api/whatsapp-button/script?id=25"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Enter the full URL of the WhatsApp button script from EdProwise Booster or other provider. 
-                    Leave empty to disable the WhatsApp button.
-                  </p>
-                </div>
-                {formData.whatsapp_button_url && (
-                  <div className="p-4 border border-border rounded-lg bg-muted/30">
-                    <p className="text-sm text-muted-foreground">
-                      <strong>Preview:</strong> The WhatsApp button will be loaded from:
-                    </p>
-                    <code className="text-xs break-all text-primary">{formData.whatsapp_button_url}</code>
-                  </div>
-                )}
               </div>
             </div>
           </TabsContent>
-          </Tabs>
+        </Tabs>
 
         <div className="mt-8 flex justify-end">
           <Button onClick={handleSubmit} size="lg" disabled={updateMutation.isPending}>

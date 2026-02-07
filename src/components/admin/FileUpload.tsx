@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 interface FileUploadProps {
   onUpload: (url: string) => void;
   onMultiUpload?: (urls: string[]) => void;
-  accept?: "image" | "video" | "document" | "all" | "media";
+  accept?: "image" | "video" | "document" | "all";
   currentUrl?: string;
   currentUrls?: string[];
   className?: string;
@@ -44,8 +44,6 @@ export function FileUpload({
         return "image/jpeg,image/png,image/gif,image/webp,image/svg+xml";
       case "video":
         return "video/mp4,video/webm,video/ogg";
-      case "media":
-        return "image/jpeg,image/png,image/gif,image/webp,image/svg+xml,video/mp4,video/webm,video/ogg";
       case "document":
         return "application/pdf,.doc,.docx,.xls,.xlsx";
       case "all":
@@ -54,8 +52,6 @@ export function FileUpload({
         return "image/*";
     }
   };
-
-  const isVideoUrl = (url: string) => /\.(mp4|webm|ogg|mov)$/i.test(url);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -127,8 +123,6 @@ export function FileUpload({
         return <Video className="w-8 h-8 text-muted-foreground" />;
       case "document":
         return <FileText className="w-8 h-8 text-muted-foreground" />;
-      case "media":
-        return <Image className="w-8 h-8 text-muted-foreground" />;
       default:
         return <Image className="w-8 h-8 text-muted-foreground" />;
     }
@@ -147,50 +141,29 @@ export function FileUpload({
       />
 
       {multiple && previews.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            {previews.map((url, index) => (
-              <div key={index} className="relative group aspect-square">
-                {isVideoUrl(url) ? (
-                  <video
-                    src={url}
-                    className="w-full h-full object-cover rounded-lg border border-border"
-                    muted
-                  />
-                ) : (
-                  <img
-                    src={url}
-                    alt={`Preview ${index}`}
-                    className="w-full h-full object-cover rounded-lg border border-border"
-                  />
-                )}
-                {isVideoUrl(url) && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-8 h-8 rounded-full bg-black/60 flex items-center justify-center">
-                      <Video className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveMulti(index)}
-                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {previews.map((url, index) => (
+            <div key={index} className="relative group aspect-square">
+              <img
+                src={url}
+                alt={`Preview ${index}`}
+                className="w-full h-full object-cover rounded-lg border border-border"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemoveMulti(index)}
+                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {preview && !multiple ? (
         <div className="relative group">
-          {isVideoUrl(preview) ? (
-            <video
-              src={preview}
-              className="w-full h-40 object-cover rounded-lg border border-border"
-              muted
-            />
-          ) : preview.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i) || accept === "image" ? (
+          {accept === "image" || (preview && preview.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) ? (
             <img
               src={preview}
               alt="Preview"
@@ -244,16 +217,15 @@ export function FileUpload({
           ) : (
             <>
               {getIcon()}
-                <span className="text-sm text-muted-foreground">
-                  Click to upload {accept === "all" ? "file" : accept === "media" ? "image or video" : accept}{multiple ? "s" : ""}
-                </span>
-                <span className="text-xs text-muted-foreground/70">
-                  {accept === "image" && "JPG, PNG, GIF, WebP, SVG"}
-                  {accept === "video" && "MP4, WebM, OGG (max 100MB)"}
-                  {accept === "media" && "Images (JPG, PNG, GIF, WebP) or Videos (MP4, WebM)"}
-                  {accept === "document" && "PDF, DOC, DOCX, XLS, XLSX"}
-                  {accept === "all" && "Images, Videos, Documents"}
-                </span>
+              <span className="text-sm text-muted-foreground">
+                Click to upload {accept === "all" ? "file" : accept}{multiple ? "s" : ""}
+              </span>
+              <span className="text-xs text-muted-foreground/70">
+                {accept === "image" && "JPG, PNG, GIF, WebP, SVG"}
+                {accept === "video" && "MP4, WebM, OGG (max 100MB)"}
+                {accept === "document" && "PDF, DOC, DOCX, XLS, XLSX"}
+                {accept === "all" && "Images, Videos, Documents"}
+              </span>
             </>
           )}
         </button>

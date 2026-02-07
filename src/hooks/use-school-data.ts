@@ -24,7 +24,6 @@ export interface GalleryItem {
   title: string;
   category: string;
   image_url: string;
-  media_type?: "image" | "video";
   description: string | null;
   is_published: boolean;
   sort_order: number;
@@ -95,7 +94,6 @@ export function useNewsEvents(limit?: number) {
         .from("news_events")
         .select("*")
         .eq("is_published", true)
-        .order("event_date", { ascending: false })
         .order("created_at", { ascending: false });
 
       if (limit) {
@@ -104,12 +102,7 @@ export function useNewsEvents(limit?: number) {
 
       const { data, error } = await query;
       if (error) throw error;
-      // Sort: items with event_date first (newest), then by created_at
-      return (data as NewsEvent[]).sort((a, b) => {
-        const dateA = a.event_date || a.created_at || '';
-        const dateB = b.event_date || b.created_at || '';
-        return new Date(dateB).getTime() - new Date(dateA).getTime();
-      });
+      return data as NewsEvent[];
     },
   });
 }
@@ -142,7 +135,6 @@ export function useFeaturedNews() {
         .select("*")
         .eq("is_published", true)
         .eq("is_featured", true)
-        .order("event_date", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
