@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
-import { injectMetaTags } from './seo.js';
 
 dotenv.config();
 
@@ -115,94 +114,6 @@ const DynamicSchema = new mongoose.Schema({}, { strict: false, timestamps: true 
 const getModel = (tableName: string) => {
   return mongoose.models[tableName] || mongoose.model(tableName, DynamicSchema);
 };
-
-// --- Website Visit Tracking ---
-app.post('/api/visits/record', async (req, res) => {
-  try {
-    const Visit = getModel('website_visits');
-    const page = req.body?.page || '/';
-    const referrer = req.body?.referrer || '';
-    const user_agent = req.body?.user_agent || '';
-    const visit = new Visit({
-      page,
-      referrer,
-      user_agent,
-      visited_at: new Date(),
-    });
-    await visit.save();
-    res.json({ success: true });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/visits/analytics', async (req, res) => {
-  try {
-    const Visit = getModel('website_visits');
-    const { from, to } = req.query;
-
-    const match: any = {};
-    if (from || to) {
-      match.visited_at = {};
-      if (from) match.visited_at.$gte = new Date(from as string);
-      if (to) {
-        const toDate = new Date(to as string);
-        toDate.setHours(23, 59, 59, 999);
-        match.visited_at.$lte = toDate;
-      }
-    }
-
-    // Daily aggregation
-    const daily = await Visit.aggregate([
-      { $match: match },
-      {
-        $group: {
-          _id: {
-            $dateToString: { format: '%Y-%m-%d', date: '$visited_at' },
-          },
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { _id: -1 } },
-    ]);
-
-    // Summary cards
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfYesterday = new Date(startOfToday);
-    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
-    const startOfWeek = new Date(startOfToday);
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    const [totalVisits, todayVisits, yesterdayVisits, weekVisits, monthVisits] =
-      await Promise.all([
-        Visit.countDocuments(match),
-        Visit.countDocuments({ visited_at: { $gte: startOfToday } }),
-        Visit.countDocuments({
-          visited_at: { $gte: startOfYesterday, $lt: startOfToday },
-        }),
-        Visit.countDocuments({ visited_at: { $gte: startOfWeek } }),
-        Visit.countDocuments({ visited_at: { $gte: startOfMonth } }),
-      ]);
-
-    // Top pages
-    const topPages = await Visit.aggregate([
-      { $match: match },
-      { $group: { _id: '$page', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 },
-    ]);
-
-    res.json({
-      daily: daily.map((d: any) => ({ date: d._id, count: d.count })),
-      summary: { totalVisits, todayVisits, yesterdayVisits, weekVisits, monthVisits },
-      topPages: topPages.map((p: any) => ({ page: p._id, count: p.count })),
-    });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // Generic API Routes
 app.post('/api/auth/signin', async (req, res) => {
@@ -452,35 +363,6 @@ app.post('/api/:table/upsert', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-// ===============================
-// Serve frontend (Vite SPA)
-// ===============================
-const distPath = path.join(process.cwd(), 'dist');
-
-if (fs.existsSync(distPath)) {
-  // 1️⃣ Serve static assets FIRST
-  app.use('/assets', express.static(path.join(distPath, 'assets')));
-
-  // 2️⃣ Serve other static files (favicon, etc.)
-  app.use(express.static(distPath));
-
-  // 3️⃣ SPA fallback LAST (do NOT catch assets)
-  app.use((req, res) => {
-    const indexPath = path.join(distPath, 'index.html');
-
-    if (!fs.existsSync(indexPath)) {
-      return res.status(404).send('Not found');
-    }
-
-    let html = fs.readFileSync(indexPath, 'utf8');
-    html = injectMetaTags(html, req.path);
-
-    res.setHeader('Content-Type', 'text/html');
-    res.send(html);
-  });
-}
-
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

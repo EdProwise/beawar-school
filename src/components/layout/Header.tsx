@@ -12,12 +12,11 @@ const navLinks = [
     { 
       name: "About", 
       path: "/about-us",
-    children: [
-          { name: "About Us", path: "/about-us" },
-          { name: "Our Teams", path: "/our-teams" },
-          { name: "Our Branches", path: "/our-branches" },
-          { name: "Career", path: "/career" },
-        ]
+      children: [
+        { name: "About Us", path: "/about-us" },
+        { name: "Our Teams", path: "/our-teams" },
+        { name: "Our Branches", path: "/our-branches" },
+      ]
     },
   { 
     name: "Academics", 
@@ -60,36 +59,17 @@ export interface HeaderProps {
   export function Header({ variant = "solid" }: HeaderProps) {
     const [isScrolled, setIsScrolled] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [mobileOpenDropdown, setMobileOpenDropdown] = useState<string | null>(null);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const location = useLocation();
     const { data: settings } = useSiteSettings();
     const { data: admissionSettings = {} } = useAdmissionSettings();
     const { user } = useAuth();
   
-    // Track page visit
-    useEffect(() => {
-      // Skip admin pages
-      if (location.pathname.startsWith('/admin')) return;
-      const controller = new AbortController();
-      fetch('/api/visits/record', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page: location.pathname,
-          referrer: document.referrer,
-          user_agent: navigator.userAgent,
-        }),
-        signal: controller.signal,
-      }).catch(() => {});
-      return () => controller.abort();
-    }, [location.pathname]);
-
     const isLight = false;
     const isSolid = true;
   
-    const schoolName = settings?.school_name || "";
-    const tagline = settings?.tagline || "";
+    const schoolName = settings?.school_name || "Orbit School";
+    const tagline = settings?.tagline || "Excellence in Education";
   
     const isExternalLink = (url: string) => {
       if (!url) return false;
@@ -98,19 +78,7 @@ export interface HeaderProps {
              url.startsWith('//') || 
              url.startsWith('mailto:') || 
              url.startsWith('tel:') ||
-             url.endsWith('.pdf') ||
-             /^www\./i.test(url);
-    };
-
-    const ensureAbsoluteUrl = (url: string) => {
-      if (!url) return url;
-      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//') || url.startsWith('mailto:') || url.startsWith('tel:')) {
-        return url;
-      }
-      if (/^www\./i.test(url) || (!url.startsWith('/') && url.includes('.'))) {
-        return `https://${url}`;
-      }
-      return url;
+             url.endsWith('.pdf');
     };
 
     const dynamicNavLinks = useMemo(() => {
@@ -177,14 +145,14 @@ export interface HeaderProps {
                       <GraduationCap className="w-10 h-10 text-foreground" />
                     )}
                   </div>
-                      <div className="flex flex-col overflow-hidden">
-                        <span className="font-heading font-bold text-lg sm:text-xl text-primary leading-tight">
-                          {schoolName}
-                        </span>
-                        <span className="text-[10px] sm:text-xs font-medium text-primary leading-tight truncate">
-                          {tagline}
-                        </span>
-                      </div>
+                    <div className="flex flex-col">
+                      <span className="font-heading font-bold text-xl text-primary whitespace-nowrap">
+                        {schoolName}
+                      </span>
+                      <span className="text-xs font-medium text-primary whitespace-nowrap">
+                        {tagline}
+                      </span>
+                    </div>
                 </Link>
 
                 {/* Desktop Navigation Links (Center) */}
@@ -273,29 +241,29 @@ export interface HeaderProps {
 
               {/* Desktop CTA Buttons (Right) */}
               <div className="hidden lg:flex items-center gap-2 shrink-0">
-                  {settings?.cta_secondary_text && settings?.cta_secondary_link && (
-                    <Button variant="outline" size="sm" asChild className="rounded-full px-6">
-                      {isExternalLink(settings.cta_secondary_link) ? (
-                        <a href={ensureAbsoluteUrl(settings.cta_secondary_link)} target="_blank" rel="noopener noreferrer">
-                          {settings.cta_secondary_text}
-                        </a>
-                      ) : (
-                        <Link to={settings.cta_secondary_link}>{settings.cta_secondary_text}</Link>
-                      )}
-                    </Button>
-                  )}
+                {settings?.cta_secondary_text && settings?.cta_secondary_link && (
+                  <Button variant="outline" size="sm" asChild className="rounded-full px-6">
+                    {isExternalLink(settings.cta_secondary_link) ? (
+                      <a href={settings.cta_secondary_link} target="_blank" rel="noopener noreferrer">
+                        {settings.cta_secondary_text}
+                      </a>
+                    ) : (
+                      <Link to={settings.cta_secondary_link}>{settings.cta_secondary_text}</Link>
+                    )}
+                  </Button>
+                )}
 
-                  {settings?.cta_primary_text && settings?.cta_primary_link && (
-                    <Button variant="default" size="sm" asChild className="rounded-full px-6">
-                      {isExternalLink(settings.cta_primary_link) ? (
-                        <a href={ensureAbsoluteUrl(settings.cta_primary_link)} target="_blank" rel="noopener noreferrer">
-                          {settings.cta_primary_text}
-                        </a>
-                      ) : (
-                        <Link to={settings.cta_primary_link}>{settings.cta_primary_text}</Link>
-                      )}
-                    </Button>
-                  )}
+                {settings?.cta_primary_text && settings?.cta_primary_link && (
+                  <Button variant="default" size="sm" asChild className="rounded-full px-6">
+                    {isExternalLink(settings.cta_primary_link) ? (
+                      <a href={settings.cta_primary_link} target="_blank" rel="noopener noreferrer">
+                        {settings.cta_primary_text}
+                      </a>
+                    ) : (
+                      <Link to={settings.cta_primary_link}>{settings.cta_primary_text}</Link>
+                    )}
+                  </Button>
+                )}
 
                 {user && (
                   <Button variant="ghost" size="sm" asChild>
@@ -323,96 +291,112 @@ export interface HeaderProps {
             {/* Mobile Navigation */}
             {isMobileMenuOpen && (
               <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   {dynamicNavLinks.map((link) => (
-                    <div key={link.name} className="border-b border-border last:border-0 pb-1 mb-1 last:pb-0 last:mb-0">
+                    <div key={link.name}>
                       {link.children ? (
                         <div className="space-y-1">
-                          <button
-                            onClick={() => setMobileOpenDropdown(mobileOpenDropdown === link.name ? null : link.name)}
-                            className="w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium text-sm text-foreground hover:bg-secondary transition-all"
-                          >
+                          <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                             {link.name}
-                            <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", mobileOpenDropdown === link.name && "rotate-180")} />
-                          </button>
-                          
-                          {mobileOpenDropdown === link.name && (
-                            <div className="pl-4 pb-2 space-y-1 bg-secondary/30 rounded-lg mt-1">
-                              {link.children.map((child) => {
-                                const isExternal = (child as any).isExternal || isExternalLink(child.path);
-                                if (isExternal) {
-                                  return (
-                                    <a
-                                      key={child.name}
-                                      href={child.path}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className={cn(
-                                        "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all text-foreground hover:bg-secondary flex items-center justify-between"
-                                      )}
-                                    >
-                                      {child.name}
-                                      <FileDown className="w-4 h-4 opacity-50" />
-                                    </a>
-                                  );
-                                }
-                                return (
-                                  <Link
-                                    key={child.name}
-                                    to={child.path}
-                                    className={cn(
-                                      "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
-                                      location.pathname === child.path ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-secondary"
-                                    )}
-                                  >
-                                    {child.name}
-                                  </Link>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        (link as any).isCta && isExternalLink(link.path) ? (
-                              <a
-                                href={ensureAbsoluteUrl(link.path)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block px-4 py-3 rounded-lg font-medium text-sm transition-all bg-primary text-primary-foreground hover:bg-primary/90 mt-2 text-center shadow-gold font-bold"
-                              >
-                                {link.name}
-                              </a>
-                            ) : (
+                          </div>
+                          {link.children.map((child) => {
+                            const isExternal = (child as any).isExternal || isExternalLink(child.path);
+                            if (isExternal) {
+                              return (
+                                <a
+                                  key={child.name}
+                                  href={child.path}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className={cn(
+                                    "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all text-foreground hover:bg-secondary flex items-center justify-between"
+                                  )}
+                                >
+                                  {child.name}
+                                  <FileDown className="w-4 h-4 opacity-50" />
+                                </a>
+                              );
+                            }
+                            return (
                               <Link
-                                to={link.path}
+                                key={child.name}
+                                to={child.path}
                                 className={cn(
-                                  "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
-                                  (link as any).isCta 
-                                    ? "bg-primary text-primary-foreground hover:bg-primary/90 mt-2 text-center shadow-gold font-bold"
-                                    : location.pathname === link.path 
-                                      ? "bg-primary text-primary-foreground" 
-                                      : "text-foreground hover:bg-secondary"
+                                  "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
+                                  location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
                                 )}
                               >
-                                {link.name}
+                                {child.name}
                               </Link>
-                            )
+                            );
+                          })}
+                        </div>
+                      ) : (
+
+                          <Link
+                            to={link.path}
+                            className={cn(
+                              "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
+                              (link as any).isCta 
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90 mt-2 text-center"
+                                : location.pathname === link.path 
+                                  ? "bg-primary/10 text-primary" 
+                                  : "text-foreground hover:bg-secondary"
+                            )}
+                          >
+                            {link.name}
+                          </Link>
+                    )}
+                  </div>
+                ))}
+                <hr className="my-2 border-border" />
+                
+                {/* Mobile CTA Buttons */}
+                <div className="flex flex-col gap-2 pt-2">
+                  {settings?.cta_secondary_text && settings?.cta_secondary_link && (
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      {isExternalLink(settings.cta_secondary_link) ? (
+                        <a href={settings.cta_secondary_link} target="_blank" rel="noopener noreferrer">
+                          <User className="w-4 h-4 mr-2" />
+                          {settings.cta_secondary_text}
+                        </a>
+                      ) : (
+                        <Link to={settings.cta_secondary_link}>
+                          <User className="w-4 h-4 mr-2" />
+                          {settings.cta_secondary_text}
+                        </Link>
                       )}
-                    </div>
-                  ))}
-                  
-                  {/* Mobile Admin Link if logged in */}
+                    </Button>
+                  )}
+
+                  {settings?.cta_primary_text && settings?.cta_primary_link && (
+                    <Button variant="default" className="w-full justify-start" asChild>
+                      {isExternalLink(settings.cta_primary_link) ? (
+                        <a href={settings.cta_primary_link} target="_blank" rel="noopener noreferrer">
+                          <GraduationCap className="w-4 h-4 mr-2" />
+                          {settings.cta_primary_text}
+                        </a>
+                      ) : (
+                        <Link to={settings.cta_primary_link}>
+                          <GraduationCap className="w-4 h-4 mr-2" />
+                          {settings.cta_primary_text}
+                        </Link>
+                      )}
+                    </Button>
+                  )}
+
                   {user && (
                     <Link
                       to="/admin/dashboard"
-                      className="px-4 py-3 mt-2 rounded-lg font-medium text-sm bg-secondary text-primary hover:bg-primary/5 flex items-center gap-2 border border-primary/20"
+                      className="px-4 py-3 rounded-lg font-medium text-sm text-primary hover:bg-primary/5 flex items-center gap-2"
                     >
                       <Settings className="w-4 h-4" /> Admin Panel
                     </Link>
                   )}
                 </div>
               </div>
-            )}
+            </div>
+          )}
         
         {/* Scrolling Ticker integrated into header so it's fixed below menu */}
         <ScrollingTicker />

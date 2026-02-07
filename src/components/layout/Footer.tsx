@@ -35,26 +35,19 @@ const resourceLinks = [
   { name: "News & Events", path: "/news" },
 ];
 
-function ensureAbsoluteUrl(url: string): string {
-  if (!url || url === "#") return url;
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  return `https://${url}`;
-}
-
 export function Footer() {
   const { data: settings } = useSiteSettings();
 
-    const schoolName = settings?.school_name || "";
-    const tagline = settings?.tagline || "";
-    const footerText = settings?.footer_text || "";
-    const address = settings?.address || "";
-    const phone = settings?.phone || "";
-    const emailAddress = settings?.email || "";
+    const schoolName = settings?.school_name || "Orbit School";
+    const tagline = settings?.tagline || "Excellence in Education";
+    const footerText = settings?.footer_text || "Empowering students with knowledge, skills, and values to excel in a dynamic world. Join Orbit School for a journey of excellence and holistic growth.";
+    const address = settings?.address || "123 Education Lane, Learning City, State, 54321";
+    const phone = settings?.phone || "+1 (234) 567-8900";
+    const emailAddress = settings?.email || "info@orbitschool.edu";
     
     const tcLinks = [
-        { name: "Apply for TC", path: ensureAbsoluteUrl(settings?.tc_apply_url || "#") },
-        { name: "Verify TC", path: ensureAbsoluteUrl(settings?.tc_verify_url || "#") },
-        { name: "Career", path: "/career" },
+        { name: "Apply for TC", path: settings?.tc_apply_url || "#" },
+        { name: "Verify TC", path: settings?.tc_verify_url || "#" },
       ];
       
       const copyrightText = settings?.copyright_text || `All Copyright © ${new Date().getFullYear()} ${schoolName}. All Rights Reserved.`;
@@ -101,10 +94,10 @@ export function Footer() {
                 <div className="flex items-center gap-3">
                   {[Facebook, Linkedin, Instagram, Youtube].map((Icon, idx) => {
                     const urls = [
-                      ensureAbsoluteUrl(settings?.facebook_url || "#"),
-                      ensureAbsoluteUrl(settings?.linkedin_url || "#"),
-                      ensureAbsoluteUrl(settings?.instagram_url || "#"),
-                      ensureAbsoluteUrl(settings?.youtube_url || "#"),
+                      settings?.facebook_url,
+                      settings?.linkedin_url,
+                      settings?.instagram_url,
+                      settings?.youtube_url
                     ];
                     return (
                       <a 
@@ -147,9 +140,9 @@ export function Footer() {
               </ul>
             </div>
 
-            {/* Other Links Section */}
+            {/* Verify TC Section */}
             <div className="space-y-6">
-              <h4 className="text-2xl font-serif font-bold">Other Links</h4>
+              <h4 className="text-2xl font-serif font-bold">Verify TC</h4>
               <ul className="space-y-4">
                 {tcLinks.map((link) => (
                   <li key={link.name}>

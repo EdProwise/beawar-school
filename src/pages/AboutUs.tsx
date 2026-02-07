@@ -85,34 +85,34 @@ export function AboutUs() {
   const { data: milestones = [] } = useMilestones();
   const { data: statistics = [] } = useStatistics();
 
-  const schoolName = settings?.school_name || "";
+  const schoolName = settings?.school_name || "Orbit School";
   const yearsOfExcellence = about?.years_of_excellence || 25;
   const foundingYear = new Date().getFullYear() - yearsOfExcellence;
 
-    return (
-      <div className="min-h-screen overflow-x-hidden">
-        <Header />
-        <main>
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main>
         {/* Hero */}
-          <section className="pt-24 pb-12 md:pt-32 md:pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
-            </div>
-            <div className="container relative text-center px-4">
-              <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
-                About Us
-              </span>
-              <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 break-words">
-                Shaping Futures Since {foundingYear}
-              </h1>
-              <p className="text-primary-foreground/80 text-base md:text-lg max-w-2xl mx-auto break-words">
+        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
+          </div>
+          <div className="container relative text-center">
+            <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
+              About Us
+            </span>
+            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
+              Shaping Futures Since {foundingYear}
+            </h1>
+              <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto break-words">
                 Discover the story, mission, and values that drive {schoolName}'s commitment to excellence in education.
               </p>
-            </div>
-          </section>
+          </div>
+        </section>
 
         {/* Our Story */}
-          <section className="py-12 md:py-24 bg-background relative overflow-hidden">
+        <section className="py-24 bg-background relative overflow-hidden">
           {/* Decorative background elements */}
           <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 transform origin-top translate-x-1/2 -z-0" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full -translate-x-1/2 translate-y-1/2 blur-3xl -z-0" />
@@ -123,10 +123,10 @@ export function AboutUs() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-                    <div className="grid lg:grid-cols-12 gap-8 md:gap-12 items-center px-4 md:px-0 overflow-hidden">
-                      {/* Text Content Area */}
-                      <div className="lg:col-span-7 relative min-w-0">
-                        <div className="bg-card/80 backdrop-blur-md p-4 sm:p-6 md:p-12 rounded-2xl md:rounded-[2.5rem] border border-border/50 shadow-2xl relative overflow-hidden group">
+              <div className="grid lg:grid-cols-12 gap-12 items-center">
+                {/* Text Content Area */}
+                <div className="lg:col-span-7 relative">
+                  <div className="bg-card/80 backdrop-blur-md p-8 md:p-12 rounded-[2.5rem] border border-border/50 shadow-2xl relative overflow-hidden group">
                     {/* Interior Decorative Accent */}
                     <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-accent to-primary-dark" />
                     
@@ -138,11 +138,11 @@ export function AboutUs() {
                         </span>
                       </div>
 
-                            <h2 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 md:mb-8 leading-tight break-words [overflow-wrap:anywhere]">
-                          {about?.main_heading || "A Legacy of Educational Excellence"}
-                        </h2>
+                      <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
+                        {about?.main_heading || "A Legacy of Educational Excellence"}
+                      </h2>
 
-                        <div className="prose prose-sm md:prose-lg text-black-foreground mb-6 md:mb-10 max-w-none break-words [overflow-wrap:anywhere] overflow-hidden">
+                      <div className="prose prose-lg text-black-foreground mb-10 max-w-none">
                         <FormattedContent 
                           content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`} 
                         />
@@ -154,33 +154,33 @@ export function AboutUs() {
                         )}
                       </div>
 
-                        {/* Redesigned Statistics */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 pt-6 md:pt-8 border-t border-border/50">
-                          {statistics.length > 0 ? (
-                            statistics.map((stat, idx) => (
-                              <div key={stat.id} className="relative group/stat">
-                                <div className="absolute -inset-2 bg-primary/5 rounded-xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
-                                <div className="relative">
-                                  <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1">
-                                    {stat.value}<span className="text-accent">{stat.suffix}</span>
-                                  </p>
-                                  <p className="text-muted-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wider">{stat.label}</p>
+                      {/* Redesigned Statistics */}
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-8 border-t border-border/50">
+                        {statistics.length > 0 ? (
+                          statistics.map((stat, idx) => (
+                            <div key={stat.id} className="relative group/stat">
+                              <div className="absolute -inset-2 bg-primary/5 rounded-xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                              <div className="relative">
+                                <p className="font-heading text-3xl md:text-4xl font-bold text-primary mb-1">
+                                  {stat.value}<span className="text-accent">{stat.suffix}</span>
+                                </p>
+                                <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">{stat.label}</p>
                               </div>
                             </div>
                           ))
                         ) : (
                           <>
                             <div className="relative">
-                              <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1">
+                              <p className="font-heading text-3xl md:text-4xl font-bold text-primary mb-1">
                                 {yearsOfExcellence}<span className="text-accent">+</span>
                               </p>
-                              <p className="text-muted-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wider">Years of Glory</p>
+                              <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Years of Glory</p>
                             </div>
                             <div className="relative">
-                              <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-accent-dark mb-1">
+                              <p className="font-heading text-3xl md:text-4xl font-bold text-accent-dark mb-1">
                                 1500<span className="text-primary">+</span>
                               </p>
-                              <p className="text-muted-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wider">Global Alumni</p>
+                              <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Global Alumni</p>
                             </div>
                           </>
                         )}
@@ -189,33 +189,31 @@ export function AboutUs() {
                   </div>
                 </div>
 
-                      {/* Image Area */}
-                      <div className="lg:col-span-5 relative group min-w-0 overflow-hidden">
-                        {/* Decorative Frame Elements - hidden on mobile */}
-                        <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 duration-500 hidden sm:block" />
-                        <div className="absolute -inset-4 border-2 border-accent/20 rounded-[2.5rem] rotate-3 transition-transform group-hover:rotate-0 duration-500 delay-75 hidden sm:block" />
-                      
-                      <div className="relative rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl">
-                        <div className="aspect-[4/3]">
-                          <img 
-                            src={about?.main_image_url || "/hero_campus.png"} 
-                            alt={schoolName}
-                            className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                          />
-                        </div>
+                {/* Image Area */}
+                <div className="lg:col-span-5 relative group">
+                  {/* Decorative Frame Elements */}
+                  <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 duration-500" />
+                  <div className="absolute -inset-4 border-2 border-accent/20 rounded-[2.5rem] rotate-3 transition-transform group-hover:rotate-0 duration-500 delay-75" />
+                  
+                  <div className="relative rounded-[2rem] overflow-hidden shadow-2xl">
+                    <img 
+                      src={about?.main_image_url || "/hero_campus.png"} 
+                      alt={schoolName}
+                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                    />
                     
                     {/* Premium Floating Badge */}
-                    <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 bg-primary/90 backdrop-blur-md p-3 md:p-5 rounded-xl md:rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">
+                    <div className="absolute bottom-6 right-6 bg-primary/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">
                       <div className="flex flex-col items-center text-center">
-                        <span className="text-primary-foreground/70 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Established</span>
-                        <span className="text-primary-foreground font-heading text-xl md:text-3xl font-black">{foundingYear}</span>
-                        <div className="w-6 md:w-8 h-1 bg-accent mt-2 rounded-full" />
+                        <span className="text-primary-foreground/70 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Established</span>
+                        <span className="text-primary-foreground font-heading text-3xl font-black">{foundingYear}</span>
+                        <div className="w-8 h-1 bg-accent mt-2 rounded-full" />
                       </div>
                     </div>
                   </div>
 
-                    {/* Floating Circular Element */}
-                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse hidden sm:block" />
+                  {/* Floating Circular Element */}
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse" />
                 </div>
               </div>
             )}
@@ -223,25 +221,25 @@ export function AboutUs() {
         </section>
 
         {/* Mission & Vision */}
-          <section className="py-12 md:py-24 bg-gradient-to-br from-secondary/30 via-background to-secondary/30 relative overflow-hidden">
+        <section className="py-24 bg-gradient-to-br from-secondary/30 via-background to-secondary/30 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(var(--primary-rgb),0.05),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(var(--accent-rgb),0.05),transparent_50%)]" />
           
-            <div className="container relative">
-              <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-stretch px-4 md:px-0">
-                {/* Mission Card */}
-                <div className="group relative overflow-hidden">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 hidden sm:block"></div>
-                  <div className="relative h-full bg-card p-6 md:p-10 rounded-2xl md:rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
-                    <div className="flex items-start justify-between mb-8">
-                      <div className="w-16 md:w-20 h-16 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <Target className="w-8 md:w-10 h-8 md:h-10 text-primary" />
+          <div className="container relative">
+            <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+              {/* Mission Card */}
+              <div className="group relative">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                      <Target className="w-10 h-10 text-primary" />
                     </div>
                     <span className="text-6xl font-bold text-primary/5 select-none">01</span>
                   </div>
-                      <h3 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors break-words [overflow-wrap:anywhere]">
-                        {about?.mission_title || "Our Mission"}
-                      </h3>
-                      <div className="flex-grow break-words [overflow-wrap:anywhere]">
+                    <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors">
+                      {about?.mission_title || "Our Mission"}
+                    </h3>
+                    <div className="flex-grow">
                       <FormattedContent 
                         content={about?.mission_text || "To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world while fostering a love for lifelong learning."} 
                       />
@@ -249,20 +247,20 @@ export function AboutUs() {
                   </div>
                 </div>
 
-                  {/* Vision Card */}
-                  <div className="group relative overflow-hidden">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 hidden sm:block"></div>
-                    <div className="relative h-full bg-card p-6 md:p-10 rounded-2xl md:rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
-                      <div className="flex items-start justify-between mb-8">
-                        <div className="w-16 md:w-20 h-16 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                          <Eye className="w-8 md:w-10 h-8 md:h-10 text-accent-dark" />
+                {/* Vision Card */}
+                <div className="group relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                    <div className="flex items-start justify-between mb-8">
+                      <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <Eye className="w-10 h-10 text-accent-dark" />
                       </div>
                       <span className="text-6xl font-bold text-accent-dark/5 select-none">02</span>
                     </div>
-                      <h3 className="font-heading text-xl md:text-2xl lg:text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors break-words [overflow-wrap:anywhere]">
-                        {about?.vision_title || "Our Vision"}
-                      </h3>
-                      <div className="flex-grow break-words [overflow-wrap:anywhere]">
+                    <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors">
+                      {about?.vision_title || "Our Vision"}
+                    </h3>
+                    <div className="flex-grow">
                       <FormattedContent 
                         content={about?.vision_text || "To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society through innovation and excellence."} 
                       />
@@ -273,37 +271,37 @@ export function AboutUs() {
             </div>
           </section>
 
-              {/* Core Values */}
-              <section className="py-12 md:py-20 bg-background">
-                <div className="container px-4 md:px-0">
-                  <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
-                  <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
-                    Core Values
-                  </span>
-                  <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-foreground break-words">
-                    The Pillars of Our Education
-                  </h2>
-                </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                    {coreValues.map((value, index) => {
-                      const IconComponent = iconMap[value.icon_name || "Award"] || Award;
-                      const style = cardStyles[index % cardStyles.length];
-                      return (
-                        <div 
-                          key={value.id} 
-                          className={`group relative p-4 md:p-8 rounded-2xl md:rounded-3xl border ${style.border} ${style.light} ${style.hoverBorder} ${style.shadow} transition-all duration-500 hover:-translate-y-2 overflow-hidden`}
-                        >
+          {/* Core Values */}
+          <section className="py-20 bg-background">
+            <div className="container">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
+                  Core Values
+                </span>
+                <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                  The Pillars of Our Education
+                </h2>
+              </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {coreValues.map((value, index) => {
+                    const IconComponent = iconMap[value.icon_name || "Award"] || Award;
+                    const style = cardStyles[index % cardStyles.length];
+                    return (
+                      <div 
+                        key={value.id} 
+                        className={`group relative p-8 rounded-3xl border ${style.border} ${style.light} ${style.hoverBorder} ${style.shadow} transition-all duration-500 hover:-translate-y-2 overflow-hidden`}
+                      >
                         {/* Decorative Gradient Background */}
                         <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${style.gradient} rounded-bl-full -mr-16 -mt-16 transition-transform duration-500 group-hover:scale-150 opacity-50`} />
                         
                         <div className="relative z-10">
-                          <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${style.iconBg} flex items-center justify-center mb-4 md:mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500`}>
-                            <IconComponent className={`w-6 h-6 md:w-8 md:h-8 ${style.iconText}`} />
+                          <div className={`w-16 h-16 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-500`}>
+                            <IconComponent className={`w-8 h-8 ${style.iconText}`} />
                           </div>
-                          <h3 className="font-heading text-base md:text-xl font-bold text-foreground mb-2 md:mb-3 group-hover:text-primary transition-colors break-words [overflow-wrap:anywhere]">
+                          <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
                             {value.title}
                           </h3>
-                          <div className="text-muted-foreground text-sm md:text-base leading-relaxed break-words [overflow-wrap:anywhere]">
+                          <div className="text-muted-foreground leading-relaxed">
                             <FormattedContent content={value.description || ""} />
                           </div>
                         </div>
@@ -315,26 +313,26 @@ export function AboutUs() {
           </section>
 
         {/* Timeline */}
-          <section className="py-12 md:py-20 bg-primary relative overflow-hidden">
+        <section className="py-20 bg-primary relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>
-          <div className="container relative px-4 md:px-0">
-            <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
-              <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-primary-foreground mb-4 break-words">
+          <div className="container relative">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
                 Our Journey
               </h2>
-              <p className="text-primary-foreground/80 text-sm md:text-base">
+              <p className="text-primary-foreground/80">
                 Key milestones in our {yearsOfExcellence}+ years of educational excellence
               </p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
               {milestones.map((milestone, index) => (
                 <div key={milestone.id} className="text-center">
-                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-3 md:mb-4">
-                      <span className="font-heading font-bold text-accent-foreground text-sm md:text-base">{milestone.year}</span>
+                    <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                      <span className="font-heading font-bold text-accent-foreground">{milestone.year}</span>
                     </div>
-                      <p className="text-primary-foreground/80 text-sm md:text-lg font-medium break-words [overflow-wrap:anywhere]">{milestone.event}</p>
+                      <p className="text-primary-foreground/80 text-base md:text-lg font-medium break-words">{milestone.event}</p>
                   </div>
               ))}
             </div>
@@ -342,35 +340,35 @@ export function AboutUs() {
         </section>
 
         {/* Why Choose Us */}
-          {highlights.length > 0 && (
-            <section className="py-12 md:py-20 bg-background">
-              <div className="container px-4 md:px-0">
-                <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
-                  <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-foreground break-words">
-                    Why Choose {schoolName}?
-                  </h2>
-                </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                    {highlights.map((card, index) => {
-                      const IconComponent = iconMap[card.icon_name || "CheckCircle"] || CheckCircle;
-                      // Use cardStyles in reverse order for variety
-                      const style = cardStyles[(cardStyles.length - 1 - index) % cardStyles.length];
-                      return (
-                        <div 
-                          key={card.id} 
-                          className={`group p-4 md:p-8 rounded-2xl md:rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
-                        >
+        {highlights.length > 0 && (
+          <section className="py-20 bg-background">
+            <div className="container">
+              <div className="text-center max-w-3xl mx-auto mb-16">
+                <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+                  Why Choose {schoolName}?
+                </h2>
+              </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {highlights.map((card, index) => {
+                    const IconComponent = iconMap[card.icon_name || "CheckCircle"] || CheckCircle;
+                    // Use cardStyles in reverse order for variety
+                    const style = cardStyles[(cardStyles.length - 1 - index) % cardStyles.length];
+                    return (
+                      <div 
+                        key={card.id} 
+                        className={`group p-8 rounded-[2rem] bg-card border border-border hover:border-transparent ${style.shadow} transition-all duration-500 hover:-translate-y-2 relative overflow-hidden`}
+                      >
                         {/* Hover Gradient Overlay */}
                         <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                         
                         <div className="relative z-10">
-                          <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl ${style.iconBg} flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
-                            <IconComponent className={`w-5 h-5 md:w-7 md:h-7 ${style.iconText}`} />
+                          <div className={`w-14 h-14 rounded-2xl ${style.iconBg} flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-sm`}>
+                            <IconComponent className={`w-7 h-7 ${style.iconText}`} />
                           </div>
-                              <h3 className="font-heading text-base md:text-xl font-bold text-foreground mb-2 md:mb-3 group-hover:text-primary transition-colors break-words [overflow-wrap:anywhere]">
-                                {card.title}
-                              </h3>
-                              <p className="text-muted-foreground text-sm md:text-base leading-relaxed break-words [overflow-wrap:anywhere]">
+                            <h3 className="font-heading text-xl font-bold text-foreground mb-3 group-hover:text-primary transition-colors">
+                              {card.title}
+                            </h3>
+                            <p className="text-muted-foreground leading-relaxed break-words">
                               {card.description}
                             </p>
                           </div>
@@ -386,12 +384,12 @@ export function AboutUs() {
         )}
 
         {/* CTA */}
-        <section className="py-12 md:py-20 bg-secondary/50">
-          <div className="container text-center px-4 md:px-0">
-            <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4 md:mb-6 break-words">
+        <section className="py-20 bg-secondary/50">
+          <div className="container text-center">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6">
               Ready to Join Our Family?
             </h2>
-            <p className="text-muted-foreground text-sm md:text-base mb-6 md:mb-8 max-w-2xl mx-auto break-words">
+            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
               Begin your child's journey to success with {schoolName}. Apply now or schedule a campus visit.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">

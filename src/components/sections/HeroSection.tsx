@@ -27,17 +27,17 @@ export function HeroSection() {
 
   if (isLoading) {
     return (
-    <section className="relative min-h-[50vh] sm:min-h-[71vh] flex items-center justify-center bg-primary">
-          <div className="animate-pulse text-primary-foreground">Loading...</div>
-        </section>
+      <section className="relative min-h-[71vh] flex items-center justify-center bg-primary">
+        <div className="animate-pulse text-primary-foreground">Loading...</div>
+      </section>
     );
   }
 
   if (slides.length === 0) {
     return (
-      <section className="relative min-h-[50vh] sm:min-h-[71vh] flex items-center justify-center bg-gradient-to-br from-primary-dark via-primary to-primary">
-          <div className="text-center text-primary-foreground">
-            <h1 className="font-heading text-4xl font-bold mb-4">Welcome</h1>
+      <section className="relative min-h-[71vh] flex items-center justify-center bg-gradient-to-br from-primary-dark via-primary to-primary">
+        <div className="text-center text-primary-foreground">
+          <h1 className="font-heading text-4xl font-bold mb-4">Welcome</h1>
           <p>Configure hero slides in admin panel</p>
         </div>
       </section>
@@ -45,7 +45,7 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-[50vh] sm:min-h-[71vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[71vh] flex items-center overflow-hidden">
       {/* Background Slides */}
       {slides.map((slide, index) => (
         <div
@@ -65,82 +65,82 @@ export function HeroSection() {
       ))}
 
       {/* Content */}
-        <div className="container relative z-10 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            {slides.map((slide, index) => (
-              <div
-                key={slide.id}
-                className={cn(
-                  "transition-all duration-700",
-                  index === currentSlide
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8 absolute pointer-events-none"
+      <div className="container relative z-10">
+        <div className="max-w-3xl">
+          {slides.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={cn(
+                "transition-all duration-700",
+                index === currentSlide
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-8 absolute pointer-events-none"
+              )}
+            >
+              <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground mb-6 leading-tight">
+                {slide.title}
+              </h1>
+              {slide.subtitle && (
+                <p className="text-lg md:text-xl text-primary-foreground/90 mb-8 max-w-xl">
+                  {slide.subtitle}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-4">
+                {slide.cta_primary_text && slide.cta_primary_link && (
+                  <Button variant="hero-gold" size="xl" asChild>
+                    <Link to={slide.cta_primary_link}>
+                      {slide.cta_primary_text}
+                      <ArrowRight className="w-5 h-5" />
+                    </Link>
+                  </Button>
                 )}
-              >
-                  <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-primary-foreground mb-3 sm:mb-6 leading-tight">
-                    {slide.title}
-                  </h1>
-                  {slide.subtitle && (
-                    <p className="text-sm sm:text-lg md:text-xl text-primary-foreground/90 mb-4 sm:mb-8 max-w-xl">
-                      {slide.subtitle}
-                    </p>
-                  )}
-                  <div className="flex flex-row gap-2 sm:gap-4">
-                    {slide.cta_primary_text && slide.cta_primary_link && (
-                      <Button variant="hero-gold" size="default" className="text-xs px-4 h-10 sm:h-14 sm:px-10 sm:text-lg rounded-xl" asChild>
-                        <Link to={slide.cta_primary_link}>
-                          {slide.cta_primary_text}
-                          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </Link>
-                      </Button>
-                    )}
-                    {slide.cta_secondary_text && slide.cta_secondary_link && (
-                      <Button variant="hero" size="default" className="text-xs px-4 h-10 sm:h-14 sm:px-10 sm:text-lg rounded-xl" asChild>
-                        <Link to={slide.cta_secondary_link}>
-                          {slide.cta_secondary_text}
-                        </Link>
-                      </Button>
-                    )}
-                  </div>
+                {slide.cta_secondary_text && slide.cta_secondary_link && (
+                  <Button variant="hero" size="xl" asChild>
+                    <Link to={slide.cta_secondary_link}>
+                      {slide.cta_secondary_text}
+                    </Link>
+                  </Button>
+                )}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
+      </div>
 
       {/* Navigation Arrows */}
       {slides.length > 1 && (
         <>
           <button
             onClick={goToPrevSlide}
-            className="absolute left-2 sm:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground backdrop-blur-sm transition-all"
+            className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground backdrop-blur-sm transition-all"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronLeft className="w-6 h-6" />
           </button>
           <button
             onClick={goToNextSlide}
-            className="absolute right-2 sm:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 p-2 sm:p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground backdrop-blur-sm transition-all"
+            className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 p-3 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 text-primary-foreground backdrop-blur-sm transition-all"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronRight className="w-6 h-6" />
           </button>
         </>
       )}
 
       {/* Slide Indicators */}
       {slides.length > 1 && (
-        <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={cn(
-                  "w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300",
-                  index === currentSlide
-                    ? "bg-accent w-6 sm:w-8"
-                    : "bg-primary-foreground/50 hover:bg-primary-foreground/70"
-                )}
-              />
-            ))}
-          </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={cn(
+                "w-3 h-3 rounded-full transition-all duration-300",
+                index === currentSlide
+                  ? "bg-accent w-8"
+                  : "bg-primary-foreground/50 hover:bg-primary-foreground/70"
+              )}
+            />
+          ))}
+        </div>
       )}
 
       {/* Decorative Elements */}

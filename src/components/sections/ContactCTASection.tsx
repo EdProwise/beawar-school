@@ -31,7 +31,7 @@ export function ContactCTASection() {
   };
 
   return (
-    <section className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
+    <section className="py-20 lg:py-28 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <img
@@ -67,7 +67,7 @@ export function ContactCTASection() {
                 </div>
                   <div>
                     <p className="text-primary-foreground/60 text-xs">Call Us</p>
-                    <p className="text-primary-foreground font-medium">{settings?.phone || ""}</p>
+                    <p className="text-primary-foreground font-medium">{settings?.phone || "+1 234 567 8900"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-primary-foreground/10 backdrop-blur-sm">
@@ -76,7 +76,7 @@ export function ContactCTASection() {
                   </div>
                   <div>
                     <p className="text-primary-foreground/60 text-xs">Email Us</p>
-                    <p className="text-primary-foreground font-medium">{settings?.email || ""}</p>
+                    <p className="text-primary-foreground font-medium">{settings?.email || "info@orbitschool.edu"}</p>
                   </div>
                 </div>
             </div>

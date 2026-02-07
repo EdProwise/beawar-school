@@ -59,11 +59,11 @@ interface BeyondAcademicsSection {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] overflow-x-hidden">
+    <div className="min-h-screen bg-[#fafafa]">
       <Header />
       <main>
         {/* Hero Section */}
-          <section className="pt-28 sm:pt-40 pb-16 sm:pb-24 bg-[#0A192F] relative overflow-hidden">
+        <section className="pt-40 pb-24 bg-[#0A192F] relative overflow-hidden">
           <div className="absolute inset-0 opacity-20">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_-20%,#3B82F6,transparent_70%)]" />
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" />
@@ -78,10 +78,10 @@ interface BeyondAcademicsSection {
                 <Sparkles className="w-4 h-4" />
                 Holistic Development
               </span>
-                <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 sm:mb-8 tracking-tight">
+              <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 tracking-tight">
                 Beyond <span className="text-blue-500">Academics</span>
               </h1>
-              <p className="text-slate-400 text-base sm:text-xl max-w-3xl mx-auto leading-relaxed">
+              <p className="text-slate-400 text-xl max-w-3xl mx-auto leading-relaxed">
                 Nurturing talents, building character, and providing diverse opportunities for growth outside the classroom. We prepare students for life, not just exams.
               </p>
             </motion.div>
@@ -96,7 +96,7 @@ interface BeyondAcademicsSection {
         </section>
 
         {/* Content Sections */}
-            <section className="py-12 sm:py-32 px-3 sm:px-6 lg:px-8">
+        <section className="py-32 px-4 sm:px-6 lg:px-8">
           <div className="container max-w-7xl mx-auto">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-32 space-y-4">
@@ -109,26 +109,26 @@ interface BeyondAcademicsSection {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-100px" }}
-                    className="space-y-16 sm:space-y-40"
+                  className="space-y-40"
                 >
-                    {sections.map((section, index) => (
-                      <motion.div 
-                        key={section.id} 
-                        variants={itemVariants}
-                          className={`group grid lg:grid-cols-2 gap-8 lg:gap-24 items-center overflow-hidden`}
-                      >
-                        <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} relative group/content min-w-0`}>
-                          {/* Modern Premium Card */}
-                          <div className="relative p-5 sm:p-10 md:p-14 rounded-2xl sm:rounded-[3rem] bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] hover:shadow-[0_48px_80px_-16px_rgba(59,130,246,0.12)] transition-all duration-700 hover:-translate-y-2 overflow-hidden">
+                  {sections.map((section, index) => (
+                    <motion.div 
+                      key={section.id} 
+                      variants={itemVariants}
+                      className={`group grid lg:grid-cols-2 gap-16 lg:gap-24 items-center`}
+                    >
+                      <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} relative group/content`}>
+                        {/* Modern Premium Card */}
+                        <div className="relative p-10 md:p-14 rounded-[3rem] bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] hover:shadow-[0_48px_80px_-16px_rgba(59,130,246,0.12)] transition-all duration-700 hover:-translate-y-2">
                           {/* Animated Corner Accent */}
                           <div className={`absolute top-0 ${index % 2 === 1 ? 'right-0 rounded-tr-[3rem]' : 'left-0 rounded-tl-[3rem]'} w-24 h-24 bg-gradient-to-br from-blue-600/10 to-transparent rounded-full -translate-x-8 -translate-y-8 blur-2xl group-hover/content:scale-150 transition-transform duration-1000`} />
                           
-                              <div className="relative space-y-6 sm:space-y-10">
-                                <div className="space-y-4 sm:space-y-6">
-                              <div className="flex items-center gap-4 sm:gap-6">
+                          <div className="relative space-y-10">
+                            <div className="space-y-6">
+                              <div className="flex items-center gap-6">
                                 <div className="relative group/num">
                                   <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full scale-150 opacity-0 group-hover/num:opacity-100 transition-opacity" />
-                                  <span className="relative flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-[#0A192F] text-white font-bold text-lg sm:text-2xl shadow-2xl shadow-blue-900/20 rotate-3 group-hover/content:rotate-0 transition-transform duration-500">
+                                  <span className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0A192F] text-white font-bold text-2xl shadow-2xl shadow-blue-900/20 rotate-3 group-hover/content:rotate-0 transition-transform duration-500">
                                     {String(index + 1).padStart(2, '0')}
                                   </span>
                                 </div>
@@ -138,12 +138,12 @@ interface BeyondAcademicsSection {
                                 </div>
                               </div>
                               
-                                  <h2 className="text-xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] group-hover:text-blue-600 transition-colors duration-500 break-words [overflow-wrap:anywhere]">
-                                  {section.title}
-                                </h2>
+                              <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] group-hover:text-blue-600 transition-colors duration-500">
+                                {section.title}
+                              </h2>
                             </div>
                             
-                            <div className="prose prose-sm sm:prose-lg prose-slate max-w-none text-slate-600 leading-relaxed font-medium break-words overflow-hidden [overflow-wrap:anywhere]">
+                            <div className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed font-medium">
                               <FormattedContent content={section.content} />
                             </div>
                             
@@ -158,14 +158,14 @@ interface BeyondAcademicsSection {
                         </div>
                       </div>
 
-                        <div className={`${index % 2 === 1 ? 'lg:order-1' : ''} min-w-0`}>
+                      <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
 
-                        <div className="relative group/media">
-                          {/* Decorative background elements */}
-                          <div className="hidden sm:block absolute -inset-6 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />
-                          <div className={`hidden sm:block absolute -inset-4 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 transition-transform duration-700 ${index % 2 === 1 ? '-rotate-2 group-hover/media:-rotate-1' : 'rotate-2 group-hover/media:rotate-1'}`} />
-                          
-                              <div className="relative aspect-[4/3] rounded-xl sm:rounded-[2rem] overflow-hidden border border-white/50 shadow-xl bg-slate-100">
+                      <div className="relative group/media">
+                        {/* Decorative background elements */}
+                        <div className="absolute -inset-6 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />
+                        <div className={`absolute -inset-4 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 transition-transform duration-700 ${index % 2 === 1 ? '-rotate-2 group-hover/media:-rotate-1' : 'rotate-2 group-hover/media:rotate-1'}`} />
+                        
+                          <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden border border-white/50 shadow-xl bg-slate-100">
                             {section.video_url ? (
                               <video 
                                 src={section.video_url} 
@@ -241,7 +241,7 @@ interface BeyondAcademicsSection {
         {/* Call to Action or Footer Info */}
         <section className="py-24 bg-white">
           <div className="container">
-              <div className="bg-[#0A192F] rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-12 md:p-20 relative overflow-hidden">
+            <div className="bg-[#0A192F] rounded-[3rem] p-12 md:p-20 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -mr-32 -mt-32" />
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -ml-32 -mb-32" />
               
