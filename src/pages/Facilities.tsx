@@ -4,7 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { 
   Monitor, BookOpen, Dumbbell, FlaskConical, Bus, Laptop, Music, Palette, 
-  ArrowRight, Building, Wifi, Utensils, Shield, Loader2, X 
+  ArrowRight, Building, Wifi, Utensils, Shield, Loader2, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFacilities, useSiteSettings } from "@/hooks/use-school-data";
@@ -13,6 +13,15 @@ import { motion, AnimatePresence } from "framer-motion";
 const iconMap: Record<string, React.ElementType> = {
   Monitor, BookOpen, FlaskConical, Dumbbell, Bus, Wifi, Building, Laptop, Music, Palette, Utensils, Shield
 };
+
+const gradientColors = [
+  { bg: "from-violet-500 via-purple-500 to-indigo-500", glow: "shadow-[0_0_40px_rgba(139,92,246,0.3)]", accent: "bg-violet-400/20", ring: "ring-violet-400/30" },
+  { bg: "from-rose-500 via-pink-500 to-fuchsia-500", glow: "shadow-[0_0_40px_rgba(236,72,153,0.3)]", accent: "bg-rose-400/20", ring: "ring-rose-400/30" },
+  { bg: "from-amber-500 via-orange-500 to-red-500", glow: "shadow-[0_0_40px_rgba(251,146,60,0.3)]", accent: "bg-amber-400/20", ring: "ring-amber-400/30" },
+  { bg: "from-emerald-500 via-teal-500 to-cyan-500", glow: "shadow-[0_0_40px_rgba(20,184,166,0.3)]", accent: "bg-emerald-400/20", ring: "ring-emerald-400/30" },
+  { bg: "from-blue-500 via-indigo-500 to-violet-500", glow: "shadow-[0_0_40px_rgba(99,102,241,0.3)]", accent: "bg-blue-400/20", ring: "ring-blue-400/30" },
+  { bg: "from-cyan-500 via-sky-500 to-blue-500", glow: "shadow-[0_0_40px_rgba(56,189,248,0.3)]", accent: "bg-cyan-400/20", ring: "ring-cyan-400/30" },
+];
 
 const defaultFacilities = [
   { id: "1", title: "Smart Classrooms", description: "Digital learning with interactive boards", icon_name: "Monitor", image_url: "/classroom.png" },
@@ -71,61 +80,112 @@ const Facilities = () => {
               </div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {displayFacilities.map((facility) => {
-                    const IconComponent = iconMap[facility.icon_name || "Building"] || Building;
-                    const galleryImages = facility.images || [];
-                    const hasGallery = galleryImages.length > 0;
-                    
-                    return (
-                      <div 
-                        key={facility.id} 
-                        className="group bg-card rounded-2xl overflow-hidden border border-border hover:shadow-strong transition-all duration-300 flex flex-col"
-                      >
-                          <div className="relative h-56 overflow-hidden">
+                    {displayFacilities.map((facility, index) => {
+                      const IconComponent = iconMap[facility.icon_name || "Building"] || Building;
+                      const galleryImages = facility.images || [];
+                      const hasGallery = galleryImages.length > 0;
+                      const colors = gradientColors[index % gradientColors.length];
+                      
+                      return (
+                        <motion.div 
+                          key={facility.id}
+                          initial={{ opacity: 0, y: 30 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                          className={`group relative bg-card rounded-3xl overflow-hidden transition-all duration-500 flex flex-col hover:-translate-y-2 ${colors.glow} hover:shadow-2xl ring-1 ${colors.ring}`}
+                          >
+                            {/* Premium gradient border accent */}
+                            <div className={`absolute inset-0 bg-gradient-to-br ${colors.bg} opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none`} />
+                          
+                          {/* Top gradient bar */}
+                          <div className={`h-1.5 w-full bg-gradient-to-r ${colors.bg}`} />
+                          
+                          {/* Image section */}
+                          <div className="relative h-52 overflow-hidden">
                             <img 
                               src={facility.image_url || "/placeholder.svg"} 
                               alt={facility.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-pointer"
+                              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 cursor-pointer"
                               onClick={() => setSelectedImage(facility.image_url)}
                             />
-                            <div className="absolute bottom-4 left-4 right-4 pointer-events-none">
-                              <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center">
-                                  <IconComponent className="w-5 h-5 text-accent-foreground" />
+                              {/* Gradient overlay */}
+                              <div className={`absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-80 pointer-events-none`} />
+                            
+                              {/* Floating icon badge */}
+                              <div className="absolute top-4 right-4 pointer-events-none">
+                              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${colors.bg} flex items-center justify-center shadow-lg backdrop-blur-sm ring-2 ring-white/20`}>
+                                <IconComponent className="w-6 h-6 text-white" />
+                              </div>
+                            </div>
+                            
+
+                            
+                              {/* Title overlay */}
+                              <div className="absolute bottom-0 left-0 right-0 p-5 pointer-events-none">
+                              <h3 className="font-heading text-xl font-bold text-white drop-shadow-lg">
+                                {facility.title}
+                              </h3>
+                            </div>
+                          </div>
+
+                            {/* Gallery thumbnails */}
+                            {hasGallery && (
+                              <div className="px-5 pt-4 relative z-10">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${colors.bg}`} />
+                                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Gallery</p>
                                 </div>
-                                <h3 className="font-heading text-lg font-semibold text-foreground drop-shadow-lg">
-                                  {facility.title}
-                                </h3>
+                                  <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                                    {galleryImages.map((img: string, idx: number) => (
+                                      <div 
+                                        key={idx} 
+                                        role="button"
+                                        tabIndex={0}
+                                        className={`flex-shrink-0 w-20 h-16 rounded-xl overflow-hidden cursor-pointer snap-start ring-1 ${colors.ring} hover:ring-2 hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-2 relative z-20`}
+                                        onClick={() => setSelectedImage(img)}
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setSelectedImage(img);
+                                          }
+                                        }}
+                                      >
+                                        <img 
+                                          src={img} 
+                                          alt={`${facility.title} ${idx + 1}`} 
+                                          className="w-full h-full object-cover"
+                                          draggable={false}
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                              </div>
+                            )}
+
+                          {/* Content section */}
+                          <div className="p-5 flex-grow flex flex-col">
+                            <p className="text-muted-foreground text-sm leading-relaxed flex-grow">
+                              {facility.description}
+                            </p>
+                            
+                            {/* Bottom action hint */}
+                            <div className="mt-4 pt-4 border-t border-border/50">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${colors.bg} animate-pulse`} />
+                                  <span className="text-xs text-muted-foreground font-medium">Click image to expand</span>
+                                </div>
+                                <div className={`w-8 h-8 rounded-full ${colors.accent} flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0`}>
+                                  <ArrowRight className={`w-4 h-4 text-foreground`} />
+                                </div>
                               </div>
                             </div>
                           </div>
-
-                        {hasGallery && (
-                          <div className="px-4 pt-4">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Gallery</p>
-                            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x">
-                              {galleryImages.map((img: string, idx: number) => (
-                                <div 
-                                  key={idx} 
-                                  className="flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden cursor-pointer snap-start border border-border hover:border-primary transition-colors"
-                                  onClick={() => setSelectedImage(img)}
-                                >
-                                  <img src={img} alt={`${facility.title} ${idx + 1}`} className="w-full h-full object-cover" />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="p-6 flex-grow">
-                          <p className="text-muted-foreground text-sm">
-                            {facility.description}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
             )}
           </div>
         </section>
