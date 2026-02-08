@@ -6,6 +6,7 @@ import { Loader2, Zap, Sparkles, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 interface BeyondAcademicsSection {
   id: string;
@@ -60,6 +61,12 @@ interface BeyondAcademicsSection {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+          title="Beyond Academics"
+          description="Discover extracurricular and co-curricular activities that make Beawar School a holistic learning environment."
+          keywords="beyond academics, activities, holistic education, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Beyond Academics", path: "/beyond-academics" }])}
+        />
       <Header />
       <main>
         {/* Hero Section */}

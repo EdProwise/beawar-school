@@ -6,6 +6,7 @@ import { Loader2, Zap, Home, ShieldCheck, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export default function ResidentialSchool() {
   const { data, isLoading } = useBeyondAcademics("residential-school");
@@ -49,6 +50,12 @@ export default function ResidentialSchool() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+          title="Residential School"
+          description="Learn about the residential school facilities and boarding life at Beawar School."
+          keywords="residential school, boarding, hostel, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Beyond Academics", path: "/beyond-academics" }, { name: "Residential School", path: "/beyond-academics/residential-school" }])}
+        />
       <Header />
       <main>
         {/* Hero Section */}

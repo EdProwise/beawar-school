@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export function OurBranches() {
   const { data: settings } = useSiteSettings();
@@ -52,6 +53,12 @@ export function OurBranches() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+          title="Our Branches"
+          description="Explore the various branches of Beawar School across locations. Find a campus near you."
+          keywords="school branches, campuses, Beawar School locations"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Our Branches", path: "/our-branches" }])}
+        />
       <Header />
       <main>
         {/* Hero */}

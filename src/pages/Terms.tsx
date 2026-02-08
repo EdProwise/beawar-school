@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, FileText } from "lucide-react";
 import 'react-quill-new/dist/quill.snow.css';
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 interface Section {
   title: string;
@@ -57,6 +58,12 @@ const Terms = () => {
 
     return (
       <div className="min-h-screen bg-white">
+        <SEOHead
+          title="Terms & Conditions"
+          description="Read the terms and conditions for using Beawar School website and services."
+          keywords="terms and conditions, terms of use, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Terms", path: "/terms" }])}
+        />
         <Header variant="light" />
         <main>
           {/* Hero Section */}

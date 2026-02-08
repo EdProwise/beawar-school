@@ -5,6 +5,7 @@ import { MapPin, Phone, Mail, Clock, Send, Facebook, Linkedin, Instagram, Youtub
 import { Button } from "@/components/ui/button";
 import { useSubmitAdmissionInquiry, useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
 import { motion } from "framer-motion";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 const Contact = () => {
   const { data: settings } = useSiteSettings();
@@ -78,6 +79,12 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
+      <SEOHead
+          title="Contact Us"
+          description="Get in touch with Beawar School. Find our address, phone number, email, and inquiry form."
+          keywords="contact, address, phone, email, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])}
+        />
       <Header variant="light" />
       <main className="overflow-hidden">
         {/* Premium Hero Section with Animated Background */}

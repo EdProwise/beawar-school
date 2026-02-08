@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, Table as TableIcon, Info } from "lucide-react";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export default function FeesStructure() {
   const { data: fees = [], isLoading } = useQuery({
@@ -18,6 +19,12 @@ export default function FeesStructure() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+          title="Fees Structure"
+          description="View the transparent fees structure and payment options at Beawar School."
+          keywords="fees structure, school fees, tuition, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Fees Structure", path: "/admissions/fees-structure" }])}
+        />
       <Header />
       <main>
         {/* Hero */}

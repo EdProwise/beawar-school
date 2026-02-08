@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { 
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
   Music, Trophy, Camera, Palette, Globe, Heart, 
   Users, Award, Clock, Target, Rocket, Star, Shield, Zap, BookOpen, ArrowRight, Loader2, Play
 } from "lucide-react";
@@ -122,6 +123,12 @@ export function Extracurricular() {
   
     return (
       <div className="min-h-screen overflow-x-hidden">
+        <SEOHead
+          title="Extracurricular Activities"
+          description="Explore the wide range of extracurricular activities offered at Beawar School."
+          keywords="extracurricular, sports, arts, clubs, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Extracurricular", path: "/extracurricular" }])}
+        />
         <Header />
         <main>
           {/* Hero - Removed redundant spacer to allow header overlay */}

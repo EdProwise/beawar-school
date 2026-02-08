@@ -6,6 +6,7 @@ import { Loader2, Zap, Sparkles, Lightbulb, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export default function EntrepreneurSkills() {
   const { data, isLoading } = useBeyondAcademics("entrepreneur-skills");
@@ -49,6 +50,12 @@ export default function EntrepreneurSkills() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+          title="Entrepreneur Skills"
+          description="Explore the entrepreneurship and skill development programs at Beawar School for future leaders."
+          keywords="entrepreneur skills, skill development, leadership, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Beyond Academics", path: "/beyond-academics" }, { name: "Entrepreneur Skills", path: "/beyond-academics/entrepreneur-skills" }])}
+        />
       <Header />
       <main>
         {/* Hero Section */}

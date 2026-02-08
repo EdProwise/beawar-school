@@ -5,6 +5,7 @@ import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, 
 import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones, useStatistics } from "@/hooks/use-school-data";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, any> = {
   Award,
@@ -89,9 +90,15 @@ export function AboutUs() {
   const yearsOfExcellence = about?.years_of_excellence || 25;
   const foundingYear = new Date().getFullYear() - yearsOfExcellence;
 
-  return (
-    <div className="min-h-screen">
-      <Header />
+    return (
+      <div className="min-h-screen">
+        <SEOHead
+          title="About Us"
+          description={`Learn about ${schoolName} - our history, mission, vision, and the values that drive excellence in education.`}
+          keywords="about Beawar School, school history, mission, vision, values"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About Us", path: "/about-us" }])}
+        />
+        <Header />
       <main>
         {/* Hero */}
         <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">

@@ -2,6 +2,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { 
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
   Book, Microscope, Palette, Calculator, CheckCircle, ArrowRight, 
   Users, Award, Clock, Target, Baby, GraduationCap, Lightbulb, BookOpen, Loader2 
 } from "lucide-react";
@@ -129,6 +130,12 @@ const defaultPrograms = [
     return (
 
     <div className="min-h-screen bg-white">
+      <SEOHead
+          title="Academics"
+          description="Discover the academic programs and curriculum at Beawar School designed to nurture young minds."
+          keywords="academics, programs, curriculum, Beawar School education"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Academics", path: "/academics" }])}
+        />
       <Header />
       <main>
         {/* Hero */}

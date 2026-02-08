@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormattedContent } from "@/components/ui/formatted-content";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export function OurTeams() {
   const { data: settings } = useSiteSettings();
@@ -34,11 +35,17 @@ export function OurTeams() {
   ];
 
   return (
-    <div className="min-h-screen">
-      <Header />
-      <main>
-        {/* Hero */}
-        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
+      <div className="min-h-screen">
+        <SEOHead
+          title="Our Team"
+          description="Meet the dedicated teachers and staff at Beawar School who are committed to providing quality education and student success."
+          keywords="school team, teachers, faculty, staff, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Our Team", path: "/our-teams" }])}
+        />
+        <Header />
+        <main>
+          {/* Hero */}
+          <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>

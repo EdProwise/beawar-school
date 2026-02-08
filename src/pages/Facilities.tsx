@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
 import { 
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
   Monitor, BookOpen, Dumbbell, FlaskConical, Bus, Laptop, Music, Palette, 
   ArrowRight, Building, Wifi, Utensils, Shield, Loader2, X
 } from "lucide-react";
@@ -51,6 +52,12 @@ const Facilities = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+          title="Infrastructure & Facilities"
+          description="Explore the modern infrastructure and world-class facilities available at Beawar School."
+          keywords="school facilities, infrastructure, campus, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Infrastructure", path: "/infrastructure" }])}
+        />
       <Header />
       <main>
         {/* Hero */}

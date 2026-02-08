@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, Shield } from "lucide-react";
 import 'react-quill-new/dist/quill.snow.css';
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 interface Section {
   title: string;
@@ -57,6 +58,12 @@ const Privacy = () => {
 
     return (
       <div className="min-h-screen bg-white">
+        <SEOHead
+          title="Privacy Policy"
+          description="Read the privacy policy of Beawar School regarding data collection and protection."
+          keywords="privacy policy, data protection, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Privacy Policy", path: "/privacy" }])}
+        />
         <Header variant="light" />
         <main>
           {/* Hero Section */}

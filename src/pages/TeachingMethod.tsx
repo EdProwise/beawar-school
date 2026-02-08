@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
 import { 
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
   BookOpen, Target, Users, Heart, ArrowRight, Loader2, Award, Sparkles, ZoomIn 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -65,6 +66,12 @@ export default function TeachingMethod() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+          title="Teaching Methods"
+          description="Learn about the innovative teaching methods and pedagogical approaches at Beawar School."
+          keywords="teaching methods, pedagogy, learning approach, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Teaching Methods", path: "/teaching-method" }])}
+        />
       <Header />
         <main>
           {/* Hero Section */}

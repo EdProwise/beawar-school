@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { FormattedContent } from "@/components/ui/formatted-content";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 export default function Curriculum() {
   const { data: content, isLoading: contentLoading } = useQuery({
@@ -83,6 +84,12 @@ export default function Curriculum() {
 
     return (
     <div className="min-h-screen font-sans bg-white">
+      <SEOHead
+          title="Curriculum"
+          description="Explore the comprehensive curriculum at Beawar School covering all subjects and grade levels."
+          keywords="school curriculum, syllabus, subjects, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Curriculum", path: "/curriculum" }])}
+        />
       <Header />
       <main className="pb-20">
         <section className="pt-40 pb-24 bg-[#A11B5A] relative overflow-hidden">

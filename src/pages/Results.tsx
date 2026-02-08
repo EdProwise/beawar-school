@@ -6,6 +6,7 @@ import { Loader2, Trophy, Award, Star } from "lucide-react";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
 
 interface Result {
   id: string;
@@ -49,6 +50,12 @@ export default function Results() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+          title="Results"
+          description="View the outstanding academic results and achievements of students at Beawar School."
+          keywords="school results, academic performance, student achievements, Beawar School"
+          jsonLd={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Results", path: "/results" }])}
+        />
       <Header />
       <main>
         {/* Hero */}
