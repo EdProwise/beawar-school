@@ -70,7 +70,7 @@ class MongoDBQueryBuilder {
         response = await fetch(url.toString(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Array.isArray(this.body) ? this.body[0] : this.body),
+            body: JSON.stringify(this.body),
         });
       } else if (this.method === 'PATCH' || this.method === 'DELETE') {
         const reservedParams = ['select', 'count', 'sort', 'order', 'limit', 'head'];

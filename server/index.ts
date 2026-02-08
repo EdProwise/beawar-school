@@ -54,7 +54,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB limit for videos
+  limits: { fileSize: 100 * 1024 * 1024 } // 100MB limit for videos
 });
 
 // Storage Upload Route
@@ -107,12 +107,11 @@ mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB', err));
 
-// Generic Schema to handle dynamic tables
-const DynamicSchema = new mongoose.Schema({}, { strict: false, timestamps: true });
-
-// Helper to get or create model
+// Helper to get or create model with dynamic schema
 const getModel = (tableName: string) => {
-  return mongoose.models[tableName] || mongoose.model(tableName, DynamicSchema);
+  if (mongoose.models[tableName]) return mongoose.models[tableName];
+  const schema = new mongoose.Schema({}, { strict: false, timestamps: true });
+  return mongoose.model(tableName, schema);
 };
 
 // Generic API Routes
@@ -249,6 +248,18 @@ app.post('/api/:table', async (req, res) => {
   try {
     const { table } = req.params;
     const Model = getModel(table);
+
+    // Support bulk insert when body is an array
+    if (Array.isArray(req.body)) {
+      const savedItems = [];
+      for (const item of req.body) {
+        const doc = new Model(item);
+        const saved = await doc.save();
+        savedItems.push(saved);
+      }
+      return res.json(savedItems);
+    }
+
     const newItem = new Model(req.body);
     const savedItem = await newItem.save();
     res.json(savedItem);
