@@ -104,11 +104,12 @@ export function OurTeams() {
                       >
                         <div className="aspect-[4/5] relative overflow-hidden">
                           {member.images?.[0] ? (
-                            <img 
-                              src={member.images[0]} 
-                              alt={member.name}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
+                              <img 
+                                src={member.images[0]} 
+                                alt={member.name}
+                                loading="lazy"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              />
                           ) : (
                             <div className={`w-full h-full ${style.light} flex items-center justify-center`}>
                               <Users className={`w-16 h-16 ${style.text} opacity-20`} />
@@ -163,11 +164,12 @@ export function OurTeams() {
               <div className="grid md:grid-cols-5 h-full max-h-[90vh] overflow-y-auto md:overflow-hidden">
                 <div className="md:col-span-2 aspect-[4/5] md:aspect-auto relative bg-secondary/30">
                   {selectedMember.images?.[0] ? (
-                    <img 
-                      src={selectedMember.images[0]} 
-                      alt={selectedMember.name}
-                      className="w-full h-full object-cover"
-                    />
+                      <img 
+                        src={selectedMember.images[0]} 
+                        alt={selectedMember.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <Users className="w-24 h-24 text-muted-foreground/20" />

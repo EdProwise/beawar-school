@@ -115,11 +115,12 @@ export default function Curriculum() {
             <div className="lg:col-span-7 space-y-12">
               <div className="relative">
                 <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[16/10]">
-                  <img 
-                    src={pageData.main_image} 
-                    alt="Students in classroom" 
-                    className="w-full h-full object-cover"
-                  />
+                    <img 
+                      src={pageData.main_image} 
+                      alt="Students in classroom" 
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
                   <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#A11B5A] -mr-6 -mb-6 rounded-3xl -z-10 hidden md:block"></div>
                   <div className="absolute top-1/2 -left-12 w-16 h-16 border-4 border-yellow-400 rounded-2xl rotate-12 -z-10 hidden md:block"></div>
                 </div>
@@ -127,7 +128,7 @@ export default function Curriculum() {
                 <div className="grid grid-cols-4 gap-4 mt-8">
                   {pageGallery.map((src, idx) => (
                     <div key={idx} className="rounded-2xl overflow-hidden shadow-md aspect-video">
-                      <img src={src} alt={`Gallery ${idx}`} className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" />
+                        <img src={src} alt={`Curriculum gallery image ${idx + 1}`} loading="lazy" className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" />
                     </div>
                   ))}
                 </div>

@@ -152,11 +152,12 @@ export function OurBranches() {
                   <Card key={branch.id} className="group overflow-hidden border border-border shadow-sm hover:shadow-xl transition-all duration-500 rounded-2xl flex flex-col">
                     <div className="aspect-[16/10] relative overflow-hidden">
                       {branch.images && branch.images.length > 0 ? (
-                        <img 
-                          src={branch.images[0]} 
-                          alt={branch.name}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
+                          <img 
+                            src={branch.images[0]} 
+                            alt={branch.name}
+                            loading="lazy"
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
                       ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center">
                           <Building className="w-12 h-12 text-muted-foreground/20" />

@@ -164,11 +164,12 @@ export default function EntrepreneurSkills() {
                                       className={`relative overflow-hidden rounded-xl cursor-pointer group/img ${section.images!.length === 1 ? 'col-span-2 row-span-2' : ''} ${section.images!.length === 2 ? 'row-span-2' : ''} ${section.images!.length === 3 && i === 0 ? 'row-span-2' : ''}`}
                                       onClick={() => openLightbox(section.images!, i)}
                                     >
-                                      <img 
-                                        src={img} 
-                                        alt={`${section.title} ${i + 1}`}
-                                        className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
-                                      />
+                                        <img 
+                                          src={img} 
+                                          alt={`${section.title} ${i + 1}`}
+                                          loading="lazy"
+                                          className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-500"
+                                        />
                                       <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                                         <ZoomIn className="w-8 h-8 text-white shadow-lg" />
                                       </div>
@@ -180,11 +181,12 @@ export default function EntrepreneurSkills() {
                                   className="w-full h-full cursor-pointer group/img relative overflow-hidden"
                                   onClick={() => openLightbox([section.image_url!], 0)}
                                 >
-                                  <img 
-                                    src={section.image_url} 
-                                    alt={section.title}
-                                    className="w-full h-full object-cover transform group-hover/media:scale-105 transition-transform duration-700"
-                                  />
+                                    <img 
+                                      src={section.image_url} 
+                                      alt={section.title}
+                                      loading="lazy"
+                                      className="w-full h-full object-cover transform group-hover/media:scale-105 transition-transform duration-700"
+                                    />
                                   <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                                     <ZoomIn className="w-10 h-10 text-white shadow-lg" />
                                   </div>

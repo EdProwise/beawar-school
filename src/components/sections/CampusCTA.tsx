@@ -57,11 +57,12 @@ export function CampusCTA({ className, isNested }: CampusCTAProps) {
               className="w-full h-full object-cover"
             />
           ) : (
-            <img 
-              src="/hero_campus.png" 
-              alt="Campus" 
-              className="w-full h-full object-cover"
-            />
+              <img 
+                src="/hero_campus.png" 
+                alt="Beawar School campus overview" 
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
           )}
         </div>
       </div>

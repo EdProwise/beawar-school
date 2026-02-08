@@ -176,8 +176,29 @@ export function injectMetaTags(html: string, pathname: string): string {
     name: SITE_NAME,
     url: SITE_URL,
     logo: `${SITE_URL}/favicon.ico`,
-    contactPoint: { "@type": "ContactPoint", contactType: "admissions" },
+    image: `${SITE_URL}/hero_campus.png`,
+    sameAs: [
+      "https://www.facebook.com/beawarschool",
+      "https://www.instagram.com/beawarschool",
+      "https://www.youtube.com/@beawarschool",
+    ],
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "admissions",
+      telephone: "+91-1462-XXXXXX",
+      email: "info@beawarschool.com",
+      areaServed: "IN",
+      availableLanguage: ["English", "Hindi"],
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Beawar",
+      addressRegion: "Rajasthan",
+      addressCountry: "IN",
+    },
   });
+
+  const ogImage = `${SITE_URL}/hero_campus.png`;
 
   const metaTags = `
     <title>${meta.title}</title>
@@ -189,9 +210,11 @@ export function injectMetaTags(html: string, pathname: string): string {
     <meta property="og:type" content="${ogType}" />
     <meta property="og:url" content="${canonicalUrl}" />
     <meta property="og:site_name" content="${SITE_NAME}" />
+    <meta property="og:image" content="${ogImage}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${meta.title}" />
     <meta name="twitter:description" content="${meta.description}" />
+    <meta name="twitter:image" content="${ogImage}" />
     <script type="application/ld+json">${jsonLd}</script>`;
 
   // Replace the existing title and add meta tags before </head>

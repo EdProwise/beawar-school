@@ -4,8 +4,8 @@ import { Footer } from "@/components/layout/Footer";
 import { CheckCircle, ArrowRight, HelpCircle, Loader2, FileText, Building, ClipboardList, GraduationCap, Users, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSubmitAdmissionInquiry, useAdmissionSteps, useAdmissionFaqs, useAdmissionSettings } from "@/hooks/use-school-data";
-import {
 import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,

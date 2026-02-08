@@ -204,10 +204,11 @@ export function AboutUs() {
                   
                   <div className="relative rounded-[2rem] overflow-hidden shadow-2xl">
                     <img 
-                      src={about?.main_image_url || "/hero_campus.png"} 
-                      alt={schoolName}
-                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                    />
+                        src={about?.main_image_url || "/hero_campus.png"} 
+                        alt={schoolName}
+                        loading="lazy"
+                        className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                      />
                     
                     {/* Premium Floating Badge */}
                     <div className="absolute bottom-6 right-6 bg-primary/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">

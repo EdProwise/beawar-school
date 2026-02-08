@@ -43,11 +43,12 @@ export function AlumniCard({ profile, variant = "standard", index = 0 }: AlumniC
       {isFeatured ? (
         <div className="flex flex-col h-full">
           <div className="aspect-[16/10] relative overflow-hidden rounded-t-[2.5rem]">
-            <img 
-              src={profile.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800"} 
-              alt={profile.name}
-              className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
-            />
+              <img 
+                src={profile.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800"} 
+                alt={profile.name}
+                loading="lazy"
+                className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
+              />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
             
             <div className="absolute top-6 right-6">
@@ -97,7 +98,7 @@ export function AlumniCard({ profile, variant = "standard", index = 0 }: AlumniC
             <div className="relative">
               <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg shadow-slate-200 ring-4 ring-indigo-50/50 group-hover:ring-indigo-100 transition-all duration-500">
                 {profile.image ? (
-                  <img src={profile.image} alt={profile.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <img src={profile.image} alt={profile.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 ) : (
                   <div className="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-400">
                     <GraduationCap className="w-10 h-10" />

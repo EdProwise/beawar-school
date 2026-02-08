@@ -13,6 +13,7 @@ interface SEOHeadProps {
 
 const SITE_NAME = "Beawar School";
 const SITE_URL = "https://beawarschool.com"; // Update with actual domain
+const DEFAULT_OG_IMAGE = `${SITE_URL}/hero_campus.png`;
 
 function setMeta(attr: string, key: string, content: string) {
   let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
@@ -60,13 +61,13 @@ const SEOHead = ({
     setMeta("property", "og:type", ogType);
     setMeta("property", "og:url", canonicalUrl);
     setMeta("property", "og:site_name", SITE_NAME);
-    if (ogImage) setMeta("property", "og:image", ogImage);
+    setMeta("property", "og:image", ogImage || DEFAULT_OG_IMAGE);
 
     // Twitter Card
     setMeta("name", "twitter:card", "summary_large_image");
     setMeta("name", "twitter:title", fullTitle);
     setMeta("name", "twitter:description", description);
-    if (ogImage) setMeta("name", "twitter:image", ogImage);
+    setMeta("name", "twitter:image", ogImage || DEFAULT_OG_IMAGE);
 
     // JSON-LD
     const scriptId = "seo-jsonld";
@@ -96,10 +97,25 @@ export const organizationSchema = {
   name: SITE_NAME,
   url: SITE_URL,
   logo: `${SITE_URL}/favicon.ico`,
-  sameAs: [],
+  image: `${SITE_URL}/hero_campus.png`,
+  sameAs: [
+    "https://www.facebook.com/beawarschool",
+    "https://www.instagram.com/beawarschool",
+    "https://www.youtube.com/@beawarschool",
+  ],
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "admissions",
+    telephone: "+91-1462-XXXXXX",
+    email: "info@beawarschool.com",
+    areaServed: "IN",
+    availableLanguage: ["English", "Hindi"],
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Beawar",
+    addressRegion: "Rajasthan",
+    addressCountry: "IN",
   },
 };
 

@@ -1,8 +1,8 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "react-router-dom";
-import { 
 import SEOHead, { breadcrumbSchema } from "@/components/SEOHead";
+import { 
   Book, Microscope, Palette, Calculator, CheckCircle, ArrowRight, 
   Users, Award, Clock, Target, Baby, GraduationCap, Lightbulb, BookOpen, Loader2 
 } from "lucide-react";
@@ -254,10 +254,11 @@ const defaultPrograms = [
                       <div className={`min-w-0 ${isEven ? '' : 'lg:order-1'}`}>
                         <div className="relative">
                           <img 
-                            src={program.image_url || "/classroom.png"} 
-                            alt={program.title}
-                            className="rounded-2xl shadow-strong w-full object-cover"
-                          />
+                              src={program.image_url || "/classroom.png"} 
+                              alt={program.title}
+                              loading="lazy"
+                              className="rounded-2xl shadow-strong w-full object-cover"
+                            />
                           <div className="absolute -bottom-4 -right-4 bg-accent px-6 py-3 rounded-xl shadow-strong">
                             <p className="text-accent-foreground font-semibold">{program.subtitle || program.grade_range}</p>
                           </div>

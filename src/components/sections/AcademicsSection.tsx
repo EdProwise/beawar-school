@@ -67,11 +67,12 @@ export function AcademicsSection() {
                   >
                     {/* Image Section */}
                     <div className="relative h-48 w-full overflow-hidden">
-                      <img 
-                        src={program.image_url || `https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop`} 
-                        alt={program.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                        <img 
+                          src={program.image_url || `https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop`} 
+                          alt={program.title}
+                          loading="lazy"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="absolute top-4 left-4 w-10 h-10 rounded-lg bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm">
                         <IconComponent className="w-5 h-5 text-primary" />
