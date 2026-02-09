@@ -364,6 +364,29 @@ app.post('/api/:table/upsert', async (req, res) => {
   }
 });
 
+// Production: Serve built SPA with crawler-aware meta tag injection
+const distPath = path.join(process.cwd(), 'dist');
+
+if (fs.existsSync(distPath)) {
+  // 1️⃣ Serve static assets first
+  app.use(express.static(distPath));
+
+  // 2️⃣ SPA fallback (VERY IMPORTANT)
+  app.use((req, res) => {
+    const indexPath = path.join(distPath, 'index.html');
+
+    if (!fs.existsSync(indexPath)) {
+      return res.status(404).send('Not found');
+    }
+
+    let html = fs.readFileSync(indexPath, 'utf8');
+    html = injectMetaTags(html, req.path);
+
+    res.setHeader('Content-Type', 'text/html');
+    res.send(html);
+  });
+}
+
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
