@@ -14,19 +14,19 @@ export function AboutSection() {
   const { data: highlights = [] } = useHighlightCards();
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-28 bg-background relative overflow-hidden">
-      {/* Background Decoration */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+    <section className="py-12 sm:py-16 md:py-20 lg:py-28 bg-background relative overflow-x-hidden overflow-y-visible">
+        {/* Background Decoration */}
+        <div className="hidden sm:block absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="hidden sm:block absolute bottom-0 left-0 w-72 h-72 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
       <div className="container relative">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-8 sm:mb-16">
-          {/* Left Content */}
-            <div>
+            {/* Left Content */}
+              <div className="min-w-0">
               <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-light text-primary rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
                 {about?.section_title || "About Us"}
               </span>
-              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6">
+              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 sm:mb-6 break-words [overflow-wrap:anywhere]">
                 {about?.main_heading || "Welcome to Our School"}
               </h2>
               <div className="mb-6 sm:mb-8">
@@ -44,7 +44,7 @@ export function AboutSection() {
                           })()
                         : "We provide quality education for all students."
                     } 
-                    className="text-sm sm:text-lg text-muted-foreground break-words"
+                    className="text-sm sm:text-lg text-muted-foreground break-words [overflow-wrap:anywhere]"
                   />
               </div>
 
@@ -56,8 +56,8 @@ export function AboutSection() {
               </Button>
             </div>
 
-            {/* Right Content - Highlight Cards */}
-          <div className="relative">
+              {/* Right Content - Highlight Cards */}
+            <div className="relative min-w-0">
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {highlights.length > 0 ? (
                   highlights.map((card, index) => {
@@ -65,17 +65,17 @@ export function AboutSection() {
                     return (
                       <div
                         key={card.id}
-                        className={`p-4 sm:p-6 rounded-2xl border border-border bg-card hover:shadow-medium transition-all duration-300 ${
+                        className={`p-4 sm:p-6 rounded-2xl border border-border bg-card hover:shadow-medium transition-all duration-300 min-w-0 overflow-hidden ${
                           index === 0 ? "sm:translate-y-8" : ""
                         }`}
                       >
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-accent-light flex items-center justify-center mb-3 sm:mb-4">
                           <IconComponent className="w-5 h-5 sm:w-6 sm:h-6 text-accent-dark" />
                         </div>
-                        <h3 className="font-heading font-semibold text-foreground mb-1 sm:mb-2 text-sm sm:text-base">
-                          {card.title}
-                        </h3>
-                        <p className="text-muted-foreground text-xs sm:text-sm break-words">
+                        <h3 className="font-heading font-semibold text-foreground mb-1 sm:mb-2 text-sm sm:text-base break-words [overflow-wrap:anywhere]">
+                            {card.title}
+                          </h3>
+                          <p className="text-muted-foreground text-xs sm:text-sm break-words [overflow-wrap:anywhere]">
                           {card.description}
                         </p>
                       </div>

@@ -15,7 +15,7 @@ export function FormattedContent({ content, className }: FormattedContentProps) 
     if (isHtml) {
       return (
         <div 
-          className={cn("prose prose-slate max-w-none prose-p:leading-relaxed break-words", className)}
+          className={cn("prose prose-slate max-w-none prose-p:leading-relaxed break-words [overflow-wrap:anywhere]", className)}
         >
           <style dangerouslySetInnerHTML={{ __html: `
             .prose p:empty::before {

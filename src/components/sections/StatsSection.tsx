@@ -59,16 +59,6 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
 export function StatsSection() {
   const { data: stats = [], isLoading } = useStatistics();
 
-  // Fallback stats if none in database
-  const defaultStats = [
-    { id: "1", label: "Students", value: 1500, suffix: "+", icon_name: "Users" },
-    { id: "2", label: "Expert Teachers", value: 120, suffix: "+", icon_name: "GraduationCap" },
-    { id: "3", label: "Years of Excellence", value: 25, suffix: "+", icon_name: "Calendar" },
-    { id: "4", label: "Success Rate", value: 98, suffix: "%", icon_name: "TrendingUp" },
-  ];
-
-  const displayStats = stats.length > 0 ? stats : defaultStats;
-
   if (isLoading) {
     return (
       <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-primary">
@@ -86,6 +76,8 @@ export function StatsSection() {
     );
   }
 
+  if (stats.length === 0) return null;
+
   return (
     <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-primary relative overflow-hidden">
       {/* Background Pattern */}
@@ -96,7 +88,7 @@ export function StatsSection() {
 
       <div className="container relative">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {displayStats.map((stat) => {
+          {stats.map((stat) => {
             const IconComponent = iconMap[stat.icon_name || "Users"] || Users;
             return (
               <div key={stat.id} className="text-center">
