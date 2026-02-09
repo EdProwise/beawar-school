@@ -94,25 +94,25 @@ export function AboutUs() {
       <Header />
       <main>
         {/* Hero */}
-        <section className="pt-32 pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
-          </div>
-          <div className="container relative text-center">
-            <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
-              About Us
-            </span>
-            <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6">
-              Shaping Futures Since {foundingYear}
-            </h1>
-              <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto break-words">
+          <section className="pt-24 pb-12 md:pt-32 md:pb-20 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
+            </div>
+            <div className="container relative text-center px-4">
+              <span className="inline-block px-4 py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-sm font-medium mb-4">
+                About Us
+              </span>
+              <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 break-words">
+                Shaping Futures Since {foundingYear}
+              </h1>
+              <p className="text-primary-foreground/80 text-base md:text-lg max-w-2xl mx-auto break-words">
                 Discover the story, mission, and values that drive {schoolName}'s commitment to excellence in education.
               </p>
-          </div>
-        </section>
+            </div>
+          </section>
 
         {/* Our Story */}
-        <section className="py-24 bg-background relative overflow-hidden">
+          <section className="py-12 md:py-24 bg-background relative overflow-hidden">
           {/* Decorative background elements */}
           <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/5 -skew-x-12 transform origin-top translate-x-1/2 -z-0" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full -translate-x-1/2 translate-y-1/2 blur-3xl -z-0" />
@@ -123,10 +123,10 @@ export function AboutUs() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <div className="grid lg:grid-cols-12 gap-12 items-center">
-                {/* Text Content Area */}
-                <div className="lg:col-span-7 relative">
-                  <div className="bg-card/80 backdrop-blur-md p-8 md:p-12 rounded-[2.5rem] border border-border/50 shadow-2xl relative overflow-hidden group">
+                  <div className="grid lg:grid-cols-12 gap-8 md:gap-12 items-center px-4 md:px-0">
+                    {/* Text Content Area */}
+                    <div className="lg:col-span-7 relative">
+                      <div className="bg-card/80 backdrop-blur-md p-4 sm:p-6 md:p-12 rounded-2xl md:rounded-[2.5rem] border border-border/50 shadow-2xl relative overflow-hidden group">
                     {/* Interior Decorative Accent */}
                     <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-primary via-accent to-primary-dark" />
                     
@@ -138,11 +138,11 @@ export function AboutUs() {
                         </span>
                       </div>
 
-                      <h2 className="font-heading text-4xl md:text-5xl font-bold text-foreground mb-8 leading-tight">
-                        {about?.main_heading || "A Legacy of Educational Excellence"}
-                      </h2>
+                          <h2 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 md:mb-8 leading-tight break-words">
+                          {about?.main_heading || "A Legacy of Educational Excellence"}
+                        </h2>
 
-                      <div className="prose prose-lg text-black-foreground mb-10 max-w-none">
+                        <div className="prose prose-sm md:prose-lg text-black-foreground mb-6 md:mb-10 max-w-none break-words overflow-hidden">
                         <FormattedContent 
                           content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`} 
                         />
@@ -154,33 +154,33 @@ export function AboutUs() {
                         )}
                       </div>
 
-                      {/* Redesigned Statistics */}
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-8 border-t border-border/50">
-                        {statistics.length > 0 ? (
-                          statistics.map((stat, idx) => (
-                            <div key={stat.id} className="relative group/stat">
-                              <div className="absolute -inset-2 bg-primary/5 rounded-xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
-                              <div className="relative">
-                                <p className="font-heading text-3xl md:text-4xl font-bold text-primary mb-1">
-                                  {stat.value}<span className="text-accent">{stat.suffix}</span>
-                                </p>
-                                <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">{stat.label}</p>
+                        {/* Redesigned Statistics */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 pt-6 md:pt-8 border-t border-border/50">
+                          {statistics.length > 0 ? (
+                            statistics.map((stat, idx) => (
+                              <div key={stat.id} className="relative group/stat">
+                                <div className="absolute -inset-2 bg-primary/5 rounded-xl opacity-0 group-hover/stat:opacity-100 transition-opacity" />
+                                <div className="relative">
+                                  <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1">
+                                    {stat.value}<span className="text-accent">{stat.suffix}</span>
+                                  </p>
+                                  <p className="text-muted-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wider">{stat.label}</p>
                               </div>
                             </div>
                           ))
                         ) : (
                           <>
                             <div className="relative">
-                              <p className="font-heading text-3xl md:text-4xl font-bold text-primary mb-1">
+                              <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1">
                                 {yearsOfExcellence}<span className="text-accent">+</span>
                               </p>
-                              <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Years of Glory</p>
+                              <p className="text-muted-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wider">Years of Glory</p>
                             </div>
                             <div className="relative">
-                              <p className="font-heading text-3xl md:text-4xl font-bold text-accent-dark mb-1">
+                              <p className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-accent-dark mb-1">
                                 1500<span className="text-primary">+</span>
                               </p>
-                              <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Global Alumni</p>
+                              <p className="text-muted-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wider">Global Alumni</p>
                             </div>
                           </>
                         )}
@@ -189,25 +189,27 @@ export function AboutUs() {
                   </div>
                 </div>
 
-                {/* Image Area */}
-                <div className="lg:col-span-5 relative group">
-                  {/* Decorative Frame Elements */}
-                  <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 duration-500" />
-                  <div className="absolute -inset-4 border-2 border-accent/20 rounded-[2.5rem] rotate-3 transition-transform group-hover:rotate-0 duration-500 delay-75" />
-                  
-                  <div className="relative rounded-[2rem] overflow-hidden shadow-2xl">
-                    <img 
-                      src={about?.main_image_url || "/hero_campus.png"} 
-                      alt={schoolName}
-                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {/* Image Area */}
+                    <div className="lg:col-span-5 relative group">
+                      {/* Decorative Frame Elements - hidden on mobile */}
+                      <div className="absolute -inset-4 border-2 border-primary/20 rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 duration-500 hidden md:block" />
+                      <div className="absolute -inset-4 border-2 border-accent/20 rounded-[2.5rem] rotate-3 transition-transform group-hover:rotate-0 duration-500 delay-75 hidden md:block" />
+                      
+                      <div className="relative rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl">
+                        <div className="aspect-[4/3]">
+                          <img 
+                            src={about?.main_image_url || "/hero_campus.png"} 
+                            alt={schoolName}
+                            className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                          />
+                        </div>
                     
                     {/* Premium Floating Badge */}
-                    <div className="absolute bottom-6 right-6 bg-primary/90 backdrop-blur-md p-5 rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">
+                    <div className="absolute bottom-3 right-3 md:bottom-6 md:right-6 bg-primary/90 backdrop-blur-md p-3 md:p-5 rounded-xl md:rounded-2xl shadow-xl border border-white/20 transform transition-transform group-hover:translate-y-[-10px]">
                       <div className="flex flex-col items-center text-center">
-                        <span className="text-primary-foreground/70 text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Established</span>
-                        <span className="text-primary-foreground font-heading text-3xl font-black">{foundingYear}</span>
-                        <div className="w-8 h-1 bg-accent mt-2 rounded-full" />
+                        <span className="text-primary-foreground/70 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] mb-1">Established</span>
+                        <span className="text-primary-foreground font-heading text-xl md:text-3xl font-black">{foundingYear}</span>
+                        <div className="w-6 md:w-8 h-1 bg-accent mt-2 rounded-full" />
                       </div>
                     </div>
                   </div>
@@ -221,22 +223,22 @@ export function AboutUs() {
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-24 bg-gradient-to-br from-secondary/30 via-background to-secondary/30 relative overflow-hidden">
+          <section className="py-12 md:py-24 bg-gradient-to-br from-secondary/30 via-background to-secondary/30 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(var(--primary-rgb),0.05),transparent_50%),radial-gradient(circle_at_80%_80%,rgba(var(--accent-rgb),0.05),transparent_50%)]" />
           
-          <div className="container relative">
-            <div className="grid lg:grid-cols-2 gap-12 items-stretch">
+            <div className="container relative">
+              <div className="grid lg:grid-cols-2 gap-6 md:gap-12 items-stretch">
               {/* Mission Card */}
               <div className="group relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                      <Target className="w-10 h-10 text-primary" />
+                <div className="relative h-full bg-card p-6 md:p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                    <div className="flex items-start justify-between mb-8">
+                      <div className="w-16 md:w-20 h-16 md:h-20 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <Target className="w-8 md:w-10 h-8 md:h-10 text-primary" />
                     </div>
                     <span className="text-6xl font-bold text-primary/5 select-none">01</span>
                   </div>
-                    <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors">
+                    <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors break-words">
                       {about?.mission_title || "Our Mission"}
                     </h3>
                     <div className="flex-grow">
@@ -250,14 +252,14 @@ export function AboutUs() {
                 {/* Vision Card */}
                 <div className="group relative">
                   <div className="absolute -inset-1 bg-gradient-to-r from-accent/20 to-accent/10 rounded-3xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                  <div className="relative h-full bg-card p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
-                    <div className="flex items-start justify-between mb-8">
-                      <div className="w-20 h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                        <Eye className="w-10 h-10 text-accent-dark" />
+                  <div className="relative h-full bg-card p-6 md:p-10 rounded-3xl border border-border/50 shadow-xl backdrop-blur-sm flex flex-col">
+                      <div className="flex items-start justify-between mb-8">
+                        <div className="w-16 md:w-20 h-16 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                          <Eye className="w-8 md:w-10 h-8 md:h-10 text-accent-dark" />
                       </div>
                       <span className="text-6xl font-bold text-accent-dark/5 select-none">02</span>
                     </div>
-                    <h3 className="font-heading text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors">
+                    <h3 className="font-heading text-2xl md:text-3xl font-bold text-foreground mb-6 group-hover:text-accent-dark transition-colors break-words">
                       {about?.vision_title || "Our Vision"}
                     </h3>
                     <div className="flex-grow">
@@ -271,10 +273,10 @@ export function AboutUs() {
             </div>
           </section>
 
-          {/* Core Values */}
-          <section className="py-20 bg-background">
-            <div className="container">
-              <div className="text-center max-w-3xl mx-auto mb-16">
+            {/* Core Values */}
+            <section className="py-12 md:py-20 bg-background">
+              <div className="container">
+                <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
                 <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
                   Core Values
                 </span>
@@ -313,7 +315,7 @@ export function AboutUs() {
           </section>
 
         {/* Timeline */}
-        <section className="py-20 bg-primary relative overflow-hidden">
+          <section className="py-12 md:py-20 bg-primary relative overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
           </div>

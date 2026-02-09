@@ -31,7 +31,7 @@ export function ContactCTASection() {
   };
 
   return (
-    <section className="py-20 lg:py-28 relative overflow-hidden">
+    <section className="py-12 sm:py-20 lg:py-28 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <img

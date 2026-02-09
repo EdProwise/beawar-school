@@ -8,7 +8,7 @@ export function TestimonialsSection() {
 
   if (isLoading || testimonials.length === 0) {
     return (
-      <section className="py-20 lg:py-28 bg-secondary/50">
+      <section className="py-12 sm:py-16 lg:py-28 bg-secondary/50">
         <div className="container">
           <div className="text-center">
             <div className="h-8 bg-secondary rounded w-48 mx-auto mb-4 animate-pulse" />

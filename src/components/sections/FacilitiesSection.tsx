@@ -33,7 +33,7 @@ export function FacilitiesSection() {
 
       <div className="container relative">
         {/* Header */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
             <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
               Infrastructure
             </span>

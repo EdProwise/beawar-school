@@ -78,7 +78,7 @@ export function ResultsSection() {
   };
 
   return (
-    <section className="py-24 relative overflow-hidden bg-[#fafafa] dark:bg-slate-950" id="results">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden bg-[#fafafa] dark:bg-slate-950" id="results">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
         <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]" />
@@ -86,7 +86,7 @@ export function ResultsSection() {
       </div>
 
       <div className="container px-4 mx-auto relative z-10">
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <div className="max-w-3xl mx-auto text-center mb-8 sm:mb-12 lg:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -103,7 +103,7 @@ export function ResultsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold font-heading mb-6 tracking-tight text-slate-900 dark:text-white"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading mb-6 tracking-tight text-slate-900 dark:text-white"
           >
             Celebrating Excellence: <span className="text-primary relative inline-block">
               Top Performers
