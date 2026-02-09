@@ -367,21 +367,22 @@ app.post('/api/:table/upsert', async (req, res) => {
 
 // Production: Serve built SPA with crawler-aware meta tag injection
 const distPath = path.join(process.cwd(), 'dist');
+
 if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath, { index: false }));
-  
-  app.get('*', (req, res) => {
+  // 1️⃣ Serve static assets first
+  app.use(express.static(distPath));
+
+  // 2️⃣ SPA fallback (VERY IMPORTANT)
+  app.use((req, res) => {
     const indexPath = path.join(distPath, 'index.html');
+
     if (!fs.existsSync(indexPath)) {
       return res.status(404).send('Not found');
     }
-    
+
     let html = fs.readFileSync(indexPath, 'utf8');
-    const userAgent = req.headers['user-agent'] || '';
-    
-    // Inject SEO meta tags for all requests (crawlers and browsers)
     html = injectMetaTags(html, req.path);
-    
+
     res.setHeader('Content-Type', 'text/html');
     res.send(html);
   });
