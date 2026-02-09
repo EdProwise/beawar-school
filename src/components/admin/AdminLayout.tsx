@@ -1,31 +1,32 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
-  GraduationCap, 
-  LayoutDashboard, 
-  Newspaper, 
-  Image, 
-  MessageSquare, 
-  Users, 
-  Mail, 
-  Bell,
-  LogOut,
-  Menu,
-  X,
-  ChevronDown,
-  Settings,
-  Layers,
-  BarChart3,
-  Building,
-  BookOpen,
-  Info,
-  Star,
-  FileText,
-    ClipboardList,
-      Shield,
-      FolderOpen,
-      Zap
-    } from "lucide-react";
+    GraduationCap, 
+    LayoutDashboard, 
+    Newspaper, 
+    Image, 
+    MessageSquare, 
+    Users, 
+    Mail, 
+    Bell,
+    LogOut,
+    Menu,
+    X,
+    ChevronDown,
+    Settings,
+    Layers,
+    BarChart3,
+    Building,
+    BookOpen,
+    Info,
+    Star,
+    FileText,
+      ClipboardList,
+        Shield,
+        FolderOpen,
+        Zap,
+        Eye
+      } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,7 @@ interface NavItem {
 
   const navItems: NavItem[] = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Website Visits", path: "/admin/website-visits", icon: Eye },
     {
       name: "About Content",
       icon: Info,
