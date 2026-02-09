@@ -150,7 +150,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <GraduationCap className="w-8 h-8 text-foreground" />
               </div>
                 <div>
-                  <p className="font-heading font-bold text-primary">Orbit School</p>
+                  <p className="font-heading font-bold text-primary">PRJ GyanJaya</p>
                   <p className="text-xs text-primary">Admin Panel</p>
                 </div>
             </Link>

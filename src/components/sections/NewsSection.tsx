@@ -44,7 +44,7 @@ export function NewsSection() {
             Latest <span className="text-gradient-gold">Updates</span> & Events
           </h2>
           <p className="text-muted-foreground text-lg">
-            Stay informed about the latest happenings and upcoming events at Orbit School
+            Stay informed about the latest happenings and upcoming events at PRJ GyanJaya
           </p>
         </div>
 

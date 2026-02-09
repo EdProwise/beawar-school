@@ -190,7 +190,7 @@ export default function Results() {
             <div className="absolute top-0 right-0 p-8 opacity-10">
               <Award className="w-32 h-32" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 relative z-10">Proud of Our Orbitians!</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-4 relative z-10">Proud of Our Students!</h2>
             <p className="text-amber-100/90 text-sm md:text-base max-w-2xl mx-auto relative z-10 leading-relaxed">
               Every result tells a story of dedication and pursuit of excellence. We congratulate all our students.
             </p>

@@ -44,7 +44,7 @@ const Facilities = () => {
   const { data: facilities = [], isLoading } = useFacilities();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "PRJ GyanJaya";
   const displayFacilities = facilities.length > 0 ? facilities : (defaultFacilities as any[]);
 
   const campusVideoEmbedUrl = settings?.campus_video_url ? getYouTubeEmbedUrl(settings.campus_video_url) : null;

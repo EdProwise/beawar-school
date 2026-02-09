@@ -85,7 +85,7 @@ const About = () => {
   const { data: milestones = [] } = useMilestones();
   const { data: statistics = [] } = useStatistics();
 
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "PRJ GyanJaya";
   const yearsOfExcellence = about?.years_of_excellence || 25;
   const foundingYear = new Date().getFullYear() - yearsOfExcellence;
 

@@ -38,12 +38,12 @@ const resourceLinks = [
 export function Footer() {
   const { data: settings } = useSiteSettings();
 
-    const schoolName = settings?.school_name || "Orbit School";
+    const schoolName = settings?.school_name || "PRJ GyanJaya";
     const tagline = settings?.tagline || "Excellence in Education";
-    const footerText = settings?.footer_text || "Empowering students with knowledge, skills, and values to excel in a dynamic world. Join Orbit School for a journey of excellence and holistic growth.";
-    const address = settings?.address || "123 Education Lane, Learning City, State, 54321";
-    const phone = settings?.phone || "+1 (234) 567-8900";
-    const emailAddress = settings?.email || "info@orbitschool.edu";
+    const footerText = settings?.footer_text || "Empowering students with knowledge, skills, and values to excel in a dynamic world. Join PRJ GyanJaya for a journey of excellence and holistic growth.";
+    const address = settings?.address || "Rajasthan State Highway 59, Doongri Road, Beawar, Rajasthan 305901";
+    const phone = settings?.phone || "+91 9214014888";
+    const emailAddress = settings?.email || "prjgyanjaya@gmail.com";
     
     const tcLinks = [
         { name: "Apply for TC", path: settings?.tc_apply_url || "#" },

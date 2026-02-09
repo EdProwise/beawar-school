@@ -142,7 +142,7 @@ export default function Alumni() {
               transition={{ duration: 0.6 }}
             >
               <span className="inline-block px-4 py-2 bg-white/10 text-white rounded-full text-sm font-medium mb-6 backdrop-blur-md border border-white/20 uppercase tracking-widest">
-                Orbit School Alumni Network
+                PRJ GyanJaya Alumni Network
               </span>
               <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
                 Legends Never Graduate
@@ -244,7 +244,7 @@ export default function Alumni() {
           <div className="container relative z-10">
             <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-xl p-12 rounded-[3rem] border border-white/20 text-center">
               <Sparkles className="w-12 h-12 text-amber-400 mx-auto mb-6" />
-              <h2 className="text-4xl font-bold text-white mb-6">Are you an Orbit Alumnus?</h2>
+              <h2 className="text-4xl font-bold text-white mb-6">Are you a PRJ GyanJaya Alumnus?</h2>
               <p className="text-indigo-100 text-xl mb-10 leading-relaxed">
                 Join our exclusive network to mentor students, attend reunions, and connect with fellow graduates worldwide.
               </p>
@@ -352,7 +352,7 @@ export default function Alumni() {
                   value={formData.bio} 
                   onChange={e => setFormData({...formData, bio: e.target.value})} 
                   className="rounded-xl border-slate-200 h-24" 
-                  placeholder="Briefly describe your path after Orbit School..." 
+                  placeholder="Briefly describe your path after PRJ GyanJaya..." 
                 />
               </div>
               <DialogFooter className="pt-4">

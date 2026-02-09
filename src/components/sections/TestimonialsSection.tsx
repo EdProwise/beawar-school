@@ -50,7 +50,7 @@ export function TestimonialsSection() {
               What Our <span className="text-gradient-primary">Students</span> Says
             </h2>
             <p className="text-muted-foreground text-lg">
-              Hear from parents and students about their experience at Orbit School
+              Hear from parents and students about their experience at PRJ GyanJaya
             </p>
           </div>
         </div>

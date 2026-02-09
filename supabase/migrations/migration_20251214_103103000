@@ -1,7 +1,7 @@
 -- Site Settings (single row for global settings)
 CREATE TABLE site_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  school_name TEXT NOT NULL DEFAULT 'Orbit School',
+  school_name TEXT NOT NULL DEFAULT 'PRJ GyanJaya',
   tagline TEXT DEFAULT 'Excellence in Education',
   logo_url TEXT,
   favicon_url TEXT,
@@ -37,7 +37,7 @@ CREATE POLICY "Allow authenticated update site_settings"
 
 -- Insert default settings
 INSERT INTO site_settings (school_name, tagline, email, phone, address) 
-VALUES ('Orbit School', 'Excellence in Education', 'info@orbitschool.edu', '+1 234 567 8900', '123 Education Lane, Academic District, City 12345');
+VALUES ('PRJ GyanJaya', 'Innovate.Educate.Elevate', 'prjgyanjaya@gmail.com', '+91 9214014888', 'Rajasthan State Highway 59, Doongri Road, Beawar, Rajasthan 305901');
 
 -- Hero Slides
 CREATE TABLE hero_slides (
@@ -66,7 +66,7 @@ CREATE POLICY "Allow authenticated manage hero_slides"
 
 -- Insert default hero slides
 INSERT INTO hero_slides (title, subtitle, image_url, sort_order) VALUES
-  ('Welcome to Orbit School', 'Shaping Future Leaders with Excellence', '/hero_campus.png', 1),
+  ('Welcome to PRJ GyanJaya', 'Innovate. Educate. Elevate.', '/hero_campus.png', 1),
   ('World-Class Education', 'Discover your potential with our innovative curriculum', '/classroom.png', 2),
   ('State-of-the-Art Facilities', 'Modern infrastructure for holistic development', '/library.png', 3);
 
@@ -75,7 +75,7 @@ CREATE TABLE about_content (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   section_title TEXT DEFAULT 'About Us',
   section_subtitle TEXT,
-  main_heading TEXT DEFAULT 'Welcome to Orbit School',
+  main_heading TEXT DEFAULT 'Welcome to PRJ GyanJaya',
   main_description TEXT,
   mission_title TEXT DEFAULT 'Our Mission',
   mission_text TEXT,
@@ -98,8 +98,8 @@ CREATE POLICY "Allow authenticated manage about_content"
   ON about_content FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 INSERT INTO about_content (main_heading, main_description, mission_text, vision_text, years_of_excellence) VALUES
-  ('Welcome to Orbit School', 
-   'Since 1995, Orbit School has been at the forefront of educational excellence, nurturing young minds to become future leaders.',
+  ('Welcome to PRJ GyanJaya', 
+   'Since 1995, PRJ GyanJaya has been at the forefront of educational excellence, nurturing young minds to become future leaders.',
    'To provide holistic education that empowers students with knowledge, skills, and values to excel in a rapidly changing world.',
    'To be a globally recognized institution that transforms education and creates leaders who make a positive impact on society.',
    25);

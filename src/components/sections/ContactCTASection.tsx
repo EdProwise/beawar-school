@@ -51,7 +51,7 @@ export function ContactCTASection() {
             </span>
             <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-6">
               Ready to Join the{" "}
-              <span className="text-gradient-gold">Orbit Family?</span>
+              <span className="text-gradient-gold">PRJ GyanJaya Family?</span>
             </h2>
             <p className="text-primary-foreground/80 text-lg mb-8">
               Take the first step towards a brighter future. Contact us today 
@@ -76,7 +76,7 @@ export function ContactCTASection() {
                   </div>
                   <div>
                     <p className="text-primary-foreground/60 text-xs">Email Us</p>
-                    <p className="text-primary-foreground font-medium">{settings?.email || "info@orbitschool.edu"}</p>
+                    <p className="text-primary-foreground font-medium">{settings?.email || "prjgyanjaya@gmail.com"}</p>
                   </div>
                 </div>
             </div>
