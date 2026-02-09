@@ -117,14 +117,9 @@ const defaultPrograms = [
     const { data: programs = [], isLoading } = useAcademicPrograms();
     const { data: excellenceHighlights = [], isLoading: isLoadingExcellence } = useAcademicExcellence();
 
-    const schoolName = settings?.school_name || "Orbit School";
-    const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
-    const displayExcellence = excellenceHighlights.length > 0 ? excellenceHighlights : features.map((f, i) => ({
-      id: `feature-${i}`,
-      title: f.title,
-      description: f.description,
-      icon_name: f.title.includes("Class") ? "Users" : f.title.includes("Faculty") ? "Award" : f.title.includes("Hours") ? "Clock" : "Target"
-    }));
+    const schoolName = settings?.school_name || "";
+    const displayPrograms = programs;
+    const displayExcellence = excellenceHighlights;
 
     return (
 

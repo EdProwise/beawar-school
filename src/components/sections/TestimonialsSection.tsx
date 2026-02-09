@@ -6,18 +6,8 @@ import { motion } from "framer-motion";
 export function TestimonialsSection() {
   const { data: testimonials = [], isLoading } = useTestimonials();
 
-  if (isLoading || testimonials.length === 0) {
-    return (
-      <section className="py-12 sm:py-16 lg:py-28 bg-secondary/50">
-        <div className="container">
-          <div className="text-center">
-            <div className="h-8 bg-secondary rounded w-48 mx-auto mb-4 animate-pulse" />
-            <div className="h-12 bg-secondary rounded w-96 mx-auto animate-pulse" />
-          </div>
-        </div>
-      </section>
-    );
-  }
+  if (isLoading) return null;
+  if (testimonials.length === 0) return null;
 
     // Only take first 9 testimonials as requested
     const limitedTestimonials = testimonials.slice(0, 9);

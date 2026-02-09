@@ -19,13 +19,13 @@ const Contact = () => {
   
   const submitMutation = useSubmitAdmissionInquiry();
 
-  const schoolName = settings?.school_name || "Orbit School";
-  const address = settings?.address || "123 Education Lane, Academic District, City 12345";
-  const phone = settings?.phone || "+1 234 567 8900";
+  const schoolName = settings?.school_name || "";
+  const address = settings?.address || "";
+  const phone = settings?.phone || "";
   const phoneSecondary = settings?.phone_secondary;
-  const email = settings?.email || "info@orbitschool.edu";
+  const email = settings?.email || "";
   const mapEmbedUrl = settings?.map_embed_url;
-  const officeHoursWeekday = settings?.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM";
+  const officeHoursWeekday = settings?.office_hours_weekday || "";
   const officeHoursWeekend = settings?.office_hours_weekend || "Sat: 9:00 AM - 1:00 PM";
 
   const contactInfo = [

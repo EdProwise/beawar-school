@@ -39,7 +39,7 @@ export default function TeachingMethod() {
     setLightboxOpen(true);
   };
 
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "";
 
   if (heroLoading || methodsLoading) {
     return (
@@ -63,9 +63,9 @@ export default function TeachingMethod() {
   
   const heroImages = getHeroImages();
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    return (
+      <div className="min-h-screen bg-background overflow-x-hidden">
+        <Header />
           <main>
             {/* Hero Section */}
             <section className="pt-24 pb-10 md:pt-32 lg:pt-48 md:pb-16 lg:pb-32 bg-gradient-to-b from-primary to-primary-dark relative overflow-hidden text-primary-foreground">
@@ -78,29 +78,29 @@ export default function TeachingMethod() {
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="text-center lg:text-left"
-                  >
-                    <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-xs sm:text-sm font-medium mb-4 uppercase tracking-wider">
-                      Our Pedagogy
-                    </span>
-                    <h1 className="font-heading text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 break-words">
-                      {pageTitle}
-                    </h1>
-                    <p className="text-primary-foreground/80 text-sm sm:text-base md:text-lg max-w-2xl mx-auto lg:mx-0 mb-6 md:mb-8 break-words">
-                      {pageDescription}
-                    </p>
-                    <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
-                    <Button variant="hero-gold" asChild>
-                      <Link to="/admissions/process">Join Our School</Link>
-                    </Button>
-                    <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Sparkles className="w-4 h-4 text-primary-foreground" />
+                    className="text-center lg:text-left overflow-hidden"
+                    >
+                      <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-foreground/10 text-primary-foreground rounded-full text-xs sm:text-sm font-medium mb-4 uppercase tracking-wider">
+                        Our Pedagogy
+                      </span>
+                      <h1 className="font-heading text-xl sm:text-2xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 break-words">
+                        {pageTitle}
+                      </h1>
+                      <p className="text-primary-foreground/80 text-xs sm:text-sm md:text-lg max-w-2xl mx-auto lg:mx-0 mb-6 md:mb-8 break-words [overflow-wrap:anywhere]">
+                        {pageDescription}
+                      </p>
+                      <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
+                      <Button variant="hero-gold" asChild>
+                        <Link to="/admissions/process">Join Our School</Link>
+                      </Button>
+                      <div className="flex items-center gap-2 sm:gap-3 bg-white/10 px-3 sm:px-4 py-2 rounded-full backdrop-blur-sm border border-white/10 max-w-full">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-foreground" />
+                        </div>
+                        <p className="text-xs sm:text-sm font-medium truncate">Innovation in Education</p>
                       </div>
-                      <p className="text-sm font-medium">Innovation in Education</p>
                     </div>
-                  </div>
-                </motion.div>
+                  </motion.div>
 
                   <div className="relative group mt-8 lg:mt-0">
                     <motion.div
@@ -182,9 +182,9 @@ export default function TeachingMethod() {
               <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-light text-primary rounded-full text-xs sm:text-sm font-medium mb-4">
                 Our Approach
               </span>
-              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-foreground break-words">
-                How We Teach at {schoolName}
-              </h2>
+                <h2 className="font-heading text-xl sm:text-2xl md:text-4xl font-bold text-foreground break-words [overflow-wrap:anywhere]">
+                  How We Teach at {schoolName}
+                </h2>
             </div>
 
             <div className="space-y-12 md:space-y-24">
@@ -213,88 +213,88 @@ export default function TeachingMethod() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}
-                      >
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary-light flex items-center justify-center flex-shrink-0">
-                            <IconComponent className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                      className={`relative z-10 overflow-hidden ${isEven ? '' : 'lg:order-2'}`}
+                        >
+                          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-xl bg-primary-light flex items-center justify-center flex-shrink-0">
+                              <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-primary" />
+                            </div>
+                            <span className="text-accent font-bold uppercase tracking-wide text-[10px] sm:text-xs md:text-sm">Method {index + 1}</span>
                           </div>
-                          <span className="text-accent font-bold uppercase tracking-wide text-xs md:text-sm">Method {index + 1}</span>
-                        </div>
-                        <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 break-words">
-                          {method.title}
-                        </h3>
-                        <div className="mb-6 md:mb-8">
-                          <FormattedContent 
-                            content={method.content} 
-                            className="prose-p:text-muted-foreground prose-p:leading-relaxed break-words prose-p:text-sm md:prose-p:text-base"
-                          />
-                        </div>
-                          <Button asChild size="sm" className="md:h-10 md:px-4 md:py-2">
-                            <Link to="/admissions/process">
-                              Learn More
-                              <ArrowRight className="w-4 h-4 ml-2" />
-                            </Link>
-                          </Button>
-                      </motion.div>
+                          <h3 className="font-heading text-lg sm:text-xl md:text-3xl font-bold text-foreground mb-3 sm:mb-4 break-words [overflow-wrap:anywhere]">
+                            {method.title}
+                          </h3>
+                          <div className="mb-4 sm:mb-6 md:mb-8 overflow-hidden">
+                            <FormattedContent 
+                              content={method.content} 
+                              className="prose-p:text-muted-foreground prose-p:leading-relaxed break-words prose-p:text-xs sm:prose-p:text-sm md:prose-p:text-base"
+                            />
+                          </div>
+                            <Button asChild size="sm" className="md:h-10 md:px-4 md:py-2">
+                              <Link to="/admissions/process">
+                                Learn More
+                                <ArrowRight className="w-4 h-4 ml-2" />
+                              </Link>
+                            </Button>
+                        </motion.div>
                       
                       <motion.div 
                         initial={{ opacity: 0, x: -100 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className={`${isEven ? '' : 'lg:order-1'}`}
-                      >
-                        <div className="relative group">
-                          <div className="absolute inset-0 bg-primary/5 rounded-2xl md:rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 hidden md:block" />
-                          <div className="relative z-10">
-                            {methodImages.length > 1 ? (
-                              <Carousel className="w-full" opts={{ loop: true }}>
-                                <CarouselContent>
-                                  {methodImages.map((img, idx) => (
-                                    <CarouselItem key={idx}>
-                                          <div 
-                                            className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
-                                            onClick={() => openLightbox(methodImages, idx)}
-                                          >
-                                            <div className="aspect-[5/2] sm:aspect-[16/9] max-h-[180px] sm:max-h-[280px] md:max-h-none">
-                                              <img 
-                                                src={img} 
-                                                alt={`${method.title} ${idx + 1}`}
-                                                className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
-                                              />
-                                            </div>
-                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-xl md:rounded-[2rem]">
-                                          <ZoomIn className="w-8 h-8 md:w-12 md:h-12 mb-2" />
-                                          <span className="text-xs md:text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
+                          className={`overflow-hidden ${isEven ? '' : 'lg:order-1'}`}
+                        >
+                          <div className="relative group">
+                            <div className="absolute inset-0 bg-primary/5 rounded-2xl md:rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 hidden md:block" />
+                            <div className="relative z-10 overflow-hidden">
+                              {methodImages.length > 1 ? (
+                                <Carousel className="w-full" opts={{ loop: true }}>
+                                  <CarouselContent>
+                                    {methodImages.map((img, idx) => (
+                                      <CarouselItem key={idx}>
+                                            <div 
+                                              className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
+                                              onClick={() => openLightbox(methodImages, idx)}
+                                            >
+                                              <div className="aspect-[4/3] sm:aspect-[16/9]">
+                                                <img 
+                                                  src={img} 
+                                                  alt={`${method.title} ${idx + 1}`}
+                                                  className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
+                                                />
+                                              </div>
+                                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-xl md:rounded-[2rem]">
+                                            <ZoomIn className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 mb-2" />
+                                            <span className="text-[10px] sm:text-xs md:text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
+                                          </div>
                                         </div>
+                                      </CarouselItem>
+                                    ))}
+                                  </CarouselContent>
+                                  <div className="hidden md:block">
+                                    <CarouselPrevious className="left-4" />
+                                    <CarouselNext className="right-4" />
+                                  </div>
+                                </Carousel>
+                              ) : (
+                                  <div 
+                                      className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
+                                      onClick={() => openLightbox(methodImages, 0)}
+                                    >
+                                      <div className="aspect-[4/3] sm:aspect-[16/9]">
+                                        <img 
+                                          src={methodImages[0]} 
+                                          alt={method.title}
+                                          className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
+                                        />
                                       </div>
-                                    </CarouselItem>
-                                  ))}
-                                </CarouselContent>
-                                <div className="hidden md:block">
-                                  <CarouselPrevious className="left-4" />
-                                  <CarouselNext className="right-4" />
+                                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-xl md:rounded-[2rem]">
+                                    <ZoomIn className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 mb-2" />
+                                    <span className="text-[10px] sm:text-xs md:text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
+                                  </div>
                                 </div>
-                              </Carousel>
-                            ) : (
-                                <div 
-                                    className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
-                                    onClick={() => openLightbox(methodImages, 0)}
-                                  >
-                                    <div className="aspect-[5/2] sm:aspect-[16/9] max-h-[180px] sm:max-h-[280px] md:max-h-none">
-                                      <img 
-                                        src={methodImages[0]} 
-                                        alt={method.title}
-                                        className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
-                                      />
-                                    </div>
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-xl md:rounded-[2rem]">
-                                  <ZoomIn className="w-8 h-8 md:w-12 md:h-12 mb-2" />
-                                  <span className="text-xs md:text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
-                                </div>
-                              </div>
-                            )}
+                              )}
                           </div>
                           <div className={`absolute -bottom-6 ${isEven ? '-right-6' : '-left-6'} w-32 h-32 bg-accent/20 rounded-full blur-3xl -z-10 hidden md:block`} />
                         </div>
@@ -312,17 +312,17 @@ export default function TeachingMethod() {
               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
             </div>
             <div className="container relative text-center px-4">
-              <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4 md:mb-8 break-words">
-                Experience the {schoolName} Way
-              </h2>
-              <p className="text-primary-foreground/80 mb-8 md:mb-12 max-w-2xl mx-auto text-sm md:text-lg break-words">
+                <h2 className="font-heading text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-4 md:mb-8 break-words [overflow-wrap:anywhere]">
+                  Experience the {schoolName} Way
+                </h2>
+                <p className="text-primary-foreground/80 mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto text-xs sm:text-sm md:text-lg break-words [overflow-wrap:anywhere]">
                 Join our community of lifelong learners and give your child the foundation they deserve with our innovative teaching methods.
               </p>
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-6 justify-center">
-                <Button variant="hero-gold" size="default" className="h-12 md:h-14 px-6 md:px-10 text-base md:text-lg" asChild>
+                <Button variant="hero-gold" size="default" className="h-10 sm:h-12 md:h-14 px-5 sm:px-6 md:px-10 text-sm sm:text-base md:text-lg" asChild>
                   <Link to="/admissions/process">Apply Now</Link>
                 </Button>
-                <Button variant="hero" size="default" className="h-12 md:h-14 px-6 md:px-10 text-base md:text-lg" asChild>
+                <Button variant="hero" size="default" className="h-10 sm:h-12 md:h-14 px-5 sm:px-6 md:px-10 text-sm sm:text-base md:text-lg" asChild>
                   <Link to="/contact">Book a Tour</Link>
                 </Button>
               </div>
