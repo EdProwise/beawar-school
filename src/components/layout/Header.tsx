@@ -59,6 +59,7 @@ export interface HeaderProps {
   export function Header({ variant = "solid" }: HeaderProps) {
     const [isScrolled, setIsScrolled] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [mobileOpenDropdown, setMobileOpenDropdown] = useState<string | null>(null);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const location = useLocation();
     const { data: settings } = useSiteSettings();
@@ -145,14 +146,14 @@ export interface HeaderProps {
                       <GraduationCap className="w-10 h-10 text-foreground" />
                     )}
                   </div>
-                    <div className="flex flex-col">
-                      <span className="font-heading font-bold text-xl text-primary whitespace-nowrap">
-                        {schoolName}
-                      </span>
-                      <span className="text-xs font-medium text-primary whitespace-nowrap">
-                        {tagline}
-                      </span>
-                    </div>
+                      <div className="flex flex-col overflow-hidden">
+                        <span className="font-heading font-bold text-lg sm:text-xl text-primary leading-tight">
+                          {schoolName}
+                        </span>
+                        <span className="text-[10px] sm:text-xs font-medium text-primary leading-tight truncate">
+                          {tagline}
+                        </span>
+                      </div>
                 </Link>
 
                 {/* Desktop Navigation Links (Center) */}
@@ -291,112 +292,85 @@ export interface HeaderProps {
             {/* Mobile Navigation */}
             {isMobileMenuOpen && (
               <div className="lg:hidden absolute top-full left-0 right-0 bg-card border-b border-border shadow-strong p-4 max-h-[80vh] overflow-y-auto">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1">
                   {dynamicNavLinks.map((link) => (
-                    <div key={link.name}>
+                    <div key={link.name} className="border-b border-border last:border-0 pb-1 mb-1 last:pb-0 last:mb-0">
                       {link.children ? (
                         <div className="space-y-1">
-                          <div className="px-4 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                          <button
+                            onClick={() => setMobileOpenDropdown(mobileOpenDropdown === link.name ? null : link.name)}
+                            className="w-full flex items-center justify-between px-4 py-3 rounded-lg font-medium text-sm text-foreground hover:bg-secondary transition-all"
+                          >
                             {link.name}
-                          </div>
-                          {link.children.map((child) => {
-                            const isExternal = (child as any).isExternal || isExternalLink(child.path);
-                            if (isExternal) {
-                              return (
-                                <a
-                                  key={child.name}
-                                  href={child.path}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={cn(
-                                    "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all text-foreground hover:bg-secondary flex items-center justify-between"
-                                  )}
-                                >
-                                  {child.name}
-                                  <FileDown className="w-4 h-4 opacity-50" />
-                                </a>
-                              );
-                            }
-                            return (
-                              <Link
-                                key={child.name}
-                                to={child.path}
-                                className={cn(
-                                  "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
-                                  location.pathname === child.path ? "bg-primary/10 text-primary" : "text-foreground hover:bg-secondary"
-                                )}
-                              >
-                                {child.name}
-                              </Link>
-                            );
-                          })}
+                            <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", mobileOpenDropdown === link.name && "rotate-180")} />
+                          </button>
+                          
+                          {mobileOpenDropdown === link.name && (
+                            <div className="pl-4 pb-2 space-y-1 bg-secondary/30 rounded-lg mt-1">
+                              {link.children.map((child) => {
+                                const isExternal = (child as any).isExternal || isExternalLink(child.path);
+                                if (isExternal) {
+                                  return (
+                                    <a
+                                      key={child.name}
+                                      href={child.path}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={cn(
+                                        "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all text-foreground hover:bg-secondary flex items-center justify-between"
+                                      )}
+                                    >
+                                      {child.name}
+                                      <FileDown className="w-4 h-4 opacity-50" />
+                                    </a>
+                                  );
+                                }
+                                return (
+                                  <Link
+                                    key={child.name}
+                                    to={child.path}
+                                    className={cn(
+                                      "block px-4 py-2.5 rounded-lg font-medium text-sm transition-all",
+                                      location.pathname === child.path ? "bg-primary text-primary-foreground" : "text-foreground hover:bg-secondary"
+                                    )}
+                                  >
+                                    {child.name}
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       ) : (
-
                           <Link
                             to={link.path}
                             className={cn(
                               "block px-4 py-3 rounded-lg font-medium text-sm transition-all",
                               (link as any).isCta 
-                                ? "bg-primary text-primary-foreground hover:bg-primary/90 mt-2 text-center"
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90 mt-2 text-center shadow-gold font-bold"
                                 : location.pathname === link.path 
-                                  ? "bg-primary/10 text-primary" 
+                                  ? "bg-primary text-primary-foreground" 
                                   : "text-foreground hover:bg-secondary"
                             )}
                           >
                             {link.name}
                           </Link>
-                    )}
-                  </div>
-                ))}
-                <hr className="my-2 border-border" />
-                
-                {/* Mobile CTA Buttons */}
-                <div className="flex flex-col gap-2 pt-2">
-                  {settings?.cta_secondary_text && settings?.cta_secondary_link && (
-                    <Button variant="outline" className="w-full justify-start" asChild>
-                      {isExternalLink(settings.cta_secondary_link) ? (
-                        <a href={settings.cta_secondary_link} target="_blank" rel="noopener noreferrer">
-                          <User className="w-4 h-4 mr-2" />
-                          {settings.cta_secondary_text}
-                        </a>
-                      ) : (
-                        <Link to={settings.cta_secondary_link}>
-                          <User className="w-4 h-4 mr-2" />
-                          {settings.cta_secondary_text}
-                        </Link>
                       )}
-                    </Button>
-                  )}
-
-                  {settings?.cta_primary_text && settings?.cta_primary_link && (
-                    <Button variant="default" className="w-full justify-start" asChild>
-                      {isExternalLink(settings.cta_primary_link) ? (
-                        <a href={settings.cta_primary_link} target="_blank" rel="noopener noreferrer">
-                          <GraduationCap className="w-4 h-4 mr-2" />
-                          {settings.cta_primary_text}
-                        </a>
-                      ) : (
-                        <Link to={settings.cta_primary_link}>
-                          <GraduationCap className="w-4 h-4 mr-2" />
-                          {settings.cta_primary_text}
-                        </Link>
-                      )}
-                    </Button>
-                  )}
-
+                    </div>
+                  ))}
+                  
+                  {/* Mobile Admin Link if logged in */}
                   {user && (
                     <Link
                       to="/admin/dashboard"
-                      className="px-4 py-3 rounded-lg font-medium text-sm text-primary hover:bg-primary/5 flex items-center gap-2"
+                      className="px-4 py-3 mt-2 rounded-lg font-medium text-sm bg-secondary text-primary hover:bg-primary/5 flex items-center gap-2 border border-primary/20"
                     >
                       <Settings className="w-4 h-4" /> Admin Panel
                     </Link>
                   )}
                 </div>
               </div>
-            </div>
-          )}
+            )}
         
         {/* Scrolling Ticker integrated into header so it's fixed below menu */}
         <ScrollingTicker />

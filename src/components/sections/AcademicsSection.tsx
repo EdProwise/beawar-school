@@ -22,7 +22,7 @@ export function AcademicsSection() {
   const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
 
   return (
-    <section className="py-20 lg:py-28 bg-secondary/50 relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-28 bg-secondary/50 relative overflow-hidden">
       {/* Background */}
       <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />

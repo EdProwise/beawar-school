@@ -71,7 +71,7 @@ export function StatsSection() {
 
   if (isLoading) {
     return (
-      <section className="py-16 lg:py-20 bg-primary">
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-primary">
         <div className="container">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((i) => (
@@ -87,7 +87,7 @@ export function StatsSection() {
   }
 
   return (
-    <section className="py-16 lg:py-20 bg-primary relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-primary relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
