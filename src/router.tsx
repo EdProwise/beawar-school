@@ -56,6 +56,7 @@ import AdminResults from "./pages/admin/AdminResults";
 import AdminAlumni from "./pages/admin/AdminAlumni";
 import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
 import AdminTeams from "./pages/admin/AdminTeams";
+import AdminWebsiteVisits from "./pages/admin/AdminWebsiteVisits";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
 
@@ -348,6 +349,11 @@ export const routers = [
       path: "/admin/media",
       name: 'admin-media',
       element: <AdminMedia />,
+    },
+    {
+      path: "/admin/website-visits",
+      name: 'admin-website-visits',
+      element: <AdminWebsiteVisits />,
     },
     /* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */
     {

@@ -65,6 +65,24 @@ export interface HeaderProps {
     const { data: admissionSettings = {} } = useAdmissionSettings();
     const { user } = useAuth();
   
+    // Track page visit
+    useEffect(() => {
+      // Skip admin pages
+      if (location.pathname.startsWith('/admin')) return;
+      const controller = new AbortController();
+      fetch('/api/visits/record', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page: location.pathname,
+          referrer: document.referrer,
+          user_agent: navigator.userAgent,
+        }),
+        signal: controller.signal,
+      }).catch(() => {});
+      return () => controller.abort();
+    }, [location.pathname]);
+
     const isLight = false;
     const isSolid = true;
   
