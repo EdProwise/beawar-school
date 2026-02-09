@@ -364,14 +364,19 @@ app.post('/api/:table/upsert', async (req, res) => {
   }
 });
 
-// Production: Serve built SPA with crawler-aware meta tag injection
+// ===============================
+// Serve frontend (Vite SPA)
+// ===============================
 const distPath = path.join(process.cwd(), 'dist');
 
 if (fs.existsSync(distPath)) {
-  // 1️⃣ Serve static assets first
+  // 1️⃣ Serve static assets FIRST
+  app.use('/assets', express.static(path.join(distPath, 'assets')));
+
+  // 2️⃣ Serve other static files (favicon, etc.)
   app.use(express.static(distPath));
 
-  // 2️⃣ SPA fallback (VERY IMPORTANT)
+  // 3️⃣ SPA fallback LAST (do NOT catch assets)
   app.use((req, res) => {
     const indexPath = path.join(distPath, 'index.html');
 
@@ -386,6 +391,7 @@ if (fs.existsSync(distPath)) {
     res.send(html);
   });
 }
+
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
