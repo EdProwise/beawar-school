@@ -13,26 +13,60 @@ export function FormattedContent({ content, className }: FormattedContentProps) 
   const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
     if (isHtml) {
-      return (
-        <div 
-          className={cn("prose prose-slate max-w-none prose-p:leading-relaxed break-words", className)}
-        >
-          <style dangerouslySetInnerHTML={{ __html: `
-            .prose p:empty::before {
-              content: "";
-              display: inline-block;
-              height: 1em;
-            }
-            .prose p br:only-child {
-              display: block;
-              content: "";
-              margin-bottom: 0.5em;
-            }
-            .prose p {
-              margin-bottom: 1.25em;
-              min-height: 1em;
-            }
-          `}} />
+    return (
+      <div 
+        className={cn(
+          "prose prose-slate max-w-none prose-p:leading-relaxed break-words [overflow-wrap:anywhere]",
+          "[&_img]:max-w-full [&_img]:h-auto",
+          "[&_table]:block [&_table]:overflow-x-auto [&_table]:max-w-full",
+          "[&_iframe]:max-w-full [&_iframe]:h-auto",
+          "[&_pre]:overflow-x-auto [&_pre]:max-w-full",
+          "[&_video]:max-w-full [&_video]:h-auto",
+          "[&>*]:max-w-full",
+          "overflow-hidden",
+          className
+        )}
+      >
+      <style dangerouslySetInnerHTML={{ __html: `
+              .prose p:empty::before {
+                content: "";
+                display: inline-block;
+                height: 1em;
+              }
+              .prose p br:only-child {
+                display: block;
+                content: "";
+                margin-bottom: 0.5em;
+              }
+              .prose p {
+                margin-bottom: 1.25em;
+                min-height: 1em;
+              }
+              .prose * {
+                max-width: 100% !important;
+                box-sizing: border-box;
+              }
+              .prose img {
+                max-width: 100% !important;
+                width: auto !important;
+                height: auto !important;
+              }
+              .prose table {
+                display: block;
+                overflow-x: auto;
+                max-width: 100% !important;
+                width: 100% !important;
+              }
+              .prose iframe, .prose video, .prose embed, .prose object {
+                max-width: 100% !important;
+              }
+              .prose pre, .prose code {
+                overflow-x: auto;
+                max-width: 100% !important;
+                white-space: pre-wrap;
+                word-break: break-all;
+              }
+            `}} />
           <div dangerouslySetInnerHTML={{ __html: content }} />
         </div>
       );
