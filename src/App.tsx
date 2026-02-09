@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,6 +7,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { routers } from "./router";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { useSiteSettings } from "@/hooks/use-school-data";
+import { DEFAULT_SCHOOL_NAME } from "@/config/defaults";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
