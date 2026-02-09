@@ -257,7 +257,7 @@ export default function TeachingMethod() {
                                             className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
                                             onClick={() => openLightbox(methodImages, idx)}
                                           >
-                                            <div className="aspect-[5/3] sm:aspect-[16/9] md:aspect-video">
+                                            <div className="aspect-[5/2] sm:aspect-[16/9] max-h-[180px] sm:max-h-[280px] md:max-h-none">
                                               <img 
                                                 src={img} 
                                                 alt={`${method.title} ${idx + 1}`}
@@ -282,7 +282,7 @@ export default function TeachingMethod() {
                                     className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
                                     onClick={() => openLightbox(methodImages, 0)}
                                   >
-                                    <div className="aspect-[5/3] sm:aspect-[16/9] md:aspect-video">
+                                    <div className="aspect-[5/2] sm:aspect-[16/9] max-h-[180px] sm:max-h-[280px] md:max-h-none">
                                       <img 
                                         src={methodImages[0]} 
                                         alt={method.title}
