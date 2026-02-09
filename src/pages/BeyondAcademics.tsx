@@ -59,7 +59,7 @@ interface BeyondAcademicsSection {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#fafafa] overflow-x-hidden">
       <Header />
       <main>
         {/* Hero Section */}
@@ -96,7 +96,7 @@ interface BeyondAcademicsSection {
         </section>
 
         {/* Content Sections */}
-          <section className="py-16 sm:py-32 px-4 sm:px-6 lg:px-8">
+            <section className="py-12 sm:py-32 px-3 sm:px-6 lg:px-8">
           <div className="container max-w-7xl mx-auto">
             {isLoading ? (
               <div className="flex flex-col items-center justify-center py-32 space-y-4">
@@ -111,15 +111,15 @@ interface BeyondAcademicsSection {
                   viewport={{ once: true, margin: "-100px" }}
                     className="space-y-16 sm:space-y-40"
                 >
-                  {sections.map((section, index) => (
-                    <motion.div 
-                      key={section.id} 
-                      variants={itemVariants}
-                        className={`group grid lg:grid-cols-2 gap-8 lg:gap-24 items-center`}
-                    >
-                      <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} relative group/content`}>
-                        {/* Modern Premium Card */}
-                        <div className="relative p-6 sm:p-10 md:p-14 rounded-[2rem] sm:rounded-[3rem] bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] hover:shadow-[0_48px_80px_-16px_rgba(59,130,246,0.12)] transition-all duration-700 hover:-translate-y-2">
+                    {sections.map((section, index) => (
+                      <motion.div 
+                        key={section.id} 
+                        variants={itemVariants}
+                          className={`group grid lg:grid-cols-2 gap-8 lg:gap-24 items-center overflow-hidden`}
+                      >
+                        <div className={`${index % 2 === 1 ? 'lg:order-2' : ''} relative group/content min-w-0`}>
+                          {/* Modern Premium Card */}
+                          <div className="relative p-5 sm:p-10 md:p-14 rounded-2xl sm:rounded-[3rem] bg-white border border-slate-100 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] hover:shadow-[0_48px_80px_-16px_rgba(59,130,246,0.12)] transition-all duration-700 hover:-translate-y-2 overflow-hidden">
                           {/* Animated Corner Accent */}
                           <div className={`absolute top-0 ${index % 2 === 1 ? 'right-0 rounded-tr-[3rem]' : 'left-0 rounded-tl-[3rem]'} w-24 h-24 bg-gradient-to-br from-blue-600/10 to-transparent rounded-full -translate-x-8 -translate-y-8 blur-2xl group-hover/content:scale-150 transition-transform duration-1000`} />
                           
@@ -138,12 +138,12 @@ interface BeyondAcademicsSection {
                                 </div>
                               </div>
                               
-                                <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] group-hover:text-blue-600 transition-colors duration-500 break-words">
-                                {section.title}
-                              </h2>
+                                  <h2 className="text-xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-[1.1] group-hover:text-blue-600 transition-colors duration-500 break-words [overflow-wrap:anywhere]">
+                                  {section.title}
+                                </h2>
                             </div>
                             
-                            <div className="prose prose-sm sm:prose-lg prose-slate max-w-none text-slate-600 leading-relaxed font-medium break-words overflow-hidden">
+                            <div className="prose prose-sm sm:prose-lg prose-slate max-w-none text-slate-600 leading-relaxed font-medium break-words overflow-hidden [overflow-wrap:anywhere]">
                               <FormattedContent content={section.content} />
                             </div>
                             
@@ -158,14 +158,14 @@ interface BeyondAcademicsSection {
                         </div>
                       </div>
 
-                      <div className={`${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                        <div className={`${index % 2 === 1 ? 'lg:order-1' : ''} min-w-0`}>
 
-                      <div className="relative group/media">
-                        {/* Decorative background elements */}
-                        <div className="absolute -inset-6 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />
-                        <div className={`absolute -inset-4 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 transition-transform duration-700 ${index % 2 === 1 ? '-rotate-2 group-hover/media:-rotate-1' : 'rotate-2 group-hover/media:rotate-1'}`} />
-                        
-                            <div className="relative aspect-[5/2.5] lg:aspect-[4/3] rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden border border-white/50 shadow-xl bg-slate-100">
+                        <div className="relative group/media">
+                          {/* Decorative background elements */}
+                          <div className="hidden sm:block absolute -inset-6 bg-gradient-to-tr from-blue-500/10 to-purple-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-hover/media:opacity-100 transition-opacity duration-700" />
+                          <div className={`hidden sm:block absolute -inset-4 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 transition-transform duration-700 ${index % 2 === 1 ? '-rotate-2 group-hover/media:-rotate-1' : 'rotate-2 group-hover/media:rotate-1'}`} />
+                          
+                              <div className="relative aspect-[4/3] rounded-xl sm:rounded-[2rem] overflow-hidden border border-white/50 shadow-xl bg-slate-100">
                             {section.video_url ? (
                               <video 
                                 src={section.video_url} 

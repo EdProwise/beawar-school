@@ -176,8 +176,8 @@ export default function TeachingMethod() {
           </section>
 
           {/* Methods Section */}
-        <section className="py-12 md:py-20 bg-background">
-            <div className="container px-4 overflow-hidden">
+        <section className="py-12 md:py-20 bg-background overflow-hidden">
+          <div className="container px-4">
             <div className="text-center max-w-3xl mx-auto mb-10 md:mb-16">
               <span className="inline-block px-3 sm:px-4 py-1.5 sm:py-2 bg-primary-light text-primary rounded-full text-xs sm:text-sm font-medium mb-4">
                 Our Approach
@@ -204,16 +204,16 @@ export default function TeachingMethod() {
                   const methodImages = getMethodImages();
 
                   return (
-                        <div 
-                          key={method.id}
-                          className="grid lg:grid-cols-2 gap-6 md:gap-12 lg:gap-20 items-center min-w-0"
-                        >
+                      <div 
+                        key={method.id}
+                        className="grid lg:grid-cols-2 gap-6 md:gap-12 lg:gap-20 items-center"
+                      >
                       <motion.div 
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                          className={`relative z-10 min-w-0 overflow-hidden ${isEven ? '' : 'lg:order-2'}`}
+                        className={`relative z-10 ${isEven ? '' : 'lg:order-2'}`}
                       >
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary-light flex items-center justify-center flex-shrink-0">
@@ -221,14 +221,14 @@ export default function TeachingMethod() {
                           </div>
                           <span className="text-accent font-bold uppercase tracking-wide text-xs md:text-sm">Method {index + 1}</span>
                         </div>
-                          <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 break-words [overflow-wrap:anywhere]">
+                        <h3 className="font-heading text-xl sm:text-2xl md:text-3xl font-bold text-foreground mb-4 break-words">
                           {method.title}
                         </h3>
                         <div className="mb-6 md:mb-8">
-                            <FormattedContent 
-                              content={method.content} 
-                              className="prose-p:text-muted-foreground prose-p:leading-relaxed break-words [overflow-wrap:anywhere] prose-p:text-sm md:prose-p:text-base"
-                            />
+                          <FormattedContent 
+                            content={method.content} 
+                            className="prose-p:text-muted-foreground prose-p:leading-relaxed break-words prose-p:text-sm md:prose-p:text-base"
+                          />
                         </div>
                           <Button asChild size="sm" className="md:h-10 md:px-4 md:py-2">
                             <Link to="/admissions/process">
@@ -243,7 +243,7 @@ export default function TeachingMethod() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                          className={`min-w-0 ${isEven ? '' : 'lg:order-1'}`}
+                        className={`${isEven ? '' : 'lg:order-1'}`}
                       >
                         <div className="relative group">
                           <div className="absolute inset-0 bg-primary/5 rounded-2xl md:rounded-[2.5rem] -rotate-3 transition-transform group-hover:rotate-0 hidden md:block" />
@@ -257,13 +257,13 @@ export default function TeachingMethod() {
                                             className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
                                             onClick={() => openLightbox(methodImages, idx)}
                                           >
-                                              <div className="h-[180px] sm:h-[220px] md:h-[300px] lg:h-[350px]">
-                                                <img 
-                                                  src={img} 
-                                                  alt={`${method.title} ${idx + 1}`}
-                                                  className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
-                                                />
-                                              </div>
+                                            <div className="aspect-[5/2] sm:aspect-[16/9] max-h-[180px] sm:max-h-[280px] md:max-h-none">
+                                              <img 
+                                                src={img} 
+                                                alt={`${method.title} ${idx + 1}`}
+                                                className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
+                                              />
+                                            </div>
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-xl md:rounded-[2rem]">
                                           <ZoomIn className="w-8 h-8 md:w-12 md:h-12 mb-2" />
                                           <span className="text-xs md:text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
@@ -282,13 +282,13 @@ export default function TeachingMethod() {
                                     className="relative cursor-pointer group/item overflow-hidden rounded-xl md:rounded-[2rem]"
                                     onClick={() => openLightbox(methodImages, 0)}
                                   >
-                                      <div className="h-[180px] sm:h-[220px] md:h-[300px] lg:h-[350px]">
-                                        <img 
-                                          src={methodImages[0]} 
-                                          alt={method.title}
-                                          className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
-                                        />
-                                      </div>
+                                    <div className="aspect-[5/2] sm:aspect-[16/9] max-h-[180px] sm:max-h-[280px] md:max-h-none">
+                                      <img 
+                                        src={methodImages[0]} 
+                                        alt={method.title}
+                                        className="w-full h-full object-cover rounded-xl md:rounded-[2rem] shadow-strong border-2 md:border-4 border-white transition-transform group-hover/item:scale-110 duration-700"
+                                      />
+                                    </div>
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/item:opacity-100 transition-opacity flex flex-col items-center justify-center text-white rounded-xl md:rounded-[2rem]">
                                   <ZoomIn className="w-8 h-8 md:w-12 md:h-12 mb-2" />
                                   <span className="text-xs md:text-sm font-medium uppercase tracking-widest">Click to Enlarge</span>
