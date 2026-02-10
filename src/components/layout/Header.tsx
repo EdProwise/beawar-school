@@ -259,18 +259,12 @@ export function Header({ variant = "solid" }: HeaderProps) {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-[70px]">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3.5 group shrink-0 relative">
-              <div className="relative">
-                <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20 group-hover:shadow-xl group-hover:shadow-primary/30 transition-all duration-300 group-hover:scale-105">
-                  {settings?.logo_url ? (
-                    <img src={settings.logo_url} alt={schoolName} className="w-9 h-9 object-contain" />
-                  ) : (
-                    <GraduationCap className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                {/* Subtle glow behind logo */}
-                <div className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              </div>
+              <Link to="/" className="flex items-center gap-3.5 group shrink-0 relative">
+                {settings?.logo_url ? (
+                  <img src={settings.logo_url} alt={schoolName} className="w-12 h-12 object-contain" />
+                ) : (
+                  <GraduationCap className="w-10 h-10 text-primary" />
+                )}
               <div className="flex flex-col">
                 <span className="font-heading font-bold text-[18px] text-gray-900 leading-tight tracking-tight group-hover:text-primary transition-colors duration-300">
                   {schoolName}
