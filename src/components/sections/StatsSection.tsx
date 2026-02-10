@@ -18,7 +18,7 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
           setIsVisible(true);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
 
     if (ref.current) {
@@ -50,7 +50,7 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
   }, [isVisible, value]);
 
   return (
-    <div ref={ref} className="font-heading text-4xl md:text-5xl font-bold text-primary-foreground">
+    <div ref={ref} className="font-heading text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
       {count.toLocaleString()}{suffix}
     </div>
   );
@@ -59,7 +59,6 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
 export function StatsSection() {
   const { data: stats = [], isLoading } = useStatistics();
 
-  // Fallback stats if none in database
   const defaultStats = [
     { id: "1", label: "Students", value: 1500, suffix: "+", icon_name: "Users" },
     { id: "2", label: "Expert Teachers", value: 120, suffix: "+", icon_name: "GraduationCap" },
@@ -71,13 +70,14 @@ export function StatsSection() {
 
   if (isLoading) {
     return (
-      <section className="py-16 lg:py-20 bg-primary">
+      <section className="py-20 lg:py-28 bg-primary">
         <div className="container">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="text-center animate-pulse">
-                <div className="h-12 bg-primary-foreground/20 rounded w-24 mx-auto mb-2" />
-                <div className="h-4 bg-primary-foreground/20 rounded w-32 mx-auto" />
+                <div className="h-16 w-16 bg-white/10 rounded-2xl mx-auto mb-4" />
+                <div className="h-12 bg-white/10 rounded w-28 mx-auto mb-3" />
+                <div className="h-4 bg-white/10 rounded w-32 mx-auto" />
               </div>
             ))}
           </div>
@@ -86,33 +86,73 @@ export function StatsSection() {
     );
   }
 
-  return (
-    <section className="py-16 lg:py-20 bg-primary relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.2),transparent_50%)]" />
-        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_50%,rgba(255,255,255,0.1),transparent_40%)]" />
-      </div>
+    return (
+      <section className="py-14 lg:py-20 relative overflow-hidden">
+        {/* Gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-primary/80" />
 
-      <div className="container relative">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {displayStats.map((stat) => {
-            const IconComponent = iconMap[stat.icon_name || "Users"] || Users;
-            return (
-              <div key={stat.id} className="text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary-foreground/10 mb-4">
-                  <IconComponent className="w-7 h-7 text-accent" />
-                </div>
-                <AnimatedCounter value={stat.value} suffix={stat.suffix || ""} />
-                <p className="text-primary-foreground/80 mt-2 font-medium">
-                  {stat.label}
-                </p>
-                <div className="w-10 h-1 bg-accent mx-auto mt-3 rounded-full" />
-              </div>
-            );
-          })}
+        {/* Decorative elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-white/5 rounded-full blur-3xl -translate-y-1/2" />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl translate-y-1/2" />
         </div>
-      </div>
-    </section>
+
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px',
+          }}
+        />
+
+        <div className="container relative z-10">
+          {/* Section header */}
+          <div className="text-center mb-10">
+            <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-medium tracking-wide uppercase mb-3 backdrop-blur-sm border border-white/10">
+              Our Achievements
+            </span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-white">
+              Numbers That Speak for Themselves
+            </h2>
+          </div>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto">
+            {displayStats.map((stat, index) => {
+              const IconComponent = iconMap[stat.icon_name || "Users"] || Users;
+              return (
+                <div
+                  key={stat.id}
+                  className="group relative"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {/* Card */}
+                  <div className="relative rounded-xl p-4 md:p-5 text-center transition-all duration-500 bg-white/[0.06] backdrop-blur-md border border-white/[0.08] hover:bg-white/[0.12] hover:border-white/[0.15] hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-dark/30">
+                    {/* Glow on hover */}
+                    <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b from-white/5 to-transparent" />
+
+                    {/* Icon */}
+                    <div className="relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20 mb-3 group-hover:scale-110 transition-transform duration-500">
+                      <IconComponent className="w-5 h-5 text-accent" />
+                    </div>
+
+                    {/* Counter */}
+                    <AnimatedCounter value={stat.value} suffix={stat.suffix || ""} />
+
+                    {/* Label */}
+                    <p className="text-white/60 mt-2 font-medium text-xs md:text-sm tracking-wide group-hover:text-white/80 transition-colors duration-300">
+                      {stat.label}
+                    </p>
+
+                    {/* Bottom accent line */}
+                    <div className="mt-3 mx-auto w-6 h-0.5 rounded-full bg-accent/40 group-hover:w-12 group-hover:bg-accent transition-all duration-500" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
   );
 }
