@@ -23,13 +23,34 @@ const queryClient = new QueryClient({
 
 const router = createBrowserRouter(routers);
 
+function DynamicHead() {
+  const { data: settings } = useSiteSettings();
+
+  useEffect(() => {
+    const schoolName = settings?.school_name || DEFAULT_SCHOOL_NAME;
+    document.title = schoolName;
+
+    if (settings?.logo_url) {
+      let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon";
+        document.head.appendChild(link);
+      }
+      link.href = settings.logo_url;
+    }
+  }, [settings]);
+
+  return null;
+}
+
 const App = () => {
-  const router = createBrowserRouter(routers);
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
           <TooltipProvider>
+            <DynamicHead />
             <Toaster />
             <Sonner />
             <RouterProvider router={router} />

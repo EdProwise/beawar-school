@@ -23,6 +23,7 @@ import Alumni from "./pages/Alumni";
 import BeyondAcademics from "./pages/BeyondAcademics";
 import EntrepreneurSkills from "./pages/EntrepreneurSkills";
 import ResidentialSchool from "./pages/ResidentialSchool";
+import Career from "./pages/Career";
 import NotFound from "./pages/NotFound";
 
 // Admin Pages
@@ -56,6 +57,8 @@ import AdminResults from "./pages/admin/AdminResults";
 import AdminAlumni from "./pages/admin/AdminAlumni";
 import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
 import AdminTeams from "./pages/admin/AdminTeams";
+import AdminWebsiteVisits from "./pages/admin/AdminWebsiteVisits";
+import AdminCareer from "./pages/admin/AdminCareer";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
 
@@ -185,6 +188,11 @@ export const routers = [
       path: "/terms",
       name: 'terms',
       element: <Terms />,
+    },
+    {
+      path: "/career",
+      name: 'career',
+      element: <Career />,
     },
     // Admin Routes
     {
@@ -348,6 +356,16 @@ export const routers = [
       path: "/admin/media",
       name: 'admin-media',
       element: <AdminMedia />,
+    },
+    {
+      path: "/admin/website-visits",
+      name: 'admin-website-visits',
+      element: <AdminWebsiteVisits />,
+    },
+    {
+      path: "/admin/career",
+      name: 'admin-career',
+      element: <AdminCareer />,
     },
     /* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */
     {

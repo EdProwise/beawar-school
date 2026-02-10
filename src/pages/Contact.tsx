@@ -19,13 +19,13 @@ const Contact = () => {
   
   const submitMutation = useSubmitAdmissionInquiry();
 
-  const schoolName = settings?.school_name || "Orbit School";
-  const address = settings?.address || "123 Education Lane, Academic District, City 12345";
-  const phone = settings?.phone || "+1 234 567 8900";
+  const schoolName = settings?.school_name || "";
+  const address = settings?.address || "";
+  const phone = settings?.phone || "";
   const phoneSecondary = settings?.phone_secondary;
-  const email = settings?.email || "info@orbitschool.edu";
+  const email = settings?.email || "";
   const mapEmbedUrl = settings?.map_embed_url;
-  const officeHoursWeekday = settings?.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM";
+  const officeHoursWeekday = settings?.office_hours_weekday || "";
   const officeHoursWeekend = settings?.office_hours_weekend || "Sat: 9:00 AM - 1:00 PM";
 
   const contactInfo = [
@@ -333,17 +333,21 @@ const Contact = () => {
                       Follow our journey and stay updated with campus life, events, and academic achievements.
                     </p>
                     
-                    <div className="flex flex-wrap gap-4">
-                      {[
-                        { icon: Facebook, url: settings?.facebook_url, label: 'Facebook' },
-                        { icon: Linkedin, url: settings?.linkedin_url, label: 'Linkedin' },
-                        { icon: Instagram, url: settings?.instagram_url, label: 'Instagram' },
-                        { icon: Youtube, url: settings?.youtube_url, label: 'YouTube' }
-                      ].map((social, i) => (
-                        social.url ? (
-                          <motion.a
-                            key={i}
-                            href={social.url}
+                      <div className="flex flex-wrap gap-4">
+                        {[
+                          { icon: Facebook, url: settings?.facebook_url, label: 'Facebook' },
+                          { icon: Linkedin, url: settings?.linkedin_url, label: 'Linkedin' },
+                          { icon: Instagram, url: settings?.instagram_url, label: 'Instagram' },
+                          { icon: Youtube, url: settings?.youtube_url, label: 'YouTube' }
+                        ].map((social, i) => {
+                          const ensureUrl = (url: string) => {
+                            if (url.startsWith("http://") || url.startsWith("https://")) return url;
+                            return `https://${url}`;
+                          };
+                          return social.url ? (
+                            <motion.a
+                              key={i}
+                              href={ensureUrl(social.url)}
                             target="_blank"
                             rel="noopener noreferrer"
                             whileHover={{ y: -5, scale: 1.05 }}
@@ -364,8 +368,8 @@ const Contact = () => {
                           >
                             <social.icon className="w-6 h-6" />
                           </motion.a>
-                        )
-                      ))}
+                          );
+                        })}
                     </div>
 
                     <div className="mt-12 pt-8 border-t border-white/10 flex items-center justify-between">

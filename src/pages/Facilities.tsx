@@ -23,15 +23,6 @@ const gradientColors = [
   { bg: "from-cyan-500 via-sky-500 to-blue-500", glow: "shadow-[0_0_40px_rgba(56,189,248,0.3)]", accent: "bg-cyan-400/20", ring: "ring-cyan-400/30" },
 ];
 
-const defaultFacilities = [
-  { id: "1", title: "Smart Classrooms", description: "Digital learning with interactive boards", icon_name: "Monitor", image_url: "/classroom.png" },
-  { id: "2", title: "Library", description: "20,000+ books and digital resources", icon_name: "BookOpen", image_url: "/library.png" },
-  { id: "3", title: "Science Labs", description: "Well-equipped Physics, Chemistry, Biology labs", icon_name: "FlaskConical", image_url: "/science_lab.png" },
-  { id: "4", title: "Sports Complex", description: "Indoor and outdoor sports facilities", icon_name: "Dumbbell", image_url: "/sports.png" },
-  { id: "5", title: "Computer Lab", description: "Modern computers with high-speed internet", icon_name: "Monitor", image_url: "/classroom.png" },
-  { id: "6", title: "Transport", description: "GPS-enabled buses for all routes", icon_name: "Bus", image_url: "/hero_campus.png" },
-];
-
 const getYouTubeEmbedUrl = (url: string) => {
   if (!url) return null;
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -44,8 +35,7 @@ const Facilities = () => {
   const { data: facilities = [], isLoading } = useFacilities();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const schoolName = settings?.school_name || "Orbit School";
-  const displayFacilities = facilities.length > 0 ? facilities : (defaultFacilities as any[]);
+  const schoolName = settings?.school_name || "";
 
   const campusVideoEmbedUrl = settings?.campus_video_url ? getYouTubeEmbedUrl(settings.campus_video_url) : null;
 
@@ -80,7 +70,7 @@ const Facilities = () => {
               </div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {displayFacilities.map((facility, index) => {
+                    {facilities.map((facility, index) => {
                       const IconComponent = iconMap[facility.icon_name || "Building"] || Building;
                       const galleryImages = facility.images || [];
                       const hasGallery = galleryImages.length > 0;

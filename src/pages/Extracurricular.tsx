@@ -116,9 +116,9 @@ export function Extracurricular() {
   const { data: dbCategories, isLoading } = useExtracurricularCategories();
   const { data: dbHighlights, isLoading: isLoadingHighlights } = useExtracurricularHighlights();
   
-  const schoolName = settings?.school_name || "Orbit School";
-  const categories = dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories;
-    const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
+  const schoolName = settings?.school_name || "";
+  const categories = dbCategories || [];
+    const highlights = dbHighlights || [];
   
     return (
       <div className="min-h-screen overflow-x-hidden">

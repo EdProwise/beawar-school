@@ -11,25 +11,17 @@ const iconMap: Record<string, React.ElementType> = {
 export function AcademicsSection() {
   const { data: programs = [], isLoading } = useAcademicPrograms();
 
-  // Fallback programs
-  const defaultPrograms = [
-    { id: "1", title: "Pre-Primary", subtitle: "Ages 3-5", description: "Foundation years focusing on play-based learning", icon_name: "Baby" },
-    { id: "2", title: "Primary School", subtitle: "Grades 1-5", description: "Building strong academic foundations", icon_name: "BookOpen" },
-    { id: "3", title: "Secondary School", subtitle: "Grades 6-10", description: "Comprehensive education for higher studies", icon_name: "GraduationCap" },
-    { id: "4", title: "Higher Secondary", subtitle: "Grades 11-12", description: "Specialized streams in Science, Commerce, Arts", icon_name: "Award" },
-  ];
-
-  const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
+  if (!isLoading && programs.length === 0) return null;
 
   return (
-    <section className="py-20 lg:py-28 bg-secondary/50 relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 lg:py-28 bg-secondary/50 relative overflow-hidden">
       {/* Background */}
       <div className="absolute top-20 right-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
 
       <div className="container relative">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
           <span className="inline-block px-4 py-2 bg-primary-light text-primary rounded-full text-sm font-medium mb-4">
             Academics
           </span>
@@ -55,7 +47,7 @@ export function AcademicsSection() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {displayPrograms.map((program) => {
+              {programs.map((program) => {
                 const IconComponent = iconMap[program.icon_name || "BookOpen"] || BookOpen;
                 // Get only first paragraph
                 const firstParagraph = (program.description || "").split(/\n+/).filter(p => p.trim())[0] || "";

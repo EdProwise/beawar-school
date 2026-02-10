@@ -1,31 +1,34 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useSiteSettings } from "@/hooks/use-school-data";
 import { 
-  GraduationCap, 
-  LayoutDashboard, 
-  Newspaper, 
-  Image, 
-  MessageSquare, 
-  Users, 
-  Mail, 
-  Bell,
-  LogOut,
-  Menu,
-  X,
-  ChevronDown,
-  Settings,
-  Layers,
-  BarChart3,
-  Building,
-  BookOpen,
-  Info,
-  Star,
-  FileText,
-    ClipboardList,
-      Shield,
-      FolderOpen,
-      Zap
-    } from "lucide-react";
+    GraduationCap, 
+    LayoutDashboard, 
+    Newspaper, 
+    Image, 
+    MessageSquare, 
+    Users, 
+    Mail, 
+    Bell,
+    LogOut,
+    Menu,
+    X,
+    ChevronDown,
+    Settings,
+    Layers,
+    BarChart3,
+    Building,
+    BookOpen,
+    Info,
+    Star,
+    FileText,
+      ClipboardList,
+        Shield,
+        FolderOpen,
+        Zap,
+        Eye,
+        Briefcase
+      } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
@@ -44,6 +47,7 @@ interface NavItem {
 
   const navItems: NavItem[] = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Website Visits", path: "/admin/website-visits", icon: Eye },
     {
       name: "About Content",
       icon: Info,
@@ -74,6 +78,7 @@ interface NavItem {
       ]
     },
     { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
+    { name: "Career", path: "/admin/career", icon: Briefcase },
     {
       name: "Admission",
       icon: ClipboardList,
@@ -108,8 +113,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
+  const { data: siteSettings } = useSiteSettings();
 
-  // Track open state for each menu item with children
+    // Track open state for each menu item with children
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
     const initialState: Record<string, boolean> = {};
     navItems.forEach(item => {
@@ -150,7 +156,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <GraduationCap className="w-8 h-8 text-foreground" />
               </div>
                 <div>
-                  <p className="font-heading font-bold text-primary">Orbit School</p>
+                  <p className="font-heading font-bold text-primary">{siteSettings?.school_name || "Orbit School"}</p>
                   <p className="text-xs text-primary">Admin Panel</p>
                 </div>
             </Link>

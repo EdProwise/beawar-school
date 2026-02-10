@@ -14,17 +14,7 @@ const iconMap: Record<string, React.ElementType> = {
 export function FacilitiesSection() {
   const { data: facilities = [], isLoading } = useFacilities();
 
-  // Fallback facilities
-  const defaultFacilities = [
-    { id: "1", title: "Smart Classrooms", description: "Digital learning with interactive boards", icon_name: "Monitor", image_url: "/classroom.png" },
-    { id: "2", title: "Library", description: "20,000+ books and digital resources", icon_name: "BookOpen", image_url: "/library.png" },
-    { id: "3", title: "Science Labs", description: "Well-equipped Physics, Chemistry, Biology labs", icon_name: "FlaskConical", image_url: "/science_lab.png" },
-    { id: "4", title: "Sports Complex", description: "Indoor and outdoor sports facilities", icon_name: "Dumbbell", image_url: "/sports.png" },
-    { id: "5", title: "Computer Lab", description: "Modern computers with high-speed internet", icon_name: "Monitor", image_url: "/classroom.png" },
-    { id: "6", title: "Transport", description: "GPS-enabled buses for all routes", icon_name: "Bus", image_url: "/hero_campus.png" },
-  ];
-
-  const displayFacilities = facilities.length > 0 ? facilities : defaultFacilities;
+  if (!isLoading && facilities.length === 0) return null;
 
   return (
     <section className="py-10 lg:py-10 bg-background relative overflow-hidden">
@@ -33,7 +23,7 @@ export function FacilitiesSection() {
 
       <div className="container relative">
         {/* Header */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12 lg:mb-16">
             <span className="inline-block px-4 py-2 bg-accent-light text-accent-dark rounded-full text-sm font-medium mb-4">
               Infrastructure
             </span>
@@ -60,7 +50,7 @@ export function FacilitiesSection() {
           </div>
         ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayFacilities.slice(0, 6).map((facility) => {
+              {facilities.slice(0, 6).map((facility) => {
                 const IconComponent = iconMap[facility.icon_name || "Building"] || Building;
               return (
                 <div
