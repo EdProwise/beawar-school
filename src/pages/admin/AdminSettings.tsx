@@ -80,9 +80,10 @@ export default function AdminSettings() {
     tc_verify_url: "",
     affiliation_no: "",
     udise_code: "",
-    lamp_color: "#4C0DC9",
-    copyright_text: "",
-  });
+      lamp_color: "#4C0DC9",
+      copyright_text: "",
+      topbar_bg_color: "#1f2937",
+    });
 
     const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
     const [secondaryLinkType, setSecondaryLinkType] = useState<string>("preset");
@@ -116,9 +117,10 @@ export default function AdminSettings() {
           tc_verify_url: settings.tc_verify_url || "",
             affiliation_no: settings.affiliation_no || "",
             udise_code: settings.udise_code || "",
-            lamp_color: settings.lamp_color || "#4C0DC9",
-            copyright_text: settings.copyright_text || "",
-          });
+              lamp_color: settings.lamp_color || "#4C0DC9",
+              copyright_text: settings.copyright_text || "",
+              topbar_bg_color: settings.topbar_bg_color || "#1f2937",
+            });
 
         // Initialize link types based on values
         const primaryPresets = ["/admissions/process", "/contact", "/about-us"];
@@ -358,12 +360,44 @@ export default function AdminSettings() {
             </div>
           </TabsContent>
 
-          <TabsContent value="header">
-            <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Layout className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-semibold">Header Buttons</h2>
-              </div>
+            <TabsContent value="header">
+              <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Layout className="w-5 h-5 text-primary" />
+                  <h2 className="text-xl font-semibold">Header Settings</h2>
+                </div>
+
+                {/* Top Info Bar Color */}
+                <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30">
+                  <h3 className="font-medium text-foreground">Top Info Bar</h3>
+                  <div className="space-y-2">
+                    <Label htmlFor="topbar_bg_color">Background Color</Label>
+                    <div className="flex gap-3 mt-2">
+                      <input
+                        type="color"
+                        id="topbar_bg_color"
+                        value={formData.topbar_bg_color}
+                        onChange={(e) => setFormData({ ...formData, topbar_bg_color: e.target.value })}
+                        className="w-14 h-10 rounded cursor-pointer border-0 p-0 overflow-hidden"
+                      />
+                      <Input
+                        value={formData.topbar_bg_color}
+                        onChange={(e) => setFormData({ ...formData, topbar_bg_color: e.target.value })}
+                        placeholder="#1f2937"
+                        className="flex-1"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      This color is used for the top bar that shows contact info, Apply Now & Portal buttons.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Header Buttons */}
+                <div className="flex items-center gap-2 mb-2">
+                  <Layout className="w-4 h-4 text-primary" />
+                  <h3 className="font-medium text-foreground">Header Buttons</h3>
+                </div>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30">
                   <h3 className="font-medium text-foreground">Primary Button</h3>

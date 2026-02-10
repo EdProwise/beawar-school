@@ -376,6 +376,7 @@ export interface SiteSettings {
   cta_secondary_link: string | null;
   office_hours_weekday: string | null;
   office_hours_weekend: string | null;
+  topbar_bg_color: string | null;
 }
 
 export function useSiteSettings() {
