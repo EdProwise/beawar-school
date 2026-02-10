@@ -10,7 +10,7 @@ import {
   Search,
 } from "lucide-react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthSafe } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import {
   Table,
@@ -46,7 +46,9 @@ const fetchAnalytics = async (from?: string, to?: string): Promise<AnalyticsData
 
 const AdminWebsiteVisits = () => {
   const navigate = useNavigate();
-  const { user, isLoading: authLoading } = useAuth();
+  const auth = useAuthSafe();
+  const user = auth?.user;
+  const authLoading = auth?.isLoading ?? false;
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");

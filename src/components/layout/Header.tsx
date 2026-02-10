@@ -126,6 +126,16 @@ export function Header({ variant = "solid" }: HeaderProps) {
         }
       }, [settings?.logo_url, settings?.school_name]);
 
+    // Track page visits
+    useEffect(() => {
+      if (location.pathname.startsWith('/admin')) return;
+      fetch('/api/visits/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ page: location.pathname }),
+      }).catch(() => {});
+    }, [location.pathname]);
+
   const isExternalLink = (url: string) => {
     if (!url) return false;
     return (

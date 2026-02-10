@@ -116,6 +116,84 @@ const getModel = (tableName: string) => {
   return mongoose.models[tableName] || mongoose.model(tableName, DynamicSchema);
 };
 
+// ===============================
+// Visit Tracking Routes
+// ===============================
+app.post('/api/visits/track', async (req, res) => {
+  try {
+    const { page } = req.body;
+    const Visit = getModel('visits');
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    await Visit.findOneAndUpdate(
+      { date: today, page: page || '/' },
+      { $inc: { count: 1 } },
+      { upsert: true, new: true }
+    );
+    
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/visits/analytics', async (req, res) => {
+  try {
+    const { from, to } = req.query;
+    const Visit = getModel('visits');
+    
+    const filter: any = {};
+    if (from) filter.date = { ...filter.date, $gte: from };
+    if (to) filter.date = { ...filter.date, $lte: to };
+    
+    const visits = await Visit.find(filter).sort({ date: -1 }).exec();
+    
+    // Aggregate daily totals
+    const dailyMap: Record<string, number> = {};
+    const pageMap: Record<string, number> = {};
+    
+    for (const v of visits) {
+      const doc = v.toObject();
+      const date = doc.date;
+      const count = doc.count || 1;
+      dailyMap[date] = (dailyMap[date] || 0) + count;
+      pageMap[doc.page || '/'] = (pageMap[doc.page || '/'] || 0) + count;
+    }
+    
+    const daily = Object.entries(dailyMap)
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    
+    const topPages = Object.entries(pageMap)
+      .map(([page, count]) => ({ page, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+    
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+    const monthStart = today.substring(0, 7) + '-01';
+    
+    const totalVisits = daily.reduce((sum, d) => sum + d.count, 0);
+    const todayVisits = dailyMap[today] || 0;
+    const yesterdayVisits = dailyMap[yesterday] || 0;
+    const weekVisits = daily
+      .filter(d => d.date >= weekAgo)
+      .reduce((sum, d) => sum + d.count, 0);
+    const monthVisits = daily
+      .filter(d => d.date >= monthStart)
+      .reduce((sum, d) => sum + d.count, 0);
+    
+    res.json({
+      daily,
+      summary: { totalVisits, todayVisits, yesterdayVisits, weekVisits, monthVisits },
+      topPages,
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Generic API Routes
 app.post('/api/auth/signin', async (req, res) => {
   try {
