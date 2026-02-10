@@ -23,6 +23,7 @@ import Alumni from "./pages/Alumni";
 import BeyondAcademics from "./pages/BeyondAcademics";
 import EntrepreneurSkills from "./pages/EntrepreneurSkills";
 import ResidentialSchool from "./pages/ResidentialSchool";
+import Career from "./pages/Career";
 import NotFound from "./pages/NotFound";
 
 // Admin Pages
@@ -348,6 +349,11 @@ export const routers = [
       path: "/admin/media",
       name: 'admin-media',
       element: <AdminMedia />,
+    },
+    {
+      path: "/career",
+      name: 'career',
+      element: <Career />,
     },
     /* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */
     {

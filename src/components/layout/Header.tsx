@@ -5,7 +5,8 @@ import {
   Phone, Mail, MapPin, ArrowRight, Sparkles,
   BookOpen, Users, Building2, Award, FlaskConical, Brain, Home as HomeIcon,
   Image, Newspaper, MessageSquare, ClipboardList, DollarSign, School,
-  Lightbulb, Hotel, GalleryHorizontalEnd
+  Lightbulb, Hotel, GalleryHorizontalEnd,
+  Facebook, Instagram, Linkedin, Youtube
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -102,7 +103,27 @@ export function Header({ variant = "solid" }: HeaderProps) {
   const { user } = useAuth();
 
   const schoolName = settings?.school_name || "Orbit School";
-  const tagline = settings?.tagline || "Excellence in Education";
+    const tagline = settings?.tagline || "Excellence in Education";
+
+    // Dynamically set browser tab favicon and title from settings
+      useEffect(() => {
+        if (settings?.logo_url) {
+          // Remove all existing favicon links to avoid conflicts
+          document.querySelectorAll("link[rel*='icon']").forEach(el => el.remove());
+          // Create fresh favicon link
+          const link = document.createElement("link");
+          link.rel = "icon";
+          link.href = settings.logo_url;
+          // Set type based on URL extension
+          if (settings.logo_url.endsWith(".png")) link.type = "image/png";
+          else if (settings.logo_url.endsWith(".svg")) link.type = "image/svg+xml";
+          else if (settings.logo_url.endsWith(".ico")) link.type = "image/x-icon";
+          document.head.appendChild(link);
+        }
+        if (settings?.school_name) {
+          document.title = settings.school_name;
+        }
+      }, [settings?.logo_url, settings?.school_name]);
 
   const isExternalLink = (url: string) => {
     if (!url) return false;
@@ -184,26 +205,54 @@ export function Header({ variant = "solid" }: HeaderProps) {
             <div className="container mx-auto px-4">
               <div className="flex items-center justify-between h-10 text-[12px]">
                 <div className="flex items-center gap-5">
-                  {settings?.phone && (
-                    <a href={`tel:${settings.phone}`} className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-bold group">
-                      <Phone className="w-3.5 h-3.5" />
-                      <span>{settings.phone}</span>
-                    </a>
-                  )}
-                  {settings?.email && (
-                    <a href={`mailto:${settings.email}`} className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-bold group">
-                      <Mail className="w-3.5 h-3.5" />
-                      <span>{settings.email}</span>
-                    </a>
-                  )}
-                  {settings?.address && (
-                    <span className="flex items-center gap-1.5 text-white/70 font-bold">
-                      <MapPin className="w-3.5 h-3.5" />
-                      <span className="truncate max-w-[260px]">{settings.address}</span>
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2.5">
+                    {settings?.phone && (
+                      <a href={`tel:${settings.phone}`} className="flex items-center gap-1.5 text-white hover:text-white/80 transition-colors font-bold group">
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>{settings.phone}</span>
+                      </a>
+                    )}
+                    {settings?.email && (
+                      <a href={`mailto:${settings.email}`} className="flex items-center gap-1.5 text-white hover:text-white/80 transition-colors font-bold group">
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>{settings.email}</span>
+                      </a>
+                    )}
+                    {settings?.address && (
+                      <span className="flex items-center gap-1.5 text-white font-bold">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span className="truncate max-w-[260px]">{settings.address}</span>
+                      </span>
+                    )}
+                    {/* Social Media Links */}
+                    {(settings?.facebook_url || settings?.instagram_url || settings?.linkedin_url || settings?.youtube_url) && (
+                      <>
+                        <span className="w-px h-4 bg-white/30" />
+                        <div className="flex items-center gap-2">
+                          {settings?.facebook_url && (
+                            <a href={ensureAbsoluteUrl(settings.facebook_url)} target="_blank" rel="noopener noreferrer" className="w-6 h-6 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/30 text-white transition-all duration-200">
+                              <Facebook className="w-3 h-3" />
+                            </a>
+                          )}
+                          {settings?.instagram_url && (
+                            <a href={ensureAbsoluteUrl(settings.instagram_url)} target="_blank" rel="noopener noreferrer" className="w-6 h-6 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/30 text-white transition-all duration-200">
+                              <Instagram className="w-3 h-3" />
+                            </a>
+                          )}
+                          {settings?.linkedin_url && (
+                            <a href={ensureAbsoluteUrl(settings.linkedin_url)} target="_blank" rel="noopener noreferrer" className="w-6 h-6 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/30 text-white transition-all duration-200">
+                              <Linkedin className="w-3 h-3" />
+                            </a>
+                          )}
+                          {settings?.youtube_url && (
+                            <a href={ensureAbsoluteUrl(settings.youtube_url)} target="_blank" rel="noopener noreferrer" className="w-6 h-6 flex items-center justify-center rounded-full bg-white/15 hover:bg-white/30 text-white transition-all duration-200">
+                              <Youtube className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2.5">
                   {settings?.cta_primary_text && settings?.cta_primary_link && (
                     isExternalLink(settings.cta_primary_link) ? (
                       <a
@@ -288,10 +337,10 @@ export function Header({ variant = "solid" }: HeaderProps) {
                     <>
                       <button
                         className={cn(
-                          "relative px-3.5 py-2.5 text-[13.5px] font-semibold transition-all duration-200 flex items-center gap-1 rounded-xl whitespace-nowrap group/nav",
-                          isActivePath(link.path, link.children)
-                            ? "text-primary"
-                            : "text-gray-600 hover:text-gray-900"
+                          "relative px-3.5 py-2.5 text-[15px] font-semibold transition-all duration-200 flex items-center gap-1 rounded-xl whitespace-nowrap group/nav",
+                            isActivePath(link.path, link.children)
+                              ? "text-primary"
+                              : "text-black hover:text-primary"
                         )}
                       >
                         {link.name}
@@ -398,10 +447,10 @@ export function Header({ variant = "solid" }: HeaderProps) {
                     <Link
                       to={link.path}
                       className={cn(
-                        "relative px-3.5 py-2.5 text-[13.5px] font-semibold transition-all duration-200 rounded-xl whitespace-nowrap block group/nav",
-                        isActivePath(link.path)
-                          ? "text-primary"
-                          : "text-gray-600 hover:text-gray-900"
+                        "relative px-3.5 py-2.5 text-[15px] font-semibold transition-all duration-200 rounded-xl whitespace-nowrap block group/nav",
+                          isActivePath(link.path)
+                            ? "text-primary"
+                            : "text-black hover:text-primary"
                       )}
                     >
                       {link.name}
