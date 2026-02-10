@@ -158,3 +158,8 @@ export function useAuth() {
   }
   return context;
 }
+
+/** Safe version that returns null instead of throwing when outside AuthProvider */
+export function useAuthSafe() {
+  return useContext(AuthContext) ?? null;
+}

@@ -19,7 +19,8 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(uploadsDir));
 
 // Configure Multer
@@ -319,16 +320,26 @@ app.delete('/api/:table/:id', async (req, res) => {
 app.post('/api/:table/upsert', async (req, res) => {
   try {
     const { table } = req.params;
-    const { data, onConflict } = req.body;
+    const { data, onConflict } = req.body || {};
+    
+    if (!data) {
+      return res.status(400).json({ error: 'Missing "data" field in request body' });
+    }
+    
     const Model = getModel(table);
     const conflictKey = onConflict || 'id';
     
-    console.log(`Upserting to ${table}, conflict key: ${conflictKey}`);
+    console.log(`Upserting to ${table}, conflict key: ${conflictKey}, data:`, JSON.stringify(data).substring(0, 200));
     
     const items = Array.isArray(data) ? data : [data];
 
     const results = [];
     for (const item of items) {
+      if (!item || typeof item !== 'object') {
+        console.warn('Skipping invalid upsert item:', item);
+        continue;
+      }
+      
       let filter: any = {};
       const { _id, ...itemData } = item;
       
@@ -339,13 +350,11 @@ app.post('/api/:table/upsert', async (req, res) => {
             { id: val },
             { _id: mongoose.isValidObjectId(val) ? val : undefined }
           ].filter(q => q._id !== undefined || q.id !== undefined);
-          console.log(`Searching by ${conflictKey}: ${val}, Filter:`, JSON.stringify(filter));
         } else {
           filter[conflictKey] = val;
         }
       } else {
         filter._id = new mongoose.Types.ObjectId();
-        console.log(`No conflict key found, creating new record with _id: ${filter._id}`);
       }
 
       

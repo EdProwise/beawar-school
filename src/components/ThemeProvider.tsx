@@ -88,5 +88,32 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   }, [settings?.primary_color, settings?.accent_color]);
 
+  // Load WhatsApp button script dynamically from settings
+  useEffect(() => {
+    const scriptId = "whatsapp-button-script";
+    const existing = document.getElementById(scriptId);
+
+    // Remove existing script if disabled or URL changed
+    if (existing) {
+      existing.remove();
+    }
+
+    if (
+      settings?.whatsapp_button_enabled !== false &&
+      settings?.whatsapp_button_script_url
+    ) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = settings.whatsapp_button_script_url;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    return () => {
+      const el = document.getElementById(scriptId);
+      if (el) el.remove();
+    };
+  }, [settings?.whatsapp_button_enabled, settings?.whatsapp_button_script_url]);
+
   return <>{children}</>;
 }

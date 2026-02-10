@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuthSafe } from "@/hooks/use-auth";
 import { ScrollingTicker } from "./ScrollingTicker";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -100,7 +100,8 @@ export function Header({ variant = "solid" }: HeaderProps) {
   const location = useLocation();
   const { data: settings } = useSiteSettings();
   const { data: admissionSettings = {} } = useAdmissionSettings();
-  const { user } = useAuth();
+  const auth = useAuthSafe();
+  const user = auth?.user ?? null;
 
   const schoolName = settings?.school_name || "Orbit School";
     const tagline = settings?.tagline || "Excellence in Education";

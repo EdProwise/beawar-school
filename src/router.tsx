@@ -57,6 +57,8 @@ import AdminResults from "./pages/admin/AdminResults";
 import AdminAlumni from "./pages/admin/AdminAlumni";
 import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
 import AdminTeams from "./pages/admin/AdminTeams";
+import AdminWhatsAppButton from "./pages/admin/AdminWhatsAppButton";
+import AdminWebsiteVisits from "./pages/admin/AdminWebsiteVisits";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
 
@@ -349,6 +351,16 @@ export const routers = [
       path: "/admin/media",
       name: 'admin-media',
       element: <AdminMedia />,
+    },
+    {
+      path: "/admin/whatsapp-button",
+      name: 'admin-whatsapp-button',
+      element: <AdminWhatsAppButton />,
+    },
+    {
+      path: "/admin/website-visits",
+      name: 'admin-website-visits',
+      element: <AdminWebsiteVisits />,
     },
     {
       path: "/career",

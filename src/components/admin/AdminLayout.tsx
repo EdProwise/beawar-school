@@ -12,19 +12,22 @@ import {
   LogOut,
   Menu,
   X,
-  ChevronDown,
-  Settings,
-  Layers,
-  BarChart3,
-  Building,
-  BookOpen,
-  Info,
-  Star,
-  FileText,
-    ClipboardList,
-      Shield,
-      FolderOpen,
-      Zap
+    ChevronDown,
+    Settings,
+    Layers,
+    BarChart3,
+    Building,
+    BookOpen,
+    Info,
+    Star,
+    FileText,
+      ClipboardList,
+        Shield,
+        FolderOpen,
+        Zap,
+        MessageCircle,
+        Eye,
+        Briefcase
     } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -44,6 +47,8 @@ interface NavItem {
 
   const navItems: NavItem[] = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Website Visits", path: "/admin/website-visits", icon: Eye },
+    { name: "Career", path: "/admin/career", icon: Briefcase },
     {
       name: "About Content",
       icon: Info,
@@ -73,7 +78,6 @@ interface NavItem {
         { name: "Residential School", path: "/admin/beyond-academics?tab=residential-school", icon: Building },
       ]
     },
-    { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
     {
       name: "Admission",
       icon: ClipboardList,
@@ -94,10 +98,12 @@ interface NavItem {
         { name: "Hero Slides", path: "/admin/hero-slides", icon: Layers },
       { name: "Statistics", path: "/admin/statistics", icon: BarChart3 },
       { name: "Highlights", path: "/admin/highlights", icon: Star },
+      { name: "Scroll Words", path: "/admin/scroll-words", icon: Layers },
       { name: "Newsletter", path: "/admin/newsletter", icon: Bell },
       { name: "Testimonials", path: "/admin/testimonials", icon: MessageSquare },
       { name: "Legal Pages", path: "/admin/legal", icon: Shield },
       { name: "Media Library", path: "/admin/media", icon: FolderOpen },
+        { name: "WhatsApp Button", path: "/admin/whatsapp-button", icon: MessageCircle },
     ]
   },
 ];

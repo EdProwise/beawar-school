@@ -184,16 +184,20 @@ class MongoDBQueryBuilder {
     return this;
   }
 
-  upsert(values: any, options?: { onConflict?: string }) {
-    this.method = 'UPSERT';
-    // Remove _id from body to avoid MongoDB duplicate key errors
-    const { _id, ...rest } = values;
-    this.body = rest;
-    if (options?.onConflict) {
-      this.params.set('onConflict', options.onConflict);
+    upsert(values: any, options?: { onConflict?: string }) {
+      this.method = 'UPSERT';
+      // Remove _id from body to avoid MongoDB duplicate key errors
+      if (Array.isArray(values)) {
+        this.body = values.map(({ _id, ...rest }) => rest);
+      } else {
+        const { _id, ...rest } = values;
+        this.body = rest;
+      }
+      if (options?.onConflict) {
+        this.params.set('onConflict', options.onConflict);
+      }
+      return this;
     }
-    return this;
-  }
 }
 
 export const mongodb = {
