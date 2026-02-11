@@ -70,7 +70,7 @@ export function StatsSection() {
 
   if (isLoading) {
     return (
-      <section className="py-20 lg:py-28 bg-primary">
+      <section className="py-5 lg:py-5 bg-primary">
         <div className="container">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((i) => (
@@ -87,38 +87,26 @@ export function StatsSection() {
   }
 
     return (
-      <section className="py-14 lg:py-20 relative overflow-hidden">
-        {/* Gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/70 to-primary/80" />
-
-        {/* Decorative elements */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-72 h-72 bg-white/5 rounded-full blur-3xl -translate-y-1/2" />
-          <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl translate-y-1/2" />
-        </div>
-
-        {/* Subtle grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '60px 60px',
-          }}
-        />
+    <section className="py-7 lg:py-10 relative overflow-hidden bg-gray-50">
+          {/* Decorative elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-1/4 w-72 h-72 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
+            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-accent/5 rounded-full blur-3xl translate-y-1/2" />
+          </div>
 
         <div className="container relative z-10">
           {/* Section header */}
           <div className="text-center mb-10">
-            <span className="inline-block px-3 py-1 rounded-full bg-white/10 text-white/80 text-xs font-medium tracking-wide uppercase mb-3 backdrop-blur-sm border border-white/10">
-              Our Achievements
-            </span>
-            <h2 className="font-heading text-2xl md:text-3xl font-bold text-white">
+              <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium tracking-wide uppercase mb-3 border border-primary/20">
+                Our Achievements
+              </span>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-gray-800">
               Numbers That Speak for Themselves
             </h2>
           </div>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {displayStats.map((stat, index) => {
               const IconComponent = iconMap[stat.icon_name || "Users"] || Users;
               return (
@@ -128,9 +116,9 @@ export function StatsSection() {
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   {/* Card */}
-                  <div className="relative rounded-xl p-4 md:p-5 text-center transition-all duration-500 bg-white/[0.06] backdrop-blur-md border border-white/[0.08] hover:bg-white/[0.12] hover:border-white/[0.15] hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-dark/30">
-                    {/* Glow on hover */}
-                    <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b from-white/5 to-transparent" />
+                    <div className="relative rounded-xl p-4 md:p-5 text-center transition-all duration-500 bg-gradient-to-br from-primary-dark to-primary border border-primary/30 hover:border-primary/50 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/20">
+                      {/* Glow on hover */}
+                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-b from-white/10 to-transparent" />
 
                     {/* Icon */}
                     <div className="relative inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20 mb-3 group-hover:scale-110 transition-transform duration-500">
