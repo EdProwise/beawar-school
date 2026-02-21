@@ -142,7 +142,7 @@ export default function Alumni() {
               transition={{ duration: 0.6 }}
             >
               <span className="inline-block px-4 py-2 bg-white/10 text-white rounded-full text-sm font-medium mb-6 backdrop-blur-md border border-white/20 uppercase tracking-widest">
-                Orbit School Alumni Network
+                Alumni Network
               </span>
               <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
                 Legends Never Graduate
@@ -352,7 +352,7 @@ export default function Alumni() {
                   value={formData.bio} 
                   onChange={e => setFormData({...formData, bio: e.target.value})} 
                   className="rounded-xl border-slate-200 h-24" 
-                  placeholder="Briefly describe your path after Orbit School..." 
+                  placeholder="Briefly describe your path after school..." 
                 />
               </div>
               <DialogFooter className="pt-4">

@@ -19,7 +19,7 @@ const Contact = () => {
   
   const submitMutation = useSubmitAdmissionInquiry();
 
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "";
   const address = settings?.address || "123 Education Lane, Academic District, City 12345";
   const phone = settings?.phone || "+1 234 567 8900";
   const phoneSecondary = settings?.phone_secondary;

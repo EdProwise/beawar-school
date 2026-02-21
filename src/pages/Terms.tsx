@@ -27,7 +27,7 @@ const Terms = () => {
   const defaultTerms = {
     page_title: "Terms & Conditions",
     last_updated: "January 2026",
-    content: "<p>By accessing Orbit School's services and website, you agree to comply with the following terms and conditions.</p>",
+    content: "<p>By accessing our services and website, you agree to comply with the following terms and conditions.</p>",
     sections: [
       {
         title: "Admission & Enrollment",

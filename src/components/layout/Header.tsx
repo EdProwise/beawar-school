@@ -103,7 +103,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
   const auth = useAuthSafe();
   const user = auth?.user ?? null;
 
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "";
     const tagline = settings?.tagline || "Excellence in Education";
 
     // Dynamically set browser tab favicon and title from settings

@@ -117,7 +117,7 @@ const defaultPrograms = [
     const { data: programs = [], isLoading } = useAcademicPrograms();
     const { data: excellenceHighlights = [], isLoading: isLoadingExcellence } = useAcademicExcellence();
 
-    const schoolName = settings?.school_name || "Orbit School";
+    const schoolName = settings?.school_name || "";
     const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
     const displayExcellence = excellenceHighlights.length > 0 ? excellenceHighlights : features.map((f, i) => ({
       id: `feature-${i}`,

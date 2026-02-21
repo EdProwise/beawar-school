@@ -64,7 +64,7 @@ const News = () => {
               Latest Updates
             </h1>
             <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-              Stay informed about the latest happenings at Orbit School
+              Stay informed about the latest happenings at our school
             </p>
           </div>
         </section>

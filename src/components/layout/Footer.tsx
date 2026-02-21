@@ -38,9 +38,9 @@ const resourceLinks = [
 export function Footer() {
   const { data: settings } = useSiteSettings();
 
-    const schoolName = settings?.school_name || "Orbit School";
-    const tagline = settings?.tagline || "Excellence in Education";
-    const footerText = settings?.footer_text || "Empowering students with knowledge, skills, and values to excel in a dynamic world. Join Orbit School for a journey of excellence and holistic growth.";
+    const schoolName = settings?.school_name || "";
+      const tagline = settings?.tagline || "";
+      const footerText = settings?.footer_text || "";
     const address = settings?.address || "123 Education Lane, Learning City, State, 54321";
     const phone = settings?.phone || "+1 (234) 567-8900";
     const emailAddress = settings?.email || "info@orbitschool.edu";

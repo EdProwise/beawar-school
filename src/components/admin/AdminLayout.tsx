@@ -33,6 +33,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -114,6 +115,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
+  const { data: settings } = useSiteSettings();
 
   // Track open state for each menu item with children
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
@@ -156,7 +158,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <GraduationCap className="w-8 h-8 text-foreground" />
               </div>
                 <div>
-                  <p className="font-heading font-bold text-primary">Orbit School</p>
+                  <p className="font-heading font-bold text-primary">{settings?.school_name || "Admin"}</p>
                   <p className="text-xs text-primary">Admin Panel</p>
                 </div>
             </Link>

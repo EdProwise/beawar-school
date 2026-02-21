@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GraduationCap, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,16 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [adminExists, setAdminExists] = useState<boolean | null>(null);
   const { signIn } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("/api/auth/admin-exists")
+      .then((r) => r.json())
+      .then((d) => setAdminExists(d.exists))
+      .catch(() => setAdminExists(true)); // fail safe: hide register link on error
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,21 +116,25 @@ const AdminLogin = () => {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>First time? Create an admin account below.</p>
-          </div>
+          {adminExists === false && (
+            <div className="mt-6 text-center text-sm text-muted-foreground">
+              <p>First time? Create an admin account below.</p>
+            </div>
+          )}
         </div>
 
-        {/* Register Link */}
-        <div className="mt-6 text-center">
-          <Button
-            variant="ghost"
-            className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
-            onClick={() => navigate("/admin/register")}
-          >
-            Create Admin Account
-          </Button>
-        </div>
+        {/* Register Link — only shown when no admin exists yet */}
+        {adminExists === false && (
+          <div className="mt-6 text-center">
+            <Button
+              variant="ghost"
+              className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
+              onClick={() => navigate("/admin/register")}
+            >
+              Create Admin Account
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

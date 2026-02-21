@@ -12,7 +12,7 @@ import { FormattedContent } from "@/components/ui/formatted-content";
 export function OurTeams() {
   const { data: settings } = useSiteSettings();
   const { data: teams, isLoading } = useTeams();
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);

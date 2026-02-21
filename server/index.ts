@@ -194,6 +194,17 @@ app.get('/api/visits/analytics', async (req, res) => {
   }
 });
 
+// Check if any admin user exists
+app.get('/api/auth/admin-exists', async (req, res) => {
+  try {
+    const User = getModel('users');
+    const admin = await User.findOne({ role: 'admin' });
+    res.json({ exists: !!admin });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Generic API Routes
 app.post('/api/auth/signin', async (req, res) => {
   try {
@@ -449,6 +460,53 @@ app.post('/api/:table/upsert', async (req, res) => {
     console.error('Upsert error:', error);
     res.status(500).json({ error: error.message });
   }
+});
+
+// ===============================
+// Dynamic Sitemap
+// ===============================
+const sitemapRoutes = [
+  { path: '/', changefreq: 'weekly', priority: '1.0' },
+  { path: '/about-us', changefreq: 'monthly', priority: '0.8' },
+  { path: '/our-teams', changefreq: 'monthly', priority: '0.7' },
+  { path: '/our-branches', changefreq: 'monthly', priority: '0.7' },
+  { path: '/academics', changefreq: 'monthly', priority: '0.8' },
+  { path: '/curriculum', changefreq: 'monthly', priority: '0.7' },
+  { path: '/teaching-method', changefreq: 'monthly', priority: '0.7' },
+  { path: '/results', changefreq: 'monthly', priority: '0.7' },
+  { path: '/alumni', changefreq: 'monthly', priority: '0.6' },
+  { path: '/beyond-academics', changefreq: 'monthly', priority: '0.7' },
+  { path: '/beyond-academics/entrepreneur-skills', changefreq: 'monthly', priority: '0.6' },
+  { path: '/beyond-academics/residential-school', changefreq: 'monthly', priority: '0.6' },
+  { path: '/extracurricular', changefreq: 'monthly', priority: '0.7' },
+  { path: '/admissions/process', changefreq: 'monthly', priority: '0.9' },
+  { path: '/admissions/fees-structure', changefreq: 'monthly', priority: '0.8' },
+  { path: '/infrastructure', changefreq: 'monthly', priority: '0.7' },
+  { path: '/gallery', changefreq: 'weekly', priority: '0.7' },
+  { path: '/news', changefreq: 'weekly', priority: '0.8' },
+  { path: '/contact', changefreq: 'monthly', priority: '0.9' },
+  { path: '/students', changefreq: 'monthly', priority: '0.5' },
+  { path: '/teachers', changefreq: 'monthly', priority: '0.5' },
+  { path: '/parents', changefreq: 'monthly', priority: '0.5' },
+  { path: '/privacy', changefreq: 'yearly', priority: '0.3' },
+  { path: '/terms', changefreq: 'yearly', priority: '0.3' },
+];
+
+app.get('/sitemap.xml', (req, res) => {
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const host = req.headers['x-forwarded-host'] || req.get('host') || '';
+  const baseUrl = `${protocol}://${host}`;
+
+  const urls = sitemapRoutes.map(({ path: p, changefreq, priority }) => `  <url>
+    <loc>${baseUrl}${p}</loc>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`).join('\n');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+
+  res.setHeader('Content-Type', 'application/xml');
+  res.send(xml);
 });
 
 // ===============================

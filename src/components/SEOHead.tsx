@@ -11,8 +11,8 @@ interface SEOHeadProps {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const SITE_NAME = "Beawar School";
-const SITE_URL = "https://beawarschool.com"; // Update with actual domain
+const SITE_NAME = "PRJ Gyanjaya School";
+const SITE_URL = "https://prjgyanjaya.in"; // Update with actual domain
 const DEFAULT_OG_IMAGE = `${SITE_URL}/hero_campus.png`;
 
 function setMeta(attr: string, key: string, content: string) {
@@ -99,15 +99,15 @@ export const organizationSchema = {
   logo: `${SITE_URL}/favicon.ico`,
   image: `${SITE_URL}/hero_campus.png`,
   sameAs: [
-    "https://www.facebook.com/beawarschool",
-    "https://www.instagram.com/beawarschool",
-    "https://www.youtube.com/@beawarschool",
+    "https://www.facebook.com/prjgyanjaya11",
+    "https://www.instagram.com/prjgyanjaya11",
+    "https://www.youtube.com/@prjgyanjaya",
   ],
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "admissions",
-    telephone: "+91-1462-XXXXXX",
-    email: "info@beawarschool.com",
+    telephone: "+91-9214014888",
+    email: "prjgyanjaya@gmail.com",
     areaServed: "IN",
     availableLanguage: ["English", "Hindi"],
   },
