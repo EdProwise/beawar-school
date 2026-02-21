@@ -529,11 +529,10 @@ if (fs.existsSync(distPath)) {
       return res.status(404).send('Not found');
     }
 
-    let html = fs.readFileSync(indexPath, 'utf8');
-    html = injectMetaTags(html, req.path);
+      const html = fs.readFileSync(indexPath, 'utf8');
 
-    res.setHeader('Content-Type', 'text/html');
-    res.send(html);
+      res.setHeader('Content-Type', 'text/html');
+      res.send(html);
   });
 }
 
