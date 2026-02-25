@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 interface SEOHeadProps {
   title: string;
@@ -9,11 +10,12 @@ interface SEOHeadProps {
   ogType?: string;
   canonicalPath?: string;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  siteName?: string;
+  siteUrl?: string;
 }
 
-const SITE_NAME = "PRJ Gyanjaya School";
-const SITE_URL = "https://prjgyanjaya.in"; // Update with actual domain
-const DEFAULT_OG_IMAGE = `${SITE_URL}/hero_campus.png`;
+const FALLBACK_SITE_NAME = "";
+const FALLBACK_SITE_URL = "";
 
 function setMeta(attr: string, key: string, content: string) {
   let el = document.querySelector(`meta[${attr}="${key}"]`) as HTMLMetaElement | null;
@@ -43,15 +45,22 @@ const SEOHead = ({
   ogType = "website",
   canonicalPath,
   jsonLd,
+  siteName,
+  siteUrl,
 }: SEOHeadProps) => {
   const location = useLocation();
+  const { data: settings } = useSiteSettings();
+  const resolvedSiteName = siteName || settings?.school_name || FALLBACK_SITE_NAME;
+  const resolvedSiteUrl = siteUrl || settings?.site_url || FALLBACK_SITE_URL;
   const path = canonicalPath || location.pathname;
-  const canonicalUrl = `${SITE_URL}${path}`;
-  const fullTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
+  const canonicalUrl = `${resolvedSiteUrl}${path}`;
+  const defaultOgImage = settings?.logo_url || `${resolvedSiteUrl}/og-image.png`;
+  const fullTitle = path === "/" ? title : `${title} | ${resolvedSiteName}`;
 
   useEffect(() => {
     document.title = fullTitle;
     setMeta("name", "description", description);
+    setMeta("name", "robots", "index, follow");
     if (keywords) setMeta("name", "keywords", keywords);
     setLink("canonical", canonicalUrl);
 
@@ -60,14 +69,14 @@ const SEOHead = ({
     setMeta("property", "og:description", description);
     setMeta("property", "og:type", ogType);
     setMeta("property", "og:url", canonicalUrl);
-    setMeta("property", "og:site_name", SITE_NAME);
-    setMeta("property", "og:image", ogImage || DEFAULT_OG_IMAGE);
+    setMeta("property", "og:site_name", resolvedSiteName);
+    setMeta("property", "og:image", ogImage || defaultOgImage);
 
     // Twitter Card
     setMeta("name", "twitter:card", "summary_large_image");
     setMeta("name", "twitter:title", fullTitle);
     setMeta("name", "twitter:description", description);
-    setMeta("name", "twitter:image", ogImage || DEFAULT_OG_IMAGE);
+    setMeta("name", "twitter:image", ogImage || defaultOgImage);
 
     // JSON-LD
     const scriptId = "seo-jsonld";
@@ -83,43 +92,51 @@ const SEOHead = ({
     } else if (script) {
       script.remove();
     }
-  }, [fullTitle, description, keywords, canonicalUrl, ogType, ogImage, jsonLd]);
+  }, [fullTitle, description, keywords, canonicalUrl, ogType, ogImage, jsonLd, resolvedSiteName, resolvedSiteUrl, defaultOgImage]);
 
   return null;
 };
 
 export default SEOHead;
 
-// Common structured data helpers
-export const organizationSchema = {
+// Dynamic schema builders — pass schoolName, siteUrl, etc. at call site
+export const buildOrganizationSchema = (
+  schoolName: string,
+  siteUrl: string,
+  phone?: string,
+  email?: string,
+  address?: string,
+  logoUrl?: string,
+  socialLinks?: string[],
+  city?: string,
+  state?: string
+) => ({
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  name: SITE_NAME,
-  url: SITE_URL,
-  logo: `${SITE_URL}/favicon.ico`,
-  image: `${SITE_URL}/hero_campus.png`,
-  sameAs: [
-    "https://www.facebook.com/prjgyanjaya11",
-    "https://www.instagram.com/prjgyanjaya11",
-    "https://www.youtube.com/@prjgyanjaya",
-  ],
+  name: schoolName,
+  url: siteUrl,
+  logo: logoUrl || `${siteUrl}/favicon.ico`,
+  image: `${siteUrl}/og-image.png`,
+  ...(socialLinks?.length ? { sameAs: socialLinks } : {}),
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "admissions",
-    telephone: "+91-9214014888",
-    email: "prjgyanjaya@gmail.com",
+    ...(phone ? { telephone: phone } : {}),
+    ...(email ? { email } : {}),
     areaServed: "IN",
     availableLanguage: ["English", "Hindi"],
   },
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Beawar",
-    addressRegion: "Rajasthan",
+    streetAddress: address || "",
+    ...(city ? { addressLocality: city } : {}),
+    ...(state ? { addressRegion: state } : {}),
     addressCountry: "IN",
   },
-};
+});
 
-export const breadcrumbSchema = (
+export const buildBreadcrumbSchema = (
+  siteUrl: string,
   items: { name: string; path: string }[]
 ) => ({
   "@context": "https://schema.org",
@@ -128,6 +145,11 @@ export const breadcrumbSchema = (
     "@type": "ListItem",
     position: index + 1,
     name: item.name,
-    item: `${SITE_URL}${item.path}`,
+    item: `${siteUrl}${item.path}`,
   })),
 });
+
+// Legacy exports kept for backward compatibility
+export const organizationSchema = buildOrganizationSchema(FALLBACK_SITE_NAME, FALLBACK_SITE_URL);
+export const breadcrumbSchema = (items: { name: string; path: string }[]) =>
+  buildBreadcrumbSchema(FALLBACK_SITE_URL, items);

@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/carousel";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
 import Autoplay from "embla-carousel-autoplay";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, React.ElementType> = {
   BookOpen, Target, Users, Heart, Award, Sparkles
@@ -39,7 +40,8 @@ export default function TeachingMethod() {
     setLightboxOpen(true);
   };
 
-  const schoolName = settings?.school_name || "Orbit School";
+  const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
 
   if (heroLoading || methodsLoading) {
     return (
@@ -65,6 +67,16 @@ export default function TeachingMethod() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="Teaching Methodology"
+        description={`Discover the innovative teaching methods at ${schoolName} designed to inspire curiosity, critical thinking, and holistic development in every student.`}
+        keywords={`teaching methodology, pedagogy, ${schoolName}, innovative education, Beawar school`}
+        canonicalPath="/teaching-method"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [
+          { name: "Home", path: "/" },
+          { name: "Teaching Methodology", path: "/teaching-method" },
+        ])}
+      />
       <Header />
         <main>
           {/* Hero Section */}

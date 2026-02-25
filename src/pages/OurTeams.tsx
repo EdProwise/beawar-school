@@ -8,11 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormattedContent } from "@/components/ui/formatted-content";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 export function OurTeams() {
   const { data: settings } = useSiteSettings();
   const { data: teams, isLoading } = useTeams();
   const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
@@ -35,6 +37,13 @@ export function OurTeams() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Our Team | ${schoolName}`}
+        description={`Meet the dedicated faculty and staff of ${schoolName}. Our experienced team is committed to student excellence.`}
+        keywords={`${schoolName} team, school faculty, teachers, staff`}
+        canonicalPath="/about/our-teams"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "About", path: "/about" }, { name: "Our Team", path: "/about/our-teams" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

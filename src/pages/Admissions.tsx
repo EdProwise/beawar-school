@@ -10,6 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 const iconMap: { [key: string]: any } = {
   FileText,
@@ -89,6 +91,8 @@ const Admissions = () => {
   const { data: steps = [], isLoading: stepsLoading } = useAdmissionSteps();
   const { data: faqs = [], isLoading: faqsLoading } = useAdmissionFaqs();
   const { data: settings = {} } = useAdmissionSettings();
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -105,6 +109,12 @@ const Admissions = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Admissions"
+        description={`Apply for admissions at ${schoolName} in Beawar. Learn about our admission process, eligibility, fees, and important dates. Secure your child's future today.`}
+        keywords={`${schoolName} admissions, school admissions Beawar, apply for admission, admission process, fees structure`}
+          jsonLd={buildBreadcrumbSchema("https://orbitschool.in", [{ name: "Home", path: "/" }, { name: "Admissions", path: "/admissions" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

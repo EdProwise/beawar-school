@@ -134,7 +134,7 @@ const AdminTestimonials = () => {
                       "flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors",
                       item.is_published
                         ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-600"
+                          : "bg-black/10 text-black"
                     )}
                   >
                     {item.is_published ? (
@@ -286,17 +286,17 @@ function TestimonialModal({ item, onClose, onSuccess }: TestimonialModalProps) {
               required
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Author Image URL</label>
-            <input
-              type="url"
-              name="author_image"
-              value={formData.author_image}
-              onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
-              placeholder="https://..."
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Author Image URL</label>
+              <input
+                type="text"
+                name="author_image"
+                value={formData.author_image}
+                onChange={handleChange}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
+                placeholder="https://..."
+              />
+            </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">Rating (1-5)</label>

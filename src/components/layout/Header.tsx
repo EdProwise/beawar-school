@@ -26,8 +26,12 @@ const ensureAbsoluteUrl = (url: string) => {
 const iconMap: Record<string, any> = {
   "About Us": Users,
   "Our Teams": Users,
+  "Orbit Management Teams": Users,
   "Our Branches": Building2,
-  "Career": Award,
+    "Message from Orbit Group": Building2,
+    "Message from Principal": GraduationCap,
+    "Message from Managing Director": Users,
+    "Career": Award,
   "Academic Programs": BookOpen,
   "Curriculum": BookOpen,
   "Teaching Method": Brain,
@@ -47,10 +51,14 @@ const navLinks = [
     name: "About",
     path: "/about-us",
     children: [
-      { name: "About Us", path: "/about-us", desc: "Our story & mission" },
-      { name: "Our Teams", path: "/our-teams", desc: "Meet our educators" },
-      { name: "Our Branches", path: "/our-branches", desc: "Campus locations" },
-      { name: "Career", path: "/career", desc: "Join our team" },
+        { name: "About Us", path: "/about-us", desc: "Our story & mission" },
+          { name: "Message from Orbit Group", path: "/about/message-from-orbit-group", desc: "Leadership message" },
+          { name: "Message from Managing Director", path: "/about/message-from-managing-director", desc: "MD's message" },
+          { name: "Message from Principal", path: "/about/message-from-principal", desc: "Principal's message" },
+          { name: "Our Teams", path: "/our-teams", desc: "Meet our educators" },
+        { name: "Orbit Management Teams", path: "/about/orbit-management-teams", desc: "Our leadership & management" },
+        { name: "Our Branches", path: "/our-branches", desc: "Campus locations" },
+        { name: "Career", path: "/career", desc: "Join our team" },
     ],
   },
   {
@@ -104,7 +112,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
   const user = auth?.user ?? null;
 
   const schoolName = settings?.school_name || "";
-    const tagline = settings?.tagline || "Excellence in Education";
+    const tagline = settings?.tagline || "";
 
     // Dynamically set browser tab favicon and title from settings
       useEffect(() => {
@@ -270,15 +278,15 @@ export function Header({ variant = "solid" }: HeaderProps) {
                         href={ensureAbsoluteUrl(settings.cta_primary_link)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-4 py-1 rounded-full bg-white text-gray-900 text-[11.5px] font-bold hover:bg-white/90 transition-all duration-200"
-                      >
-                        {settings.cta_primary_text}
-                        <ArrowRight className="w-3 h-3" />
-                      </a>
-                    ) : (
-                      <Link
-                        to={settings.cta_primary_link}
-                        className="flex items-center gap-1.5 px-4 py-1 rounded-full bg-white text-gray-900 text-[11.5px] font-bold hover:bg-white/90 transition-all duration-200"
+                          className="flex items-center gap-1.5 px-4 py-1 rounded-full bg-white text-black text-[11.5px] font-bold hover:bg-white/90 transition-all duration-200"
+                        >
+                          {settings.cta_primary_text}
+                          <ArrowRight className="w-3 h-3" />
+                        </a>
+                      ) : (
+                        <Link
+                          to={settings.cta_primary_link}
+                          className="flex items-center gap-1.5 px-4 py-1 rounded-full bg-white text-black text-[11.5px] font-bold hover:bg-white/90 transition-all duration-200"
                       >
                         {settings.cta_primary_text}
                         <ArrowRight className="w-3 h-3" />
@@ -326,7 +334,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
                   <GraduationCap className="w-10 h-10 text-primary" />
                 )}
               <div className="flex flex-col">
-                <span className="font-heading font-bold text-[18px] text-gray-900 leading-tight tracking-tight group-hover:text-primary transition-colors duration-300">
+                  <span className="font-heading font-bold text-[18px] text-black leading-tight tracking-tight group-hover:text-primary transition-colors duration-300">
                   {schoolName}
                 </span>
                 <span className="text-[10.5px] font-semibold text-primary/60 leading-tight tracking-[0.15em] uppercase mt-0.5">
@@ -393,31 +401,31 @@ export function Header({ variant = "solid" }: HeaderProps) {
                                   <div className="flex items-center gap-3 w-full">
                                     <div className={cn(
                                       "w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200",
-                                      isActive
-                                        ? "bg-primary text-white shadow-md shadow-primary/25"
-                                        : "bg-gray-50 text-gray-400 group-hover/item:bg-primary/10 group-hover/item:text-primary"
+                              isActive
+                                ? "bg-primary text-white shadow-md shadow-primary/25"
+                                : "bg-gray-50 text-black group-hover/item:bg-primary/10 group-hover/item:text-primary"
                                     )}>
                                       <Icon className="w-4 h-4" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <div className={cn(
                                         "text-[13px] font-semibold leading-tight transition-colors duration-150",
-                                        isActive ? "text-primary" : "text-gray-700 group-hover/item:text-gray-900"
-                                      )}>
-                                        {child.name}
-                                      </div>
-                                      {(child as any).desc && (
-                                        <div className="text-[11px] text-gray-400 mt-0.5 truncate">
+                                        isActive ? "text-primary" : "text-black group-hover/item:text-black"
+                                        )}>
+                                          {child.name}
+                                        </div>
+                                        {(child as any).desc && (
+                                          <div className="text-[11px] text-black/50 mt-0.5 truncate">
                                           {(child as any).desc}
                                         </div>
                                       )}
                                     </div>
                                     {ext ? (
-                                      <FileDown className="w-3.5 h-3.5 text-gray-300 shrink-0" />
-                                    ) : (
-                                      <ChevronRight className={cn(
-                                        "w-3.5 h-3.5 shrink-0 transition-all duration-200 opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0",
-                                        isActive ? "text-primary" : "text-gray-300"
+                                      <FileDown className="w-3.5 h-3.5 text-black/30 shrink-0" />
+                                      ) : (
+                                        <ChevronRight className={cn(
+                                          "w-3.5 h-3.5 shrink-0 transition-all duration-200 opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0",
+                                          isActive ? "text-primary" : "text-black/30"
                                       )} />
                                     )}
                                   </div>
@@ -480,7 +488,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
               {/* Desktop - no CTA buttons here, they are in the top info bar */}
               <div className="hidden xl:flex items-center gap-2.5 shrink-0">
                 {user && !settings?.phone && (
-                  <Link to="/admin/dashboard" className="flex items-center gap-1.5 text-gray-500 hover:text-primary text-sm font-medium transition-colors">
+                  <Link to="/admin/dashboard" className="flex items-center gap-1.5 text-black hover:text-primary text-sm font-medium transition-colors">
                     <Settings className="w-4 h-4" />
                     Admin
                   </Link>
@@ -492,9 +500,9 @@ export function Header({ variant = "solid" }: HeaderProps) {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={cn(
                 "xl:hidden relative w-11 h-11 flex items-center justify-center rounded-2xl transition-all duration-300",
-                isMobileMenuOpen
-                  ? "bg-primary/10 text-primary"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                  isMobileMenuOpen
+                    ? "bg-primary/10 text-primary"
+                    : "text-black hover:text-black hover:bg-gray-100"
               )}
             >
               <span className={cn(
@@ -537,14 +545,14 @@ export function Header({ variant = "solid" }: HeaderProps) {
               >
                 {/* Contact info on mobile */}
                 <div className="flex items-center gap-3 px-5 py-3 bg-gray-50 border-b border-gray-100 text-[12px] overflow-x-auto">
-                  {settings?.phone && (
-                    <a href={`tel:${settings.phone}`} className="flex items-center gap-1.5 text-gray-500 hover:text-primary shrink-0">
-                      <Phone className="w-3 h-3" />
-                      <span>{settings.phone}</span>
-                    </a>
-                  )}
-                  {settings?.email && (
-                    <a href={`mailto:${settings.email}`} className="flex items-center gap-1.5 text-gray-500 hover:text-primary shrink-0">
+                    {settings?.phone && (
+                      <a href={`tel:${settings.phone}`} className="flex items-center gap-1.5 text-black hover:text-primary shrink-0">
+                        <Phone className="w-3 h-3" />
+                        <span>{settings.phone}</span>
+                      </a>
+                    )}
+                    {settings?.email && (
+                      <a href={`mailto:${settings.email}`} className="flex items-center gap-1.5 text-black hover:text-primary shrink-0">
                       <Mail className="w-3 h-3" />
                       <span>{settings.email}</span>
                     </a>
@@ -571,7 +579,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
                                 "w-full flex items-center justify-between px-4 py-3.5 rounded-2xl text-[15px] font-semibold transition-all duration-200",
                                 isActivePath(link.path, link.children)
                                   ? "text-primary bg-primary/5"
-                                  : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
+                                  : "text-black hover:bg-gray-50 active:bg-gray-100"
                               )}
                             >
                               <span>{link.name}</span>
@@ -604,24 +612,24 @@ export function Header({ variant = "solid" }: HeaderProps) {
                                             "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors",
                                             isActive
                                               ? "bg-primary text-white"
-                                              : "bg-gray-100 text-gray-400"
+                                              : "bg-gray-100 text-black"
                                           )}>
                                             <Icon className="w-3.5 h-3.5" />
                                           </div>
                                           <div className="flex-1 min-w-0">
                                             <div className={cn(
                                               "text-[13.5px] font-semibold",
-                                              isActive ? "text-primary" : "text-gray-600"
-                                            )}>
-                                              {child.name}
-                                            </div>
-                                            {(child as any).desc && (
-                                              <div className="text-[11px] text-gray-400 truncate">
+                                              isActive ? "text-primary" : "text-black"
+                                              )}>
+                                                {child.name}
+                                              </div>
+                                              {(child as any).desc && (
+                                                <div className="text-[11px] text-black/50 truncate">
                                                 {(child as any).desc}
                                               </div>
                                             )}
                                           </div>
-                                          {ext && <FileDown className="w-3.5 h-3.5 text-gray-300 shrink-0" />}
+                                          {ext && <FileDown className="w-3.5 h-3.5 text-black/40 shrink-0" />}
                                         </div>
                                       );
 
@@ -662,8 +670,8 @@ export function Header({ variant = "solid" }: HeaderProps) {
                             className={cn(
                               "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-[15px] font-semibold transition-all duration-200",
                               isActivePath(link.path)
-                                ? "text-primary bg-primary/5"
-                                : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
+                                  ? "text-primary bg-primary/5"
+                                  : "text-black hover:bg-gray-50 active:bg-gray-100"
                             )}
                           >
                             {isActivePath(link.path) && (
@@ -721,7 +729,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
                     {user && (
                       <Link
                         to="/admin/dashboard"
-                        className="flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl text-[14px] font-semibold text-gray-500 hover:text-primary hover:bg-primary/5 transition-all duration-200 border border-dashed border-gray-200"
+                          className="flex items-center justify-center gap-2 px-4 py-3.5 rounded-2xl text-[14px] font-semibold text-black hover:text-primary hover:bg-primary/5 transition-all duration-200 border border-dashed border-gray-200"
                       >
                         <Settings className="w-4 h-4" />
                         Admin Panel

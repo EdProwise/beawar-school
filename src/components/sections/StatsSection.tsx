@@ -100,7 +100,7 @@ export function StatsSection() {
               <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium tracking-wide uppercase mb-3 border border-primary/20">
                 Our Achievements
               </span>
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-gray-800">
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-black">
               Numbers That Speak for Themselves
             </h2>
           </div>

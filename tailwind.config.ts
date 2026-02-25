@@ -25,7 +25,7 @@ export default {
 		extend: {
 			fontFamily: {
 				heading: ['Poppins', 'sans-serif'],
-				body: ['Inter', 'sans-serif'],
+				body: ['Roboto', 'sans-serif'],
 			},
 			fontSize: {
 				'display-lg': ['3.5rem', { lineHeight: '1.15', fontWeight: '700' }],

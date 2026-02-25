@@ -122,10 +122,10 @@ export function FacilitiesSection() {
 
                   {/* Content */}
                   <div className="p-6">
-                    <h3 className="font-heading text-xl font-bold text-gray-900 mb-2 group-hover:bg-gradient-to-r group-hover:from-gray-900 group-hover:to-gray-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
-                      {facility.title}
-                    </h3>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                      <h3 className="font-heading text-xl font-bold text-black mb-2 group-hover:bg-gradient-to-r group-hover:from-black group-hover:to-black/60 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
+                        {facility.title}
+                      </h3>
+                      <p className="text-black text-sm leading-relaxed mb-4">
                       {facility.description}
                     </p>
                     <div className={`flex items-center gap-2 text-sm font-semibold ${theme.text} opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0`}>

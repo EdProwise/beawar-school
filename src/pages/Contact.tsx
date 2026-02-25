@@ -5,6 +5,7 @@ import { MapPin, Phone, Mail, Clock, Send, Facebook, Linkedin, Instagram, Youtub
 import { Button } from "@/components/ui/button";
 import { useSubmitAdmissionInquiry, useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
 import { motion } from "framer-motion";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 const Contact = () => {
   const { data: settings } = useSiteSettings();
@@ -78,6 +79,12 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50">
+      <SEOHead
+        title="Contact Us"
+        description={`Get in touch with ${schoolName}. Visit us, call, or send an enquiry. We're here to answer your questions about admissions and school life.`}
+        keywords={`contact ${schoolName}, school enquiry Beawar, admissions contact, school address phone`}
+          jsonLd={buildBreadcrumbSchema("https://orbitschool.in", [{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])}
+      />
       <Header variant="light" />
       <main className="overflow-hidden">
         {/* Premium Hero Section with Animated Background */}

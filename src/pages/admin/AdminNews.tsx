@@ -37,7 +37,13 @@ const AdminNews = () => {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as NewsEvent[];
+      
+      // Sort by event_date (desc), then created_at (desc)
+      return (data as NewsEvent[]).sort((a, b) => {
+        const dateA = a.event_date ? new Date(a.event_date).getTime() : new Date(a.created_at).getTime();
+        const dateB = b.event_date ? new Date(b.event_date).getTime() : new Date(b.created_at).getTime();
+        return dateB - dateA;
+      });
     },
   });
 
@@ -141,9 +147,9 @@ const AdminNews = () => {
                           {item.category}
                         </span>
                       </td>
-                      <td className="p-4 text-muted-foreground text-sm">
-                        {formatDate(item.created_at)}
-                      </td>
+                        <td className="p-4 text-muted-foreground text-sm">
+                          {formatDate(item.event_date || item.created_at)}
+                        </td>
                       <td className="p-4">
                         <button
                           onClick={() => togglePublishMutation.mutate({ id: item.id, is_published: !item.is_published })}
@@ -151,7 +157,7 @@ const AdminNews = () => {
                             "flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors",
                             item.is_published
                               ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-600"
+                              : "bg-black/10 text-black"
                           )}
                         >
                           {item.is_published ? (
@@ -251,11 +257,27 @@ function NewsModal({ item, onClose, onSuccess }: NewsModalProps) {
     setIsLoading(true);
 
     try {
+      // Strip HTML tags to get plain text for excerpt generation
+      const stripHtml = (html: string) => {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
+      };
+
+      // Auto-generate a plain-text excerpt from content or title if not provided
+      const rawExcerpt = stripHtml(formData.excerpt).trim();
+      const rawContent = stripHtml(formData.content).trim();
+      const autoExcerpt = rawExcerpt
+        ? formData.excerpt
+        : rawContent
+        ? `<p>${rawContent.substring(0, 200)}${rawContent.length > 200 ? '...' : ''}</p>`
+        : `<p>${formData.title}</p>`;
+
       const payload = {
         title: formData.title,
         slug: formData.slug,
-        excerpt: formData.excerpt || null,
-        content: formData.content || null,
+        excerpt: autoExcerpt,
+        content: formData.content || autoExcerpt,
         category: formData.category,
         image_url: formData.image_url || null,
         event_date: formData.event_date || null,
@@ -345,17 +367,17 @@ function NewsModal({ item, onClose, onSuccess }: NewsModalProps) {
                 <option value="notice">Notice</option>
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">Image URL</label>
-              <input
-                type="url"
-                name="image_url"
-                value={formData.image_url}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
-                placeholder="/sports.png or https://..."
-              />
-            </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Image URL</label>
+                <input
+                  type="text"
+                  name="image_url"
+                  value={formData.image_url}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none"
+                  placeholder="/sports.png or https://..."
+                />
+              </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>

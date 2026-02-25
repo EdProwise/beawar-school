@@ -8,11 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 export function OurBranches() {
   const { data: settings } = useSiteSettings();
   const { data: branches, isLoading } = useBranches();
   const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCity, setSelectedCity] = useState("all");
@@ -52,6 +54,13 @@ export function OurBranches() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Our Branches | ${schoolName}`}
+        description={`Find all branches of ${schoolName} across cities. Locate the nearest school branch near you.`}
+        keywords={`${schoolName} branches, school locations, Beawar school campus`}
+        canonicalPath="/about/branches"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "About", path: "/about" }, { name: "Our Branches", path: "/about/branches" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

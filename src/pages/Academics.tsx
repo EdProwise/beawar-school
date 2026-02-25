@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAcademicPrograms, useSiteSettings, useAcademicExcellence } from "@/hooks/use-school-data";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, React.ElementType> = {
   Baby, BookOpen, GraduationCap, Award, Lightbulb, Users, Palette, Book, Microscope, Calculator, Clock, Target
@@ -118,6 +119,7 @@ const defaultPrograms = [
     const { data: excellenceHighlights = [], isLoading: isLoadingExcellence } = useAcademicExcellence();
 
     const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
     const displayPrograms = programs.length > 0 ? programs : defaultPrograms;
     const displayExcellence = excellenceHighlights.length > 0 ? excellenceHighlights : features.map((f, i) => ({
       id: `feature-${i}`,
@@ -129,6 +131,12 @@ const defaultPrograms = [
     return (
 
     <div className="min-h-screen bg-white">
+      <SEOHead
+        title="Academics"
+        description={`Discover the academic programs at ${schoolName}. From Pre-Primary to Class 12, we offer a rigorous curriculum designed to inspire excellence in Beawar, Rajasthan.`}
+        keywords={`${schoolName} academics, academic programs Beawar, CBSE curriculum, school programs Rajasthan`}
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Academics", path: "/academics" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

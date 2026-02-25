@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useFacilities, useSiteSettings } from "@/hooks/use-school-data";
 import { motion, AnimatePresence } from "framer-motion";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, React.ElementType> = {
   Monitor, BookOpen, FlaskConical, Dumbbell, Bus, Wifi, Building, Laptop, Music, Palette, Utensils, Shield
@@ -49,8 +50,17 @@ const Facilities = () => {
 
   const campusVideoEmbedUrl = settings?.campus_video_url ? getYouTubeEmbedUrl(settings.campus_video_url) : null;
 
+  const siteUrl = settings?.site_url || "";
+
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Facilities | ${schoolName}`}
+        description={`Explore world-class facilities at ${schoolName} — modern labs, sports complex, smart classrooms, library, and more.`}
+        keywords={`${schoolName} facilities, school labs, sports complex, smart classrooms, library`}
+        canonicalPath="/facilities"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Facilities", path: "/facilities" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

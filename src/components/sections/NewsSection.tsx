@@ -145,14 +145,14 @@ export function NewsSection() {
 
                       {/* Content */}
                       <div className="p-5 flex-1 flex flex-col">
-                        <div className="flex items-center gap-2 text-gray-400 text-xs font-medium mb-3">
+                          <div className="flex items-center gap-2 text-black text-xs font-medium mb-3">
                           <Calendar className="w-3.5 h-3.5" />
                           {formatDate(item.created_at)}
                         </div>
-                        <h3 className="font-heading text-base font-bold text-gray-900 mb-2 group-hover:bg-gradient-to-r group-hover:from-gray-900 group-hover:to-gray-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
+                        <h3 className="font-heading text-base font-bold text-black mb-2 group-hover:bg-gradient-to-r group-hover:from-black group-hover:to-gray-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
                           {item.title}
                         </h3>
-                        <p className="text-gray-500 text-sm leading-relaxed mb-4 flex-1 line-clamp-2">
+                        <p className="text-black text-sm leading-relaxed mb-4 flex-1 line-clamp-2">
                           {stripHtml(item.excerpt)}
                         </p>
                         <Link
@@ -160,7 +160,7 @@ export function NewsSection() {
                           className={`inline-flex items-center gap-1.5 text-sm font-semibold bg-gradient-to-r ${accent} bg-clip-text text-transparent mt-auto group/link`}
                         >
                           Read More 
-                          <ArrowRight className="w-4 h-4 text-gray-400 transition-transform group-hover/link:translate-x-1" />
+                          <ArrowRight className="w-4 h-4 text-black transition-transform group-hover/link:translate-x-1" />
                         </Link>
                       </div>
                     </article>
@@ -168,8 +168,8 @@ export function NewsSection() {
                 })
               ) : (
                 <div className="col-span-full text-center py-16">
-                  <Newspaper className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                  <p className="text-gray-400 text-lg">No news articles available.</p>
+                    <Newspaper className="w-16 h-16 text-black/20 mx-auto mb-4" />
+                    <p className="text-black text-lg">No news articles available.</p>
                 </div>
               )}
             </div>
@@ -235,11 +235,11 @@ export function NewsSection() {
                         <div className="flex-1 min-w-0">
                           <Link 
                             to={`/news/${event.slug}`}
-                            className="block font-semibold text-gray-900 hover:text-violet-600 transition-colors line-clamp-2 text-sm mb-1"
+                              className="block font-semibold text-black hover:text-violet-600 transition-colors line-clamp-2 text-sm mb-1"
                           >
                             {event.title}
                           </Link>
-                          <div className="flex flex-col gap-0.5 text-xs text-gray-400">
+                          <div className="flex flex-col gap-0.5 text-xs text-black">
                             {event.event_time && (
                               <div className="flex items-center gap-1">
                                 <Clock className="w-3 h-3" />
@@ -262,7 +262,7 @@ export function NewsSection() {
                     <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mx-auto mb-4">
                       <Calendar className="w-8 h-8 text-violet-400" />
                     </div>
-                    <p className="text-gray-400 text-sm">No upcoming events scheduled.</p>
+                      <p className="text-black text-sm">No upcoming events scheduled.</p>
                   </div>
                 )}
               </div>

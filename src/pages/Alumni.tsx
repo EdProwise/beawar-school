@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 interface AlumniProfile {
   id: string;
@@ -32,6 +34,9 @@ export default function Alumni() {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
+  const siteUrl = siteSettings?.site_url || "";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -123,6 +128,13 @@ export default function Alumni() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <SEOHead
+        title={`Alumni | ${schoolName}`}
+        description={`Connect with the ${schoolName} alumni community. Celebrate achievements and reconnect with fellow graduates.`}
+        keywords={`alumni, ${schoolName} alumni, graduates, school alumni network`}
+        canonicalPath="/alumni"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Alumni", path: "/alumni" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

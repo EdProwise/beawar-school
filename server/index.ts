@@ -23,6 +23,31 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(uploadsDir));
 
+// Collections whose data changes infrequently — safe to cache for 5 minutes in the browser
+const CACHEABLE_COLLECTIONS = new Set([
+  'facilities', 'statistics', 'academic_programs', 'highlight_cards',
+  'core_values', 'milestones', 'extracurricular_categories', 'extracurricular_highlights',
+  'academic_excellence', 'scroll_words', 'about_content',
+  'admission_steps', 'admission_faqs', 'admission_settings',
+  'teaching_methods', 'teaching_method_content', 'beyond_academics',
+  'hero_slides', 'branches', 'our_teams', 'orbit_management_teams',
+  // NOTE: site_settings intentionally excluded — it is admin-editable and must always be fresh
+]);
+
+// Middleware: attach cache headers for slow-changing public GET routes
+// Applied inline in GET /api/:table handler via setCacheHeaders helper
+const setCacheHeaders = (res: express.Response, table: string, method: string) => {
+  if (method === 'GET') {
+    if (CACHEABLE_COLLECTIONS.has(table)) {
+      res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=60');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=30');
+    }
+  } else {
+    res.setHeader('Cache-Control', 'no-store');
+  }
+};
+
 // Configure Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -71,11 +96,10 @@ app.post('/api/storage/upload', (req, res, next) => {
         return res.status(400).json({ error: 'No file uploaded' });
       }
       
-      // Calculate relative path for URL
-      const relativePath = path.relative(path.join(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/');
-      const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${relativePath}`;
-      
-      res.json({ data: { path: relativePath, url: fileUrl } });
+        // Calculate relative path for URL — always store as relative path, never absolute
+        const relativePath = path.relative(path.join(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/');
+        
+        res.json({ data: { path: relativePath, url: `/uploads/${relativePath}` } });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -131,6 +155,23 @@ app.post('/api/visits/track', async (req, res) => {
       { upsert: true, new: true }
     );
     
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Alias — both /api/visits/track and /api/visits/record point to the same handler
+app.post('/api/visits/record', async (req, res) => {
+  try {
+    const { page } = req.body;
+    const Visit = getModel('visits');
+    const today = new Date().toISOString().split('T')[0];
+    await Visit.findOneAndUpdate(
+      { date: today, page: page || '/' },
+      { $inc: { count: 1 } },
+      { upsert: true, new: true }
+    );
     res.json({ success: true });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -251,6 +292,7 @@ app.get('/api/:table', async (req, res) => {
       const { table } = req.params;
       const { select, sort, order, limit, count, head, ...filters } = req.query;
       
+      setCacheHeaders(res, table, 'GET');
       const Model = getModel(table);
       
       // Build filter object
@@ -335,7 +377,7 @@ app.patch('/api/:table/:id', async (req, res) => {
     // Support finding by custom 'id' field or MongoDB '_id'
     const updatedItem = await Model.findOneAndUpdate(
       { $or: [{ id: id }, { _id: mongoose.isValidObjectId(id) ? id : undefined }] },
-      req.body,
+      { $set: req.body },
       { new: true }
     );
     
@@ -406,6 +448,30 @@ app.delete('/api/:table/:id', async (req, res) => {
   }
 });
 
+// Batch reorder: swap sort_order of two documents atomically
+app.post('/api/:table/reorder', async (req, res) => {
+  try {
+    const { table } = req.params;
+    const { swaps } = req.body; // [{ id, sort_order }, { id, sort_order }]
+    if (!Array.isArray(swaps) || swaps.length === 0) {
+      return res.status(400).json({ error: 'swaps array required' });
+    }
+    const Model = getModel(table);
+    await Promise.all(
+      swaps.map(({ id, sort_order }: { id: string; sort_order: number }) =>
+        Model.findOneAndUpdate(
+          { $or: [{ id }, { _id: mongoose.isValidObjectId(id) ? id : undefined }] },
+          { $set: { sort_order } },
+          { new: true }
+        )
+      )
+    );
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/:table/upsert', async (req, res) => {
   try {
     const { table } = req.params;
@@ -448,10 +514,10 @@ app.post('/api/:table/upsert', async (req, res) => {
 
       
       const result = await Model.findOneAndUpdate(
-        filter,
-        itemData,
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-      );
+          filter,
+          { $set: itemData },
+          { upsert: true, new: true, setDefaultsOnInsert: true }
+        );
       results.push(result);
     }
     
@@ -463,47 +529,180 @@ app.post('/api/:table/upsert', async (req, res) => {
 });
 
 // ===============================
-// Dynamic Sitemap
+// One-time migration: fix null excerpt/content on news_events
+// POST /api/admin/migrate-news-content
 // ===============================
-const sitemapRoutes = [
-  { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/about-us', changefreq: 'monthly', priority: '0.8' },
-  { path: '/our-teams', changefreq: 'monthly', priority: '0.7' },
-  { path: '/our-branches', changefreq: 'monthly', priority: '0.7' },
-  { path: '/academics', changefreq: 'monthly', priority: '0.8' },
-  { path: '/curriculum', changefreq: 'monthly', priority: '0.7' },
-  { path: '/teaching-method', changefreq: 'monthly', priority: '0.7' },
-  { path: '/results', changefreq: 'monthly', priority: '0.7' },
-  { path: '/alumni', changefreq: 'monthly', priority: '0.6' },
-  { path: '/beyond-academics', changefreq: 'monthly', priority: '0.7' },
-  { path: '/beyond-academics/entrepreneur-skills', changefreq: 'monthly', priority: '0.6' },
-  { path: '/beyond-academics/residential-school', changefreq: 'monthly', priority: '0.6' },
-  { path: '/extracurricular', changefreq: 'monthly', priority: '0.7' },
-  { path: '/admissions/process', changefreq: 'monthly', priority: '0.9' },
-  { path: '/admissions/fees-structure', changefreq: 'monthly', priority: '0.8' },
-  { path: '/infrastructure', changefreq: 'monthly', priority: '0.7' },
-  { path: '/gallery', changefreq: 'weekly', priority: '0.7' },
-  { path: '/news', changefreq: 'weekly', priority: '0.8' },
-  { path: '/contact', changefreq: 'monthly', priority: '0.9' },
-  { path: '/students', changefreq: 'monthly', priority: '0.5' },
-  { path: '/teachers', changefreq: 'monthly', priority: '0.5' },
-  { path: '/parents', changefreq: 'monthly', priority: '0.5' },
-  { path: '/privacy', changefreq: 'yearly', priority: '0.3' },
-  { path: '/terms', changefreq: 'yearly', priority: '0.3' },
+app.post('/api/admin/migrate-news-content', async (req, res) => {
+  try {
+    const News = getModel('news_events');
+    const docs = await News.find({
+      $or: [
+        { excerpt: null }, { excerpt: '' }, { excerpt: { $exists: false } },
+        { content: null }, { content: '' }, { content: { $exists: false } },
+      ]
+    }).lean() as any[];
+
+    let fixed = 0;
+    for (const doc of docs) {
+      const updates: any = {};
+      const fallback = `<p>${doc.title || 'School News'}</p>`;
+      if (!doc.excerpt) updates.excerpt = fallback;
+      if (!doc.content) updates.content = doc.excerpt || updates.excerpt || fallback;
+      if (Object.keys(updates).length > 0) {
+        await News.findByIdAndUpdate(doc._id, { $set: updates });
+        fixed++;
+      }
+    }
+    res.json({ success: true, documentsFixed: fixed });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/migrate-image-urls', async (req, res) => {
+  try {
+    const imageFields: Record<string, string[]> = {
+      news_events:              ['image_url'],
+      gallery_items:            ['image_url'],
+      hero_slides:              ['image_url'],
+      facilities:               ['image_url'],
+      academic_programs:        ['image_url'],
+      extracurricular_categories: ['image_url', 'video_url'],
+      site_settings:            ['logo_url', 'favicon_url'],
+      about_content:            ['main_image_url'],
+      orbit_group_message:      ['sender_image_url', 'seal_logo_url', 'edprowise_logo_url'],
+      principal_message:        ['sender_image_url'],
+      managing_director_message: ['sender_image_url'],
+      teaching_methods:         ['image_url'],
+      teaching_method_content:  ['center_image'],
+      beyond_academics:         ['image_url'],
+      testimonials:             ['author_image'],
+      alumni:                   ['image_url'],
+      branches:                 [],
+      our_teams:                [],
+      orbit_management_teams:   [],
+    };
+
+    const stripOrigin = (url: string): string => {
+      if (!url) return url;
+      const idx = url.indexOf('/uploads/');
+      if (idx > 0) return url.slice(idx);
+      if (url.startsWith('uploads/')) return '/' + url;
+      return url;
+    };
+
+    let totalFixed = 0;
+
+    for (const [collection, fields] of Object.entries(imageFields)) {
+      if (fields.length === 0) continue;
+      const Model = getModel(collection);
+      const docs = await Model.find({}).lean() as any[];
+
+      for (const doc of docs) {
+        const updates: any = {};
+        for (const field of fields) {
+          const val = doc[field];
+          if (typeof val === 'string' && val.includes('localhost')) {
+            updates[field] = stripOrigin(val);
+          } else if (Array.isArray(val)) {
+            const fixed = val.map((v: string) => (typeof v === 'string' && v.includes('localhost') ? stripOrigin(v) : v));
+            if (fixed.some((v: string, i: number) => v !== val[i])) updates[field] = fixed;
+          }
+        }
+        if (Object.keys(updates).length > 0) {
+          await Model.findByIdAndUpdate(doc._id, { $set: updates });
+          totalFixed++;
+        }
+      }
+    }
+
+    res.json({ success: true, documentsFixed: totalFixed });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+// Groups map each static route to a DB collection whose updatedAt reflects when that content last changed.
+// 'site_settings' is used as the fallback for general/branding pages.
+const staticSitemapRoutes: { path: string; changefreq: string; priority: string; collection: string }[] = [
+  { path: '/',                                       changefreq: 'weekly',  priority: '1.0', collection: 'site_settings' },
+  { path: '/about-us',                               changefreq: 'monthly', priority: '0.8', collection: 'site_settings' },
+  { path: '/about/message-from-orbit-group',         changefreq: 'monthly', priority: '0.7', collection: 'messages' },
+  { path: '/about/message-from-principal',           changefreq: 'monthly', priority: '0.7', collection: 'messages' },
+  { path: '/about/message-from-managing-director',   changefreq: 'monthly', priority: '0.7', collection: 'messages' },
+  { path: '/about/orbit-management-teams',           changefreq: 'monthly', priority: '0.7', collection: 'team_members' },
+  { path: '/our-teams',                              changefreq: 'monthly', priority: '0.7', collection: 'team_members' },
+  { path: '/our-branches',                           changefreq: 'monthly', priority: '0.7', collection: 'branches' },
+  { path: '/academics',                              changefreq: 'monthly', priority: '0.8', collection: 'site_settings' },
+  { path: '/curriculum',                             changefreq: 'monthly', priority: '0.7', collection: 'site_settings' },
+  { path: '/teaching-method',                        changefreq: 'monthly', priority: '0.7', collection: 'site_settings' },
+  { path: '/results',                                changefreq: 'monthly', priority: '0.7', collection: 'results' },
+  { path: '/alumni',                                 changefreq: 'monthly', priority: '0.6', collection: 'alumni' },
+  { path: '/beyond-academics',                       changefreq: 'monthly', priority: '0.7', collection: 'site_settings' },
+  { path: '/beyond-academics/entrepreneur-skills',   changefreq: 'monthly', priority: '0.6', collection: 'site_settings' },
+  { path: '/beyond-academics/residential-school',    changefreq: 'monthly', priority: '0.6', collection: 'site_settings' },
+  { path: '/extracurricular',                        changefreq: 'monthly', priority: '0.7', collection: 'extracurricular' },
+  { path: '/admissions/process',                     changefreq: 'monthly', priority: '0.9', collection: 'admissions' },
+  { path: '/admissions/fees-structure',              changefreq: 'monthly', priority: '0.8', collection: 'fees' },
+  { path: '/infrastructure',                         changefreq: 'monthly', priority: '0.7', collection: 'infrastructure' },
+  { path: '/gallery',                                changefreq: 'weekly',  priority: '0.7', collection: 'gallery' },
+  { path: '/news',                                   changefreq: 'weekly',  priority: '0.8', collection: 'news_events' },
+  { path: '/career',                                 changefreq: 'weekly',  priority: '0.7', collection: 'careers' },
+  { path: '/contact',                                changefreq: 'monthly', priority: '0.9', collection: 'site_settings' },
+  { path: '/students',                               changefreq: 'monthly', priority: '0.5', collection: 'site_settings' },
+  { path: '/teachers',                               changefreq: 'monthly', priority: '0.5', collection: 'site_settings' },
+  { path: '/parents',                                changefreq: 'monthly', priority: '0.5', collection: 'site_settings' },
+  { path: '/privacy',                                changefreq: 'yearly',  priority: '0.3', collection: 'site_settings' },
+  { path: '/terms',                                  changefreq: 'yearly',  priority: '0.3', collection: 'site_settings' },
 ];
 
-app.get('/sitemap.xml', (req, res) => {
+// Build a URL entry string
+const urlEntry = (loc: string, lastmod: string, changefreq: string, priority: string) =>
+  `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+
+app.get('/sitemap.xml', async (req, res) => {
   const protocol = req.headers['x-forwarded-proto'] || req.protocol;
   const host = req.headers['x-forwarded-host'] || req.get('host') || '';
   const baseUrl = `${protocol}://${host}`;
+  const today = new Date().toISOString().split('T')[0];
 
-  const urls = sitemapRoutes.map(({ path: p, changefreq, priority }) => `  <url>
-    <loc>${baseUrl}${p}</loc>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`).join('\n');
+  // Pre-fetch latest updatedAt per collection used by static routes
+  const collectionNames = [...new Set(staticSitemapRoutes.map(r => r.collection))];
+  const collectionLastmod: Record<string, string> = {};
+  await Promise.all(
+    collectionNames.map(async (col) => {
+      try {
+        const Model = getModel(col);
+        const latest = await Model.findOne({}, 'updatedAt').sort({ updatedAt: -1 }).lean() as any;
+        collectionLastmod[col] = latest?.updatedAt
+          ? new Date(latest.updatedAt).toISOString().split('T')[0]
+          : today;
+      } catch (_) {
+        collectionLastmod[col] = today;
+      }
+    })
+  );
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+  // Build static URL entries
+  const staticUrls = staticSitemapRoutes.map(({ path: p, changefreq, priority, collection }) =>
+    urlEntry(`${baseUrl}${p}`, collectionLastmod[collection] || today, changefreq, priority)
+  );
+
+  // Fetch published news articles dynamically
+  const newsUrls: string[] = [];
+  try {
+    const News = getModel('news_events');
+    const articles = await News.find({ is_published: true }, 'slug updatedAt').sort({ updatedAt: -1 }).lean() as any[];
+    for (const a of articles) {
+      if (!a.slug) continue;
+      const lastmod = a.updatedAt ? new Date(a.updatedAt).toISOString().split('T')[0] : today;
+      newsUrls.push(urlEntry(`${baseUrl}/news/${a.slug}`, lastmod, 'monthly', '0.6'));
+    }
+  } catch (_) {}
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticUrls, ...newsUrls].join('\n')}\n</urlset>`;
 
   res.setHeader('Content-Type', 'application/xml');
   res.send(xml);
@@ -514,27 +713,66 @@ app.get('/sitemap.xml', (req, res) => {
 // ===============================
 const distPath = path.join(process.cwd(), 'dist');
 
-if (fs.existsSync(distPath)) {
-  // 1️⃣ Serve static assets FIRST
-  app.use('/assets', express.static(path.join(distPath, 'assets')));
+  if (fs.existsSync(distPath)) {
+    // 1️⃣ Serve static assets FIRST
+    app.use('/assets', express.static(path.join(distPath, 'assets')));
 
-  // 2️⃣ Serve other static files (favicon, etc.)
-  app.use(express.static(distPath));
+    // 2️⃣ Serve other static files (favicon, etc.)
+    app.use(express.static(distPath));
 
-  // 3️⃣ SPA fallback LAST (do NOT catch assets)
-  app.use((req, res) => {
-    const indexPath = path.join(distPath, 'index.html');
+    // 3️⃣ SPA fallback with dynamic OG meta injection
+    app.use(async (req, res) => {
+      const indexPath = path.join(distPath, 'index.html');
+      if (!fs.existsSync(indexPath)) return res.status(404).send('Not found');
 
-    if (!fs.existsSync(indexPath)) {
-      return res.status(404).send('Not found');
-    }
+      let html = fs.readFileSync(indexPath, 'utf8');
 
-      const html = fs.readFileSync(indexPath, 'utf8');
+      try {
+        const SiteSettings = getModel('site_settings');
+        const settings = await SiteSettings.findOne({}).lean() as any;
+        if (settings) {
+          const name    = settings.school_name  || 'School';
+          const tagline = settings.tagline       || '';
+          const logo    = settings.logo_url      || '';
+          const proto   = req.headers['x-forwarded-proto'] || req.protocol;
+          const host    = req.headers['x-forwarded-host']  || req.get('host') || '';
+          const pageUrl = `${proto}://${host}${req.originalUrl}`;
+
+          const ogTags = [
+            `<meta property="og:title" content="${name}${tagline ? ' – ' + tagline : ''}" />`,
+            `<meta property="og:description" content="${tagline || name + ' – Excellence in Education'}" />`,
+            `<meta property="og:image" content="${logo}" />`,
+            `<meta property="og:image:width" content="1200" />`,
+            `<meta property="og:image:height" content="630" />`,
+            `<meta property="og:image:alt" content="${name} Logo" />`,
+            `<meta property="og:url" content="${pageUrl}" />`,
+            `<meta property="og:type" content="website" />`,
+            `<meta property="og:site_name" content="${name}" />`,
+            `<meta name="twitter:card" content="summary_large_image" />`,
+            `<meta name="twitter:title" content="${name}${tagline ? ' – ' + tagline : ''}" />`,
+            `<meta name="twitter:description" content="${tagline || name + ' – Excellence in Education'}" />`,
+            `<meta name="twitter:image" content="${logo}" />`,
+            `<title>${name}${tagline ? ' – ' + tagline : ''}</title>`,
+            `<meta name="description" content="${tagline || name + ' – Excellence in Education'}" />`,
+          ].join('\n    ');
+
+          // Remove existing static og/twitter/title/description tags and inject fresh ones
+          html = html
+            .replace(/<title>[^<]*<\/title>/gi, '')
+            .replace(/<meta\s+name="description"[^>]*>/gi, '')
+            .replace(/<meta\s+property="og:[^"]*"[^>]*>/gi, '')
+            .replace(/<meta\s+name="twitter:[^"]*"[^>]*>/gi, '')
+            .replace(/<meta\s+name="author"[^>]*>/gi, '')
+            .replace('</head>', `  ${ogTags}\n</head>`);
+        }
+      } catch (e) {
+        // If DB fetch fails, serve html as-is
+      }
 
       res.setHeader('Content-Type', 'text/html');
       res.send(html);
-  });
-}
+    });
+  }
 
 
 // Error handling middleware

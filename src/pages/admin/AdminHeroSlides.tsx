@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Pencil, Trash2, GripVertical } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, ChevronUp, ChevronDown } from "lucide-react";
 import { FileUpload } from "@/components/admin/FileUpload";
 
 interface HeroSlide {
@@ -104,6 +104,38 @@ export default function AdminHeroSlides() {
       queryClient.invalidateQueries({ queryKey: ["hero-slides"] });
     },
   });
+
+  const reorderMutation = useMutation({
+    mutationFn: async (swaps: { id: string; sort_order: number }[]) => {
+      const res = await fetch(`/api/hero_slides/reorder`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ swaps }),
+      });
+      if (!res.ok) throw new Error("Reorder failed");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-hero-slides"] });
+      queryClient.invalidateQueries({ queryKey: ["hero-slides"] });
+    },
+    onError: () => {
+      toast({ title: "Error reordering slides", variant: "destructive" });
+    },
+  });
+
+  const moveSlide = (index: number, direction: "up" | "down") => {
+    const swapIndex = direction === "up" ? index - 1 : index + 1;
+    if (swapIndex < 0 || swapIndex >= slides.length) return;
+    const current = slides[index];
+    const target = slides[swapIndex];
+    // Assign sequential sort_order if they're equal to ensure a real swap
+    const orderA = current.sort_order !== target.sort_order ? current.sort_order : index;
+    const orderB = current.sort_order !== target.sort_order ? target.sort_order : swapIndex;
+    reorderMutation.mutate([
+      { id: current.id, sort_order: orderB },
+      { id: target.id, sort_order: orderA },
+    ]);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -260,9 +292,28 @@ export default function AdminHeroSlides() {
       </div>
 
       <div className="space-y-4">
-        {slides.map((slide) => (
-          <div key={slide.id} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
-            <GripVertical className="w-5 h-5 text-muted-foreground cursor-grab" />
+        {slides.map((slide, index) => (
+        <div key={slide.id} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  disabled={index === 0 || reorderMutation.isPending}
+                  onClick={() => moveSlide(index, "up")}
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  disabled={index === slides.length - 1 || reorderMutation.isPending}
+                  onClick={() => moveSlide(index, "down")}
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </div>
             <div className="w-32 h-20 rounded-lg overflow-hidden bg-secondary shrink-0">
               <img src={slide.image_url} alt={slide.title} className="w-full h-full object-cover" />
             </div>

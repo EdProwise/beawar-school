@@ -4,8 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { LogIn, CheckCircle, Loader2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 const Teachers = () => {
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
+  const siteUrl = siteSettings?.site_url || "";
+
   const { data: portal, isLoading } = useQuery({
     queryKey: ["portal-content", "teachers"],
     queryFn: async () => {
@@ -30,6 +36,13 @@ const Teachers = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Teacher Portal | ${schoolName}`}
+        description={`Access the ${schoolName} teacher portal to manage classes, attendance, assignments, and communicate with parents.`}
+        keywords={`teacher portal, ${schoolName} teachers, classroom management, staff portal`}
+        canonicalPath="/teachers"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Teacher Portal", path: "/teachers" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

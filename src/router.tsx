@@ -2,6 +2,7 @@ import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
 import OurBranches from "./pages/OurBranches";
 import OurTeams from "./pages/OurTeams";
+import OrbitManagementTeams from "./pages/OrbitManagementTeams";
 import Academics from "./pages/Academics";
 import Extracurricular from "./pages/Extracurricular";
 import AdmissionProcess from "./pages/AdmissionProcess";
@@ -24,7 +25,11 @@ import BeyondAcademics from "./pages/BeyondAcademics";
 import EntrepreneurSkills from "./pages/EntrepreneurSkills";
 import ResidentialSchool from "./pages/ResidentialSchool";
 import Career from "./pages/Career";
+import MessageFromOrbitGroup from "./pages/MessageFromOrbitGroup";
+import MessageFromPrincipal from "./pages/MessageFromPrincipal";
+import MessageFromManagingDirector from "./pages/MessageFromManagingDirector";
 import NotFound from "./pages/NotFound";
+import { RootLayout } from "./components/RootLayout";
 
 // Admin Pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -57,13 +62,21 @@ import AdminResults from "./pages/admin/AdminResults";
 import AdminAlumni from "./pages/admin/AdminAlumni";
 import AdminBeyondAcademics from "./pages/admin/AdminBeyondAcademics";
 import AdminTeams from "./pages/admin/AdminTeams";
+import AdminOrbitManagementTeams from "./pages/admin/AdminOrbitManagementTeams";
 import AdminCareer from "./pages/admin/AdminCareer";
+import AdminOrbitGroupMessage from "./pages/admin/AdminOrbitGroupMessage";
+import AdminPrincipalMessage from "./pages/admin/AdminPrincipalMessage";
+import AdminManagingDirectorMessage from "./pages/admin/AdminManagingDirectorMessage";
 import AdminWhatsAppButton from "./pages/admin/AdminWhatsAppButton";
 import AdminWebsiteVisits from "./pages/admin/AdminWebsiteVisits";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
+import AdminPopup from "./pages/admin/AdminPopup";
 
 export const routers = [
+  {
+    element: <RootLayout />,
+    children: [
     {
       path: "/",
       name: 'home',
@@ -78,6 +91,11 @@ export const routers = [
       path: "/our-teams",
       name: 'our-teams',
       element: <OurTeams />,
+    },
+    {
+      path: "/about/orbit-management-teams",
+      name: 'orbit-management-teams',
+      element: <OrbitManagementTeams />,
     },
     {
       path: "/our-branches",
@@ -282,6 +300,11 @@ export const routers = [
             element: <AdminTeams />,
           },
           {
+            path: "/admin/orbit-management-teams",
+            name: 'admin-orbit-management-teams',
+            element: <AdminOrbitManagementTeams />,
+          },
+          {
             path: "/admin/academics",
           name: 'admin-academics',
           element: <AdminAcademics />,
@@ -363,22 +386,59 @@ export const routers = [
         name: 'admin-whatsapp-button',
         element: <AdminWhatsAppButton />,
       },
+  {
+    path: "/admin/website-visits",
+    name: 'admin-website-visits',
+    element: <AdminWebsiteVisits />,
+  },
+  {
+    path: "/admin/orbit-group-message",
+    name: 'admin-orbit-group-message',
+    element: <AdminOrbitGroupMessage />,
+  },
+  {
+    path: "/career",
+    name: 'career',
+    element: <Career />,
+  },
+  {
+    path: "/about/message-from-orbit-group",
+    name: 'message-from-orbit-group',
+    element: <MessageFromOrbitGroup />,
+  },
+  {
+    path: "/about/message-from-principal",
+    name: 'message-from-principal',
+    element: <MessageFromPrincipal />,
+  },
+  {
+    path: "/about/message-from-managing-director",
+    name: 'message-from-managing-director',
+    element: <MessageFromManagingDirector />,
+  },
+  {
+    path: "/admin/principal-message",
+    name: 'admin-principal-message',
+    element: <AdminPrincipalMessage />,
+  },
+  {
+    path: "/admin/managing-director-message",
+    name: 'admin-managing-director-message',
+    element: <AdminManagingDirectorMessage />,
+  },
     {
-      path: "/admin/website-visits",
-      name: 'admin-website-visits',
-      element: <AdminWebsiteVisits />,
-    },
-    {
-      path: "/career",
-      name: 'career',
-      element: <Career />,
-    },
+    path: "/admin/popup",
+    name: 'admin-popup',
+    element: <AdminPopup />,
+  },
     /* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */
     {
       path: "*",
       name: '404',
       element: <NotFound />,
     },
+  ],
+  },
 ];
 
 declare global {

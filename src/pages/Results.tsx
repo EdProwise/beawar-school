@@ -6,6 +6,8 @@ import { Loader2, Trophy, Award, Star } from "lucide-react";
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useSiteSettings } from "@/hooks/use-school-data";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 interface Result {
   id: string;
@@ -27,6 +29,9 @@ export default function Results() {
       return data as Result[];
     }
   });
+  const { data: settings } = useSiteSettings();
+  const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
 
   const years = useMemo(() => {
     if (!resultsData) return [];
@@ -45,10 +50,17 @@ export default function Results() {
   const filteredResults = useMemo(() => {
     if (!resultsData || !selectedYear) return [];
     return resultsData.filter(r => r.year === selectedYear);
-  }, [resultsData, selectedYear]);
+    }, [resultsData, selectedYear]);
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+        title={`Results | ${schoolName}`}
+        description={`View academic results and achievements of students at ${schoolName}. Celebrating excellence year after year.`}
+        keywords={`${schoolName} results, student achievements, academic performance, board results`}
+        canonicalPath="/results"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Results", path: "/results" }])}
+      />
       <Header />
       <main>
         {/* Hero */}
@@ -70,7 +82,7 @@ export default function Results() {
               <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
                 Academic <span className="text-amber-500">Results</span>
               </h1>
-              <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+              <p className="text-white text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
                 Celebrating the outstanding milestones and academic achievements of our brilliant students.
               </p>
             </motion.div>
@@ -97,7 +109,7 @@ export default function Results() {
                         "px-6 py-2 rounded-full transition-all duration-300 font-bold border text-sm",
                         selectedYear === year
                           ? "bg-amber-600 text-white border-amber-600 shadow-md"
-                          : "bg-white text-gray-600 border-gray-200 hover:border-amber-400 hover:text-amber-600"
+                            : "bg-white text-black border-black/20 hover:border-amber-400 hover:text-amber-600"
                       )}
                     >
                       {year}
@@ -151,7 +163,7 @@ export default function Results() {
                             <div className="p-4">
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex flex-col">
-                                  <span className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Score</span>
+                                  <span className="text-[10px] text-black/60 uppercase font-bold tracking-widest">Score</span>
                                   <span className="text-2xl font-black text-amber-600">
                                     {result.percentage}%
                                   </span>
@@ -162,7 +174,7 @@ export default function Results() {
                               </div>
                               
                               <div className="pt-2 border-t border-gray-100">
-                                <p className="text-gray-500 text-xs italic leading-relaxed line-clamp-2">
+                                <p className="text-black/60 text-xs italic leading-relaxed line-clamp-2">
                                   "{result.remarks}"
                                 </p>
                               </div>
@@ -176,9 +188,9 @@ export default function Results() {
               </div>
             ) : (
               <div className="text-center py-20 bg-white rounded-[2rem] border border-dashed border-gray-200">
-                <Trophy className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-gray-900 mb-1">Results are being compiled</h3>
-                <p className="text-gray-400 text-sm max-w-sm mx-auto">We're currently updating our academic records for the current session.</p>
+                <Trophy className="w-16 h-16 text-black/20 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-black mb-1">Results are being compiled</h3>
+                  <p className="text-black/60 text-sm max-w-sm mx-auto">We're currently updating our academic records for the current session.</p>
               </div>
             )}
           </div>

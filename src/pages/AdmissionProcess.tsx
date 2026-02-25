@@ -3,7 +3,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CheckCircle, ArrowRight, HelpCircle, Loader2, FileText, Building, ClipboardList, GraduationCap, Users, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubmitAdmissionInquiry, useAdmissionSteps, useAdmissionFaqs, useAdmissionSettings } from "@/hooks/use-school-data";
+import { useSubmitAdmissionInquiry, useAdmissionSteps, useAdmissionFaqs, useAdmissionSettings, useSiteSettings } from "@/hooks/use-school-data";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 import {
   Accordion,
   AccordionContent,
@@ -89,6 +90,9 @@ const AdmissionProcess = () => {
   const { data: steps = [], isLoading: stepsLoading } = useAdmissionSteps();
   const { data: faqs = [], isLoading: faqsLoading } = useAdmissionFaqs();
   const { data: settings = {} } = useAdmissionSettings();
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
+  const siteUrl = siteSettings?.site_url || "";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -105,6 +109,13 @@ const AdmissionProcess = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Admission Process | ${schoolName}`}
+        description={`Apply for admission at ${schoolName}. Learn about our step-by-step admission process, eligibility, required documents, and FAQs.`}
+        keywords={`admission process, how to apply, ${schoolName} admission, school enrollment Beawar`}
+        canonicalPath="/admissions/process"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Admissions", path: "/admissions" }, { name: "Admission Process", path: "/admissions/process" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

@@ -1,15 +1,19 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { useBeyondAcademics } from "@/hooks/use-school-data";
+import { useBeyondAcademics, useSiteSettings } from "@/hooks/use-school-data";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { Loader2, Zap, Home, ShieldCheck, ZoomIn } from "lucide-react";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
 
 export default function ResidentialSchool() {
+  const { data: settings } = useSiteSettings();
   const { data, isLoading } = useBeyondAcademics("residential-school");
   const sections = data;
+  const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
 
   const [lightbox, setLightbox] = useState<{
     isOpen: boolean;
@@ -49,6 +53,17 @@ export default function ResidentialSchool() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+        title="Residential School"
+        description={`A safe, nurturing, and disciplined residential environment at ${schoolName} where students grow into independent, responsible, and well-rounded individuals.`}
+        keywords={`residential school, boarding school, ${schoolName}, student hostel, Beawar`}
+        canonicalPath="/beyond-academics/residential-school"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [
+          { name: "Home", path: "/" },
+          { name: "Beyond Academics", path: "/beyond-academics" },
+          { name: "Residential School", path: "/beyond-academics/residential-school" },
+        ])}
+      />
       <Header />
       <main>
         {/* Hero Section */}

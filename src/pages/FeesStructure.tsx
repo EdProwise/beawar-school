@@ -3,8 +3,14 @@ import { Footer } from "@/components/layout/Footer";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, Table as TableIcon, Info } from "lucide-react";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 export default function FeesStructure() {
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
+  const siteUrl = siteSettings?.site_url || "";
+
   const { data: fees = [], isLoading } = useQuery({
     queryKey: ["public-fees-structure"],
     queryFn: async () => {
@@ -18,6 +24,13 @@ export default function FeesStructure() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Fees Structure | ${schoolName}`}
+        description={`View the detailed fees structure for ${schoolName} for academic year ${academicYear}. Transparent fee breakdown for all grades.`}
+        keywords={`fees structure, school fees, ${schoolName} fees, tuition fee Beawar`}
+        canonicalPath="/admissions/fees"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Admissions", path: "/admissions" }, { name: "Fees Structure", path: "/admissions/fees" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

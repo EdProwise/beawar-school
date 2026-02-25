@@ -107,22 +107,36 @@ export function Footer() {
                         rel="noopener noreferrer"
                         className="w-10 h-10 rounded-full bg-[#2a2638] flex items-center justify-center hover:bg-[#3a354d] transition-colors"
                       >
-                        <Icon className="w-4 h-4 text-gray-300" />
-                      </a>
-                    );
-                  })}
-                </div>
-                
-                {(settings?.affiliation_no || settings?.udise_code) && (
-                  <div className="pt-2 space-y-1 text-xs text-gray-500 font-medium">
-                    {settings?.affiliation_no && (
-                      <p>Affiliation No: <span className="text-gray-400">{settings.affiliation_no}</span></p>
-                    )}
-                    {settings?.udise_code && (
-                      <p>UDISE Code: <span className="text-gray-400">{settings.udise_code}</span></p>
-                    )}
+                          <Icon className="w-4 h-4 text-gray-300" />
+                        </a>
+                      );
+                    })}
                   </div>
-                )}
+                  
+                  {settings?.footer_images && settings.footer_images.length > 0 && (
+                    <div className="flex flex-wrap gap-4 pt-2">
+                      {settings.footer_images.map((url, idx) => (
+                        <div 
+                          key={idx} 
+                          className="w-[100px] h-[100px] rounded bg-[#2a2638] p-1 flex items-center justify-center overflow-hidden hover:bg-[#3a354d] transition-colors"
+                        >
+                          <img 
+                            src={url} 
+                            alt={`Footer badge ${idx + 1}`} 
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {(settings?.affiliation_no) && (
+                    <div className="pt-2 space-y-1 text-xs text-gray-500 font-medium">
+                      {settings?.affiliation_no && (
+                        <p>Affiliation No: <span className="text-gray-400">{settings.affiliation_no}</span></p>
+                      )}
+                    </div>
+                  )}
               </div>
             </div>
 

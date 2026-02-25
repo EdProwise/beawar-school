@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { FormattedContent } from "@/components/ui/formatted-content";
+import { useSiteSettings } from "@/hooks/use-school-data";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 export default function Curriculum() {
   const { data: content, isLoading: contentLoading } = useQuery({
@@ -15,6 +17,9 @@ export default function Curriculum() {
       return data;
     }
   });
+  const { data: settings } = useSiteSettings();
+  const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
 
   const { data: gallery, isLoading: galleryLoading } = useQuery({
     queryKey: ["curriculum-gallery"],
@@ -83,6 +88,13 @@ export default function Curriculum() {
 
     return (
     <div className="min-h-screen font-sans bg-white">
+      <SEOHead
+        title={`Curriculum | ${schoolName}`}
+        description={`Discover the curriculum at ${schoolName}. We offer a comprehensive, activity-based learning program for holistic child development.`}
+        keywords={`${schoolName} curriculum, school syllabus, activity based learning, CBSE curriculum`}
+        canonicalPath="/academics/curriculum"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Academics", path: "/academics" }, { name: "Curriculum", path: "/academics/curriculum" }])}
+      />
       <Header />
       <main className="pb-20">
         <section className="pt-40 pb-24 bg-[#A11B5A] relative overflow-hidden">
@@ -127,17 +139,17 @@ export default function Curriculum() {
               </div>
 
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-black text-gray-900">{pageData.preschool_title}</h2>
-                  <div className="text-gray-600 leading-relaxed text-lg">
+                  <h2 className="text-2xl font-black text-black">{pageData.preschool_title}</h2>
+                  <div className="text-black leading-relaxed text-lg">
                     <FormattedContent content={pageData.preschool_desc} />
                   </div>
                   <ul className="space-y-4">
                     {pageActivities.map((activity, idx) => (
                       <li key={idx} className="flex gap-4 items-start group">
-                        <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-gray-900">
-                          <Check size={14} strokeWidth={4} />
-                        </div>
-                        <span className="text-gray-700 font-medium leading-tight group-hover:text-gray-900 transition-colors">
+                          <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center text-black">
+                            <Check size={14} strokeWidth={4} />
+                          </div>
+                          <span className="text-black font-medium leading-tight group-hover:text-black transition-colors">
                           {activity}
                         </span>
                       </li>
@@ -146,8 +158,8 @@ export default function Curriculum() {
                 </div>
 
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-black text-gray-900 uppercase">{pageData.strongroots_title}</h2>
-                  <div className="text-gray-600 leading-relaxed text-lg">
+                  <h2 className="text-2xl font-black text-black uppercase">{pageData.strongroots_title}</h2>
+                  <div className="text-black leading-relaxed text-lg">
                     <FormattedContent content={pageData.strongroots_desc} />
                   </div>
                 </div>
@@ -155,13 +167,13 @@ export default function Curriculum() {
 
               <div className="lg:col-span-5 space-y-12">
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-black text-gray-900 leading-tight">
-                    {pageData.nep_title}
-                  </h2>
-                  <div className="text-gray-600 leading-relaxed text-lg italic">
-                    <FormattedContent content={pageData.nep_desc1} />
-                  </div>
-                  <div className="text-gray-600 leading-relaxed text-lg">
+                  <h2 className="text-2xl font-black text-black leading-tight">
+                      {pageData.nep_title}
+                    </h2>
+                    <div className="text-black leading-relaxed text-lg italic">
+                      <FormattedContent content={pageData.nep_desc1} />
+                    </div>
+                    <div className="text-black leading-relaxed text-lg">
                     <FormattedContent content={pageData.nep_desc2} />
                   </div>
                 </div>
@@ -172,14 +184,14 @@ export default function Curriculum() {
                 </div>
                 <div className="p-10 text-center space-y-6">
                   <div className="space-y-2">
-                    <h4 className="text-xl font-bold text-gray-900">{pageData.admission_subtitle}</h4>
-                    <p className="text-gray-500 font-medium">Admission Open for new batches</p>
-                  </div>
-                  <div className="text-5xl font-black text-gray-900 tracking-tight py-4">
+                      <h4 className="text-xl font-bold text-black">{pageData.admission_subtitle}</h4>
+                      <p className="text-black font-medium">Admission Open for new batches</p>
+                    </div>
+                    <div className="text-5xl font-black text-black tracking-tight py-4">
                     {pageData.admission_year}
                   </div>
                   <Button 
-                    className="w-full py-8 text-xl font-black bg-yellow-400 hover:bg-yellow-500 text-gray-900 rounded-2xl shadow-lg shadow-yellow-200 transition-all active:scale-95"
+                    className="w-full py-8 text-xl font-black bg-yellow-400 hover:bg-yellow-500 text-black rounded-2xl shadow-lg shadow-yellow-200 transition-all active:scale-95"
                     onClick={() => window.location.href = '/admissions/process'}
                   >
                     {pageData.admission_btn_text}

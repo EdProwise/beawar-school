@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, Shield } from "lucide-react";
 import 'react-quill-new/dist/quill.snow.css';
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 interface Section {
   title: string;
@@ -11,6 +13,10 @@ interface Section {
 }
 
 const Privacy = () => {
+  const { data: settings } = useSiteSettings();
+  const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
+
   const { data: page, isLoading } = useQuery({
     queryKey: ["legal-page-privacy"],
     queryFn: async () => {
@@ -57,6 +63,16 @@ const Privacy = () => {
 
     return (
       <div className="min-h-screen bg-white">
+        <SEOHead
+          title="Privacy Policy"
+          description={`Learn how ${schoolName} collects, uses, and protects your personal information. Our privacy policy outlines data security, usage, and your rights.`}
+          keywords={`privacy policy, data protection, ${schoolName}, school privacy`}
+          canonicalPath="/privacy"
+          jsonLd={buildBreadcrumbSchema(siteUrl, [
+            { name: "Home", path: "/" },
+            { name: "Privacy Policy", path: "/privacy" },
+          ])}
+        />
         <Header variant="light" />
         <main>
           {/* Hero Section */}

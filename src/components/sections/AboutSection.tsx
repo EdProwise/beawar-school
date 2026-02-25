@@ -48,7 +48,7 @@ export function AboutSection() {
               {about?.section_title || "About Us"}
             </span>
           </div>
-          <h2 className="font-heading text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-gray-900 mb-8 leading-[1.15] tracking-tight">
+            <h2 className="font-heading text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-black mb-8 leading-[1.15] tracking-tight">
             {about?.main_heading ? (
               <span>{about.main_heading}</span>
             ) : (
@@ -112,7 +112,7 @@ export function AboutSection() {
                 <div className="bg-white rounded-2xl p-4 shadow-xl shadow-violet-200/30 border border-violet-100/50">
                   <div className="text-center">
                     <span className="text-4xl font-black bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent font-heading">{about.years_of_excellence}+</span>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-1">Years of<br/>Excellence</p>
+                      <p className="text-xs font-semibold text-black uppercase tracking-wider mt-1">Years of<br/>Excellence</p>
                   </div>
                 </div>
               </div>
@@ -143,7 +143,7 @@ export function AboutSection() {
                       })()
                     : "We provide quality education for all students."
                 }
-                className="text-lg leading-relaxed text-gray-600 [&>p]:mb-4"
+                  className="text-lg leading-relaxed text-black [&>p]:mb-4"
               />
 
               {/* Mobile stats */}
@@ -161,7 +161,7 @@ export function AboutSection() {
                 {["Quality Education", "Experienced Faculty", "Holistic Growth"].map((item, i) => (
                   <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm border border-gray-100">
                     <CheckCircle2 className={`w-4 h-4 ${["text-violet-500", "text-amber-500", "text-emerald-500"][i]}`} />
-                    <span className="text-sm font-semibold text-gray-700">{item}</span>
+                      <span className="text-sm font-semibold text-black">{item}</span>
                   </div>
                 ))}
               </div>
@@ -190,8 +190,8 @@ export function AboutSection() {
         {/* Highlight Cards - Premium Multicolor Grid */}
         <div className="relative">
           <div className="text-center mb-12">
-            <h3 className="font-heading text-2xl md:text-3xl font-bold text-gray-900 mb-3">Why Choose Us</h3>
-            <p className="text-gray-500 max-w-lg mx-auto">Discover what makes our institution a beacon of excellence and innovation</p>
+              <h3 className="font-heading text-2xl md:text-3xl font-bold text-black mb-3">Why Choose Us</h3>
+              <p className="text-black max-w-lg mx-auto">Discover what makes our institution a beacon of excellence and innovation</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -208,8 +208,8 @@ export function AboutSection() {
                     <div className={`w-16 h-16 rounded-2xl ${theme.iconBg} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
                       <IconComponent className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="font-heading font-bold text-gray-900 mb-2.5 text-lg">{card.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{card.description}</p>
+                      <h3 className="font-heading font-bold text-black mb-2.5 text-lg">{card.title}</h3>
+                      <p className="text-black text-sm leading-relaxed">{card.description}</p>
                     <div className={`absolute -bottom-8 -right-8 w-32 h-32 bg-gradient-to-br ${theme.gradient} opacity-0 group-hover:opacity-[0.06] rounded-full transition-all duration-500 group-hover:-bottom-4 group-hover:-right-4`} />
                   </div>
                 );

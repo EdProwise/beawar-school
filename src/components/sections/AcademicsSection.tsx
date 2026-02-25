@@ -112,7 +112,7 @@ export function AcademicsSection() {
               Academic Excellence
             </span>
           </div>
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-5">
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-5">
             Our{" "}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -130,7 +130,7 @@ export function AcademicsSection() {
               </svg>
             </span>
           </h2>
-          <p className="text-gray-500 text-lg mt-4 leading-relaxed">
+          <p className="text-black text-lg mt-4 leading-relaxed">
             Comprehensive curriculum designed to nurture every student's potential from early years to higher studies
           </p>
         </div>
@@ -190,12 +190,12 @@ export function AcademicsSection() {
 
                   {/* Content */}
                   <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="font-heading text-xl font-bold text-gray-900 mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-gray-900 group-hover:to-gray-600 transition-colors duration-300">
+                      <h3 className="font-heading text-xl font-bold text-black mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-black group-hover:to-gray-600 transition-colors duration-300">
                       {program.title}
                     </h3>
 
                     <div className="flex-grow">
-                      <FormattedContent content={firstParagraph} className="text-sm text-gray-500 line-clamp-3 leading-relaxed" />
+                      <FormattedContent content={firstParagraph} className="text-sm text-black line-clamp-3 leading-relaxed" />
                     </div>
 
                     {/* Explore link */}

@@ -1,15 +1,19 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { useBeyondAcademics } from "@/hooks/use-school-data";
+import { useBeyondAcademics, useSiteSettings } from "@/hooks/use-school-data";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { Loader2, Zap, Sparkles, Lightbulb, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 export default function EntrepreneurSkills() {
   const { data, isLoading } = useBeyondAcademics("entrepreneur-skills");
   const sections = data;
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
+  const siteUrl = siteSettings?.site_url || "";
 
   const [lightbox, setLightbox] = useState<{
     isOpen: boolean;
@@ -49,6 +53,13 @@ export default function EntrepreneurSkills() {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+        title={`Entrepreneur Skills | ${schoolName}`}
+        description={`Build future-ready entrepreneurial skills at ${schoolName}. Hands-on programs developing innovation, leadership, and business thinking in students.`}
+        keywords={`entrepreneur skills, ${schoolName}, innovation, leadership, business skills, student entrepreneurship`}
+        canonicalPath="/beyond-academics/entrepreneur-skills"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Beyond Academics", path: "/beyond-academics" }, { name: "Entrepreneur Skills", path: "/beyond-academics/entrepreneur-skills" }])}
+      />
       <Header />
       <main>
         {/* Hero Section */}

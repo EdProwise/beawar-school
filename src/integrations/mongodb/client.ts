@@ -64,8 +64,8 @@ class MongoDBQueryBuilder {
       let url = new URL(`${API_URL}/${this.table}`, window.location.origin);
       this.params.forEach((value, key) => url.searchParams.append(key, value));
 
-      if (this.method === 'GET') {
-        response = await fetch(url.toString());
+        if (this.method === 'GET') {
+          response = await fetch(url.toString(), { cache: 'no-store' });
       } else if (this.method === 'POST') {
         response = await fetch(url.toString(), {
           method: 'POST',
@@ -112,23 +112,52 @@ class MongoDBQueryBuilder {
 
       let data = await response.json();
       
-      // Map _id to id for consistency with Supabase/Frontend expectations
-        const mapId = (obj: any) => {
-          if (!obj || typeof obj !== 'object') return obj;
-          if (Array.isArray(obj)) return obj.map(mapId);
-          
-          const newObj = { ...obj };
-          if (newObj._id && !newObj.id) {
-            newObj.id = newObj._id.toString();
-          }
-          if (newObj.createdAt && !newObj.created_at) {
-            newObj.created_at = newObj.createdAt;
-          }
-          if (newObj.updatedAt && !newObj.updated_at) {
-            newObj.updated_at = newObj.updatedAt;
-          }
-          return newObj;
+        // Normalize an image URL: strip hardcoded host prefixes, always return root-relative /uploads/...
+        const normalizeUrl = (url: string): string => {
+          if (!url || typeof url !== 'string') return url;
+          if (url.startsWith('/uploads/')) return url;
+          const idx = url.indexOf('/uploads/');
+          if (idx > 0) return url.slice(idx);
+          if (url.startsWith('uploads/')) return '/' + url;
+          return url;
         };
+
+        // Fields that hold image/file URLs — normalized so stored localhost origins don't break production
+        const URL_FIELDS = new Set([
+          'image_url', 'images', 'logo_url', 'favicon_url', 'main_image_url',
+          'sender_image_url', 'seal_logo_url', 'edprowise_logo_url',
+          'author_image', 'center_image', 'video_url', 'campus_video_url',
+          'footer_images',
+        ]);
+
+        // Map _id to id for consistency with Supabase/Frontend expectations
+          const mapId = (obj: any) => {
+            if (!obj || typeof obj !== 'object') return obj;
+            if (Array.isArray(obj)) return obj.map(mapId);
+            
+            const newObj = { ...obj };
+            if (newObj._id && !newObj.id) {
+              newObj.id = newObj._id.toString();
+            }
+            if (newObj.createdAt && !newObj.created_at) {
+              newObj.created_at = newObj.createdAt;
+            }
+            if (newObj.updatedAt && !newObj.updated_at) {
+              newObj.updated_at = newObj.updatedAt;
+            }
+            // Normalize image URL fields
+            for (const field of URL_FIELDS) {
+              if (field in newObj) {
+                const val = newObj[field];
+                if (typeof val === 'string') {
+                  newObj[field] = normalizeUrl(val);
+                } else if (Array.isArray(val)) {
+                  newObj[field] = val.map((v: any) => (typeof v === 'string' ? normalizeUrl(v) : v));
+                }
+              }
+            }
+            return newObj;
+          };
 
       data = mapId(data);
       

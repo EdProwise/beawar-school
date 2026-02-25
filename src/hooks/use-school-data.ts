@@ -90,11 +90,12 @@ export function useNewsEvents(limit?: number) {
   return useQuery({
     queryKey: ["news-events", limit],
     queryFn: async () => {
-      let query = supabase
-        .from("news_events")
-        .select("*")
-        .eq("is_published", true)
-        .order("created_at", { ascending: false });
+        let query = supabase
+          .from("news_events")
+          .select("*")
+          .eq("is_published", true)
+          .order("event_date", { ascending: false })
+          .order("created_at", { ascending: false });
 
       if (limit) {
         query = query.limit(limit);
@@ -102,7 +103,15 @@ export function useNewsEvents(limit?: number) {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as NewsEvent[];
+      
+      // Sort by event_date (desc), then created_at (desc)
+      const sortedData = (data as NewsEvent[]).sort((a, b) => {
+        const dateA = a.event_date ? new Date(a.event_date).getTime() : new Date(a.created_at).getTime();
+        const dateB = b.event_date ? new Date(b.event_date).getTime() : new Date(b.created_at).getTime();
+        return dateB - dateA;
+      });
+
+      return sortedData;
     },
   });
 }
@@ -130,20 +139,29 @@ export function useFeaturedNews() {
   return useQuery({
     queryKey: ["featured-news"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("news_events")
-        .select("*")
-        .eq("is_published", true)
-        .eq("is_featured", true)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (error) throw error;
-      return data as NewsEvent | null;
-    },
-  });
-}
+        const { data, error } = await supabase
+          .from("news_events")
+          .select("*")
+          .eq("is_published", true)
+          .eq("is_featured", true)
+          .order("created_at", { ascending: false })
+          .limit(10); // Fetch more than 1 to ensure we pick the best featured one
+  
+        if (error) throw error;
+        
+        if (!data || data.length === 0) return null;
+        
+        // Sort by event_date (desc), then created_at (desc) and pick first
+        const sortedData = (data as NewsEvent[]).sort((a, b) => {
+          const dateA = a.event_date ? new Date(a.event_date).getTime() : new Date(a.created_at).getTime();
+          const dateB = b.event_date ? new Date(b.event_date).getTime() : new Date(b.created_at).getTime();
+          return dateB - dateA;
+        });
+  
+        return sortedData[0];
+      },
+    });
+  }
 
 export function useUpcomingEvents() {
   return useQuery({
@@ -308,6 +326,8 @@ export function useAdmissionSettings() {
         return acc;
       }, {});
     },
+    staleTime: 1000 * 60 * 10, // 10 minutes — shared across all components via same queryKey
+    gcTime: 1000 * 60 * 15,
   });
 }
 
@@ -358,6 +378,8 @@ export interface SiteSettings {
   phone: string | null;
   phone_secondary: string | null;
   address: string | null;
+  city: string | null;
+  state: string | null;
   map_embed_url: string | null;
   facebook_url: string | null;
   linkedin_url: string | null;
@@ -377,6 +399,8 @@ export interface SiteSettings {
   office_hours_weekday: string | null;
   office_hours_weekend: string | null;
   topbar_bg_color: string | null;
+  footer_images: string[] | null;
+  site_url: string | null;
 }
 
 export function useSiteSettings() {
@@ -817,6 +841,115 @@ export function useTeams() {
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as TeamMember[];
+    },
+  });
+}
+
+export function useOrbitManagementTeams() {
+  return useQuery({
+    queryKey: ["orbit_management_teams"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orbit_management_teams")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as TeamMember[];
+    },
+  });
+}
+
+// Orbit Group Message
+export interface OrbitGroupMessage {
+  id: string;
+  sender_name: string;
+  sender_title: string;
+  sender_image_url: string | null;
+  seal_logo_url: string | null;
+  edprowise_logo_url: string | null;
+  message_heading: string;
+  message_subheading: string | null;
+  message_content: string;
+  signature_text: string | null;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useOrbitGroupMessage() {
+  return useQuery({
+    queryKey: ["orbit-group-message"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orbit_group_message")
+        .select("*")
+        .eq("is_published", true)
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as OrbitGroupMessage | null;
+    },
+  });
+}
+
+// Principal Message
+export interface PrincipalMessage {
+  id: string;
+  sender_name: string;
+  sender_title: string;
+  sender_image_url: string | null;
+  message_heading: string;
+  message_subheading: string | null;
+  message_content: string;
+  signature_text: string | null;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function usePrincipalMessage() {
+  return useQuery({
+    queryKey: ["principal-message"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("principal_message")
+        .select("*")
+        .eq("is_published", true)
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as PrincipalMessage | null;
+    },
+  });
+}
+
+// Managing Director Message
+export interface ManagingDirectorMessage {
+  id: string;
+  sender_name: string;
+  sender_title: string;
+  sender_image_url: string | null;
+  message_heading: string;
+  message_subheading: string | null;
+  message_content: string;
+  signature_text: string | null;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export function useManagingDirectorMessage() {
+  return useQuery({
+    queryKey: ["managing-director-message"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("managing_director_message")
+        .select("*")
+        .eq("is_published", true)
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as ManagingDirectorMessage | null;
     },
   });
 }

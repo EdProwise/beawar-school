@@ -374,15 +374,15 @@ function GalleryModal({ item, initialCategory, categories, onClose, onSuccess }:
             />
             {(!item || !formData.image_url) && (
               <>
-                <p className="text-xs text-muted-foreground mt-2">Or enter URL manually (single):</p>
-                <input
-                  type="url"
-                  name="image_url"
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none mt-1"
-                  placeholder="/sports.png or https://..."
-                />
+                  <p className="text-xs text-muted-foreground mt-2">Or enter URL manually (single):</p>
+                  <input
+                    type="text"
+                    name="image_url"
+                    value={formData.image_url}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:border-primary outline-none mt-1"
+                    placeholder="/sports.png or https://..."
+                  />
               </>
             )}
           </div>

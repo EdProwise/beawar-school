@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
 import { Loader2, FileText } from "lucide-react";
 import 'react-quill-new/dist/quill.snow.css';
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 interface Section {
   title: string;
@@ -11,6 +13,10 @@ interface Section {
 }
 
 const Terms = () => {
+  const { data: settings } = useSiteSettings();
+  const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
+
   const { data: page, isLoading } = useQuery({
     queryKey: ["legal-page-terms"],
     queryFn: async () => {
@@ -57,6 +63,16 @@ const Terms = () => {
 
     return (
       <div className="min-h-screen bg-white">
+        <SEOHead
+          title="Terms & Conditions"
+          description={`Read the terms and conditions governing the use of ${schoolName}'s website and services, including admission, fee policy, and code of conduct.`}
+          keywords={`terms and conditions, ${schoolName}, school policy, legal`}
+          canonicalPath="/terms"
+          jsonLd={buildBreadcrumbSchema(siteUrl, [
+            { name: "Home", path: "/" },
+            { name: "Terms & Conditions", path: "/terms" },
+          ])}
+        />
         <Header variant="light" />
         <main>
           {/* Hero Section */}

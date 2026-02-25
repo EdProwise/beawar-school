@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/mongodb/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,8 @@ const colorPresets = [
 export default function AdminSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get("tab") === "branding" ? "general" : "general";
 
     const { data: settings, isLoading } = useQuery({
       queryKey: ["admin-site-settings"],
@@ -61,6 +64,8 @@ export default function AdminSettings() {
       phone: "",
       phone_secondary: "",
       address: "",
+      city: "",
+      state: "",
       map_embed_url: "",
       facebook_url: "",
       linkedin_url: "",
@@ -76,14 +81,16 @@ export default function AdminSettings() {
       cta_secondary_link: "/students",
       office_hours_weekday: "Mon - Fri: 8:00 AM - 5:00 PM",
       office_hours_weekend: "Sat: 9:00 AM - 1:00 PM",
-    tc_apply_url: "",
-    tc_verify_url: "",
-    affiliation_no: "",
-    udise_code: "",
+      site_url: "",
+      tc_apply_url: "",
+      tc_verify_url: "",
+      affiliation_no: "",
+      udise_code: "",
       lamp_color: "#4C0DC9",
       copyright_text: "",
-      topbar_bg_color: "#1f2937",
-    });
+        topbar_bg_color: "#1f2937",
+        footer_images: [] as string[],
+      });
 
     const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
     const [secondaryLinkType, setSecondaryLinkType] = useState<string>("preset");
@@ -98,6 +105,8 @@ export default function AdminSettings() {
           phone: settings.phone || "",
           phone_secondary: settings.phone_secondary || "",
             address: settings.address || "",
+            city: settings.city || "",
+            state: settings.state || "",
             map_embed_url: settings.map_embed_url || "",
             facebook_url: settings.facebook_url || "",
             linkedin_url: settings.linkedin_url || "",
@@ -113,14 +122,16 @@ export default function AdminSettings() {
           cta_secondary_link: settings.cta_secondary_link || "/students",
           office_hours_weekday: settings.office_hours_weekday || "Mon - Fri: 8:00 AM - 5:00 PM",
           office_hours_weekend: settings.office_hours_weekend || "Sat: 9:00 AM - 1:00 PM",
-          tc_apply_url: settings.tc_apply_url || "",
-          tc_verify_url: settings.tc_verify_url || "",
+            site_url: settings.site_url || "",
+            tc_apply_url: settings.tc_apply_url || "",
+            tc_verify_url: settings.tc_verify_url || "",
             affiliation_no: settings.affiliation_no || "",
             udise_code: settings.udise_code || "",
               lamp_color: settings.lamp_color || "#4C0DC9",
-              copyright_text: settings.copyright_text || "",
-              topbar_bg_color: settings.topbar_bg_color || "#1f2937",
-            });
+                copyright_text: settings.copyright_text || "",
+                topbar_bg_color: settings.topbar_bg_color || "#1f2937",
+                footer_images: settings.footer_images || [],
+              });
 
         // Initialize link types based on values
         const primaryPresets = ["/admissions/process", "/contact", "/about-us"];
@@ -179,6 +190,8 @@ export default function AdminSettings() {
     );
   }
 
+  const isBrandingFocus = searchParams.get("tab") === "branding";
+
   return (
     <AdminLayout>
       <div className="max-w-4xl">
@@ -197,7 +210,7 @@ export default function AdminSettings() {
           </Button>
         </div>
 
-        <Tabs defaultValue="general" className="space-y-6">
+        <Tabs defaultValue={defaultTab} className="space-y-6">
           <TabsList className="bg-muted p-1">
             <TabsTrigger value="general" className="gap-2">
               <Info className="w-4 h-4" />
@@ -226,30 +239,52 @@ export default function AdminSettings() {
           </TabsList>
 
           <TabsContent value="general">
-            <div className="bg-card rounded-xl border border-border p-6 space-y-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Info className="w-5 h-5 text-primary" />
-                <h2 className="text-xl font-semibold">General Information</h2>
-              </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="school_name">School Name *</Label>
-                  <Input
-                    id="school_name"
-                    value={formData.school_name}
-                    onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
-                    required
-                  />
+              <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <Info className="w-5 h-5 text-primary" />
+                  <h2 className="text-xl font-semibold">General Information</h2>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tagline">Tagline</Label>
-                  <Input
-                    id="tagline"
-                    value={formData.tagline}
-                    onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
-                    placeholder="Excellence in Education"
-                  />
-                </div>
+                {isBrandingFocus && (
+                  <div className="flex items-center gap-2 px-4 py-3 rounded-lg bg-primary/8 border border-primary/20 text-sm text-primary font-medium">
+                    <Info className="w-4 h-4 shrink-0" />
+                    Edit your school name and logo below, then click <strong className="mx-1">Save All Settings</strong>.
+                  </div>
+                )}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="school_name">School Name *</Label>
+                    <Input
+                      id="school_name"
+                      value={formData.school_name}
+                      onChange={(e) => setFormData({ ...formData, school_name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tagline">Tagline</Label>
+                    <Input
+                      id="tagline"
+                      value={formData.tagline}
+                      onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+                      placeholder="Excellence in Education"
+                    />
+                  </div>
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="site_url">Site URL</Label>
+                    <div className="relative">
+                      <Input
+                        id="site_url"
+                        value={formData.site_url}
+                        onChange={(e) => setFormData({ ...formData, site_url: e.target.value })}
+                        placeholder="https://yourschool.com"
+                        className="pr-10"
+                      />
+                      <ExternalLink className="absolute right-3 top-2.5 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Used in SEO meta tags, Open Graph, and canonical URLs across all pages.
+                    </p>
+                  </div>
                 <div className="md:col-span-2 space-y-2">
                   <Label>School Logo</Label>
                   <FileUpload
@@ -560,15 +595,33 @@ export default function AdminSettings() {
                     onChange={(e) => setFormData({ ...formData, whatsapp_number: e.target.value })}
                   />
                 </div>
-                <div className="md:col-span-2 space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Textarea
-                    id="address"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    rows={2}
-                  />
-                </div>
+                  <div className="md:col-span-2 space-y-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Textarea
+                      id="address"
+                      value={formData.address}
+                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      rows={2}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      placeholder="e.g., Beawar"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">State</Label>
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                      placeholder="e.g., Rajasthan"
+                    />
+                  </div>
                 <div className="md:col-span-2 space-y-2">
                   <Label htmlFor="map_embed_url">Google Maps Embed URL</Label>
                   <Input
@@ -705,30 +758,35 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
-                <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30 md:col-span-2">
-                  <h3 className="font-medium text-foreground mb-2">School Identifiers</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="affiliation_no">Affiliation No.</Label>
-                      <Input
-                        id="affiliation_no"
-                        value={formData.affiliation_no}
-                        onChange={(e) => setFormData({ ...formData, affiliation_no: e.target.value })}
-                        placeholder="e.g., 1234567"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="udise_code">UDISE Code</Label>
-                      <Input
-                        id="udise_code"
-                        value={formData.udise_code}
-                        onChange={(e) => setFormData({ ...formData, udise_code: e.target.value })}
-                        placeholder="e.g., 27240801234"
-                      />
+                  <div className="space-y-4 p-4 border border-border rounded-lg bg-muted/30 md:col-span-2">
+                    <h3 className="font-medium text-foreground mb-2">School Identifiers</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="affiliation_no">Affiliation No.</Label>
+                        <Input
+                          id="affiliation_no"
+                          value={formData.affiliation_no}
+                          onChange={(e) => setFormData({ ...formData, affiliation_no: e.target.value })}
+                          placeholder="e.g., 1234567"
+                        />
+                      </div>
                     </div>
                   </div>
+
+                  <div className="md:col-span-2 space-y-4 pt-4 border-t border-border">
+                    <div className="flex flex-col gap-1">
+                      <Label className="text-base font-semibold">Footer Small Images (100x100)</Label>
+                      <p className="text-sm text-muted-foreground">These images will appear below the social media links in the footer.</p>
+                    </div>
+                    <FileUpload
+                      multiple
+                      accept="image"
+                      currentUrls={formData.footer_images}
+                      onMultiUpload={(urls) => setFormData({ ...formData, footer_images: urls })}
+                      className="mt-2"
+                    />
+                  </div>
                 </div>
-              </div>
             </div>
           </TabsContent>
         </Tabs>

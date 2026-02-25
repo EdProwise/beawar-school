@@ -1,11 +1,12 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { useBeyondAcademics } from "@/hooks/use-school-data";
+import { useBeyondAcademics, useSiteSettings } from "@/hooks/use-school-data";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { Loader2, Zap, Sparkles, ZoomIn } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ImageLightbox } from "@/components/ui/image-lightbox";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 interface BeyondAcademicsSection {
   id: string;
@@ -20,6 +21,9 @@ interface BeyondAcademicsSection {
   export default function BeyondAcademics() {
     const { data, isLoading } = useBeyondAcademics("beyond-academics");
     const sections = data;
+    const { data: siteSettings } = useSiteSettings();
+    const schoolName = siteSettings?.school_name || "";
+    const siteUrl = siteSettings?.site_url || "";
 
     const [lightbox, setLightbox] = useState<{
       isOpen: boolean;
@@ -60,6 +64,13 @@ interface BeyondAcademicsSection {
 
   return (
     <div className="min-h-screen bg-[#fafafa]">
+      <SEOHead
+        title={`Beyond Academics | ${schoolName}`}
+        description={`Discover life beyond the classroom at ${schoolName} — holistic activities, extracurricular programs, and experiential learning.`}
+        keywords={`beyond academics, holistic education, ${schoolName}, extracurricular, life skills`}
+        canonicalPath="/beyond-academics"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Beyond Academics", path: "/beyond-academics" }])}
+      />
       <Header />
       <main>
         {/* Hero Section */}

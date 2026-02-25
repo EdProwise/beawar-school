@@ -5,6 +5,7 @@ import { Award, Target, Eye, Users, Heart, GraduationCap, CheckCircle, Loader2, 
 import { Button } from "@/components/ui/button";
 import { FormattedContent } from "@/components/ui/formatted-content";
 import { useAboutContent, useHighlightCards, useSiteSettings, useCoreValues, useMilestones, useStatistics } from "@/hooks/use-school-data";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, any> = {
   Award,
@@ -86,11 +87,19 @@ const About = () => {
   const { data: statistics = [] } = useStatistics();
 
   const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
   const yearsOfExcellence = about?.years_of_excellence || 25;
   const foundingYear = new Date().getFullYear() - yearsOfExcellence;
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`About Us | ${schoolName}`}
+        description={`Learn about ${schoolName} — our vision, mission, values, and ${yearsOfExcellence}+ years of academic excellence in Beawar, Rajasthan.`}
+        keywords={`about ${schoolName}, school history, vision mission, core values, Beawar school`}
+        canonicalPath="/about"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "About Us", path: "/about" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

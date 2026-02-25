@@ -27,7 +27,9 @@ import {
         Zap,
         MessageCircle,
         Eye,
-        Briefcase
+        Briefcase,
+        Pencil,
+        Megaphone,
     } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -53,9 +55,13 @@ interface NavItem {
     {
       name: "About Content",
       icon: Info,
-      children: [
-        { name: "About & Branches", path: "/admin/about", icon: Info },
-        { name: "Our Teams", path: "/admin/teams", icon: Users },
+        children: [
+          { name: "About & Branches", path: "/admin/about", icon: Info },
+          { name: "Message from Orbit Group", path: "/admin/orbit-group-message", icon: MessageCircle },
+          { name: "Message from Managing Director", path: "/admin/managing-director-message", icon: Briefcase },
+          { name: "Message from Principal", path: "/admin/principal-message", icon: GraduationCap },
+          { name: "Our Teams", path: "/admin/teams", icon: Users },
+        { name: "Orbit Management Teams", path: "/admin/orbit-management-teams", icon: Users },
       ]
     },
       {
@@ -105,6 +111,7 @@ interface NavItem {
       { name: "Legal Pages", path: "/admin/legal", icon: Shield },
       { name: "Media Library", path: "/admin/media", icon: FolderOpen },
         { name: "WhatsApp Button", path: "/admin/whatsapp-button", icon: MessageCircle },
+        { name: "Homepage Popup", path: "/admin/popup", icon: Megaphone },
     ]
   },
 ];
@@ -151,24 +158,38 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Logo */}
-          <div className="h-16 flex items-center justify-between px-4 border-b border-border shrink-0">
-            <Link to="/admin/dashboard" className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center">
-                <GraduationCap className="w-8 h-8 text-foreground" />
+          {/* Logo */}
+            <div className="border-b border-border shrink-0">
+              <div className="h-16 flex items-center justify-between px-4">
+                <Link to="/admin/dashboard" className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                    {settings?.logo_url ? (
+                      <img src={settings.logo_url} alt={settings?.school_name || "Logo"} className="w-10 h-10 object-contain rounded" />
+                    ) : (
+                      <GraduationCap className="w-8 h-8 text-foreground" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-heading font-bold text-primary truncate">{settings?.school_name || "Admin"}</p>
+                    <p className="text-xs text-muted-foreground">Admin Panel</p>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="lg:hidden p-2 rounded-lg hover:bg-secondary shrink-0"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-                <div>
-                  <p className="font-heading font-bold text-primary">{settings?.school_name || "Admin"}</p>
-                  <p className="text-xs text-primary">Admin Panel</p>
-                </div>
-            </Link>
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-secondary"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+              {/* Edit branding shortcut */}
+              <Link
+                to="/admin/settings?tab=branding"
+                className="flex items-center gap-2 mx-3 mb-2 px-3 py-1.5 rounded-lg bg-primary/5 hover:bg-primary/10 border border-primary/15 transition-colors group"
+              >
+                <Pencil className="w-3 h-3 text-primary/70 group-hover:text-primary shrink-0" />
+                <span className="text-[11px] font-medium text-primary/70 group-hover:text-primary truncate">Edit Logo &amp; School Name</span>
+              </Link>
+            </div>
 
         {/* Navigation - Scrollable */}
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">

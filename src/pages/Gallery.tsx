@@ -6,10 +6,15 @@ import { cn } from "@/lib/utils";
 import { useGalleryItems } from "@/hooks/use-school-data";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/mongodb/client";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
+import { useSiteSettings } from "@/hooks/use-school-data";
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { data: siteSettings } = useSiteSettings();
+  const schoolName = siteSettings?.school_name || "";
+  const siteUrl = siteSettings?.site_url || "";
 
   const { data: categories = ["All"] } = useQuery({
     queryKey: ["gallery-categories-public"],
@@ -44,6 +49,12 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title="Gallery"
+        description={`Explore the photo and video gallery of ${schoolName}. See our campus, events, sports, cultural activities, and student life in Beawar, Rajasthan.`}
+        keywords={`${schoolName} gallery, school photos Beawar, campus gallery, school events photos`}
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Gallery", path: "/gallery" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

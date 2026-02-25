@@ -9,11 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/mongodb/client";
 import { useSiteSettings } from "@/hooks/use-school-data";
 import { Loader2, Upload, Briefcase, CheckCircle } from "lucide-react";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 export default function Career() {
   const { toast } = useToast();
   const { data: settings } = useSiteSettings();
   const schoolName = settings?.school_name || "Our School";
+  const siteUrl = settings?.site_url || "";
 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -111,6 +113,13 @@ export default function Career() {
 
   return (
     <div className="min-h-screen">
+      <SEOHead
+        title={`Career | ${schoolName}`}
+        description={`Join our team at ${schoolName}. Explore teaching and non-teaching career opportunities. Apply now.`}
+        keywords={`${schoolName} career, teaching jobs, school vacancies, job application`}
+        canonicalPath="/career"
+        jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Career", path: "/career" }])}
+      />
       <Header />
       <main>
         {/* Hero */}

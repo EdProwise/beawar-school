@@ -11,6 +11,7 @@ import {
   useExtracurricularCategories, 
   useExtracurricularHighlights 
 } from "@/hooks/use-school-data";
+import SEOHead, { buildBreadcrumbSchema } from "@/components/SEOHead";
 
 const iconMap: Record<string, React.ElementType> = {
   Music, Trophy, Camera, Palette, Globe, Heart, Rocket, Star, Shield, Zap, BookOpen, Users, Award, Clock, Target
@@ -117,11 +118,19 @@ export function Extracurricular() {
   const { data: dbHighlights, isLoading: isLoadingHighlights } = useExtracurricularHighlights();
   
   const schoolName = settings?.school_name || "";
+  const siteUrl = settings?.site_url || "";
   const categories = dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories;
     const highlights = dbHighlights && dbHighlights.length > 0 ? dbHighlights : defaultHighlights;
   
     return (
       <div className="min-h-screen overflow-x-hidden">
+        <SEOHead
+          title={`Extracurricular Activities | ${schoolName}`}
+          description={`Explore the diverse extracurricular activities at ${schoolName} — sports, performing arts, clubs, and competitions that build well-rounded students.`}
+          keywords={`extracurricular activities, sports, arts, clubs, ${schoolName}, student activities`}
+          canonicalPath="/extracurricular"
+          jsonLd={buildBreadcrumbSchema(siteUrl, [{ name: "Home", path: "/" }, { name: "Extracurricular", path: "/extracurricular" }])}
+        />
         <Header />
         <main>
           {/* Hero - Removed redundant spacer to allow header overlay */}

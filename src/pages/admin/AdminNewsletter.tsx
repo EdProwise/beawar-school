@@ -104,7 +104,7 @@ const AdminNewsletter = () => {
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           item.is_active
                             ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
+                              : "bg-black/10 text-black"
                         }`}>
                           {item.is_active ? "Active" : "Inactive"}
                         </span>
