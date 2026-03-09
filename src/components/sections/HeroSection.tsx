@@ -47,22 +47,32 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[71vh] flex items-center overflow-hidden">
       {/* Background Slides */}
-      {slides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={cn(
-            "absolute inset-0 transition-opacity duration-1000",
-            index === currentSlide ? "opacity-100" : "opacity-0"
-          )}
-        >
-          <img
-            src={slide.image_url}
-            alt={slide.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/45 via-primary/40 to-primary/35" />
-        </div>
-      ))}
+      {slides.map((slide, index) => {
+        const isCurrent = index === currentSlide;
+        const isNext = index === (currentSlide + 1) % slides.length;
+        
+        return (
+          <div
+            key={slide.id}
+            className={cn(
+              "absolute inset-0 transition-opacity duration-1000",
+              isCurrent ? "opacity-100" : "opacity-0"
+            )}
+          >
+            {(isCurrent || isNext) && (
+              <img
+                src={slide.image_url}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+                loading={index === 0 ? "eager" : "lazy"}
+                // @ts-ignore - fetchPriority is the correct React property name
+                fetchPriority={index === 0 ? "high" : undefined}
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-dark/45 via-primary/40 to-primary/35" />
+          </div>
+        );
+      })}
 
       {/* Content */}
       <div className="container relative z-10">

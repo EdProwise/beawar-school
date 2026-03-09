@@ -1,8 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import compression from 'compression';
 import dotenv from 'dotenv';
 import multer from 'multer';
+import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs';
 
@@ -19,6 +21,7 @@ if (!fs.existsSync(uploadsDir)) {
 }
 
 app.use(cors());
+app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(uploadsDir));
@@ -85,7 +88,7 @@ const upload = multer({
 
 // Storage Upload Route
 app.post('/api/storage/upload', (req, res, next) => {
-  upload.single('file')(req, res, (err) => {
+  upload.single('file')(req, res, async (err) => {
     if (err) {
       console.error('Multer error:', err);
       return res.status(500).json({ error: err.message });
@@ -96,10 +99,33 @@ app.post('/api/storage/upload', (req, res, next) => {
         return res.status(400).json({ error: 'No file uploaded' });
       }
       
-        // Calculate relative path for URL — always store as relative path, never absolute
-        const relativePath = path.relative(path.join(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/');
+      let filePath = req.file.path;
+      let relativePath = path.relative(path.join(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/');
+
+      // Automatic WebP conversion for images (improves PSI score)
+      const isImage = req.file.mimetype.startsWith('image/');
+      const isAlreadyWebP = req.file.mimetype === 'image/webp';
+      const isSvg = req.file.mimetype === 'image/svg+xml';
+
+      if (isImage && !isAlreadyWebP && !isSvg) {
+        try {
+          const webpPath = filePath.replace(path.extname(filePath), '.webp');
+          await sharp(filePath)
+            .webp({ quality: 80 })
+            .toFile(webpPath);
+          
+          // Delete original file
+          fs.unlinkSync(filePath);
+          
+          // Update paths
+          filePath = webpPath;
+          relativePath = relativePath.replace(path.extname(relativePath), '.webp');
+        } catch (webpError) {
+          console.error('WebP conversion failed, falling back to original:', webpError);
+        }
+      }
         
-        res.json({ data: { path: relativePath, url: `/uploads/${relativePath}` } });
+      res.json({ data: { path: relativePath, url: `/uploads/${relativePath}` } });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
@@ -663,9 +689,23 @@ const urlEntry = (loc: string, lastmod: string, changefreq: string, priority: st
   `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
 
 app.get('/sitemap.xml', async (req, res) => {
-  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-  const host = req.headers['x-forwarded-host'] || req.get('host') || '';
-  const baseUrl = `${protocol}://${host}`;
+  // Use site_url from site_settings if set, otherwise fall back to request host
+  let baseUrl: string;
+  try {
+    const SiteSettingsModel = getModel('site_settings');
+    const siteSettings = await SiteSettingsModel.findOne({}, 'site_url').lean() as any;
+    if (siteSettings?.site_url) {
+      baseUrl = siteSettings.site_url.replace(/\/$/, ''); // strip trailing slash
+    } else {
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+      const host = req.headers['x-forwarded-host'] || req.get('host') || '';
+      baseUrl = `${protocol}://${host}`;
+    }
+  } catch (_) {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers['x-forwarded-host'] || req.get('host') || '';
+    baseUrl = `${protocol}://${host}`;
+  }
   const today = new Date().toISOString().split('T')[0];
 
   // Pre-fetch latest updatedAt per collection used by static routes
@@ -713,12 +753,18 @@ app.get('/sitemap.xml', async (req, res) => {
 // ===============================
 const distPath = path.join(process.cwd(), 'dist');
 
-  if (fs.existsSync(distPath)) {
-    // 1️⃣ Serve static assets FIRST
-    app.use('/assets', express.static(path.join(distPath, 'assets')));
+    if (fs.existsSync(distPath)) {
+      // 1️⃣ Serve static assets FIRST with long-term caching
+      app.use('/assets', express.static(path.join(distPath, 'assets'), {
+        maxAge: '1y',
+        immutable: true,
+        setHeaders: (res) => {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        }
+      }));
 
-    // 2️⃣ Serve other static files (favicon, etc.)
-    app.use(express.static(distPath));
+      // 2️⃣ Serve other static files (favicon, etc.)
+      app.use(express.static(distPath));
 
     // 3️⃣ SPA fallback with dynamic OG meta injection
     app.use(async (req, res) => {
