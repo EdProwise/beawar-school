@@ -5,7 +5,7 @@ import {
   Phone, Mail, MapPin, ArrowRight, Sparkles,
   BookOpen, Users, Building2, Award, FlaskConical, Brain, Home as HomeIcon,
   Image, Newspaper, MessageSquare, ClipboardList, DollarSign, School,
-  Lightbulb, Hotel, GalleryHorizontalEnd,
+  Lightbulb, Hotel, GalleryHorizontalEnd, Shield,
   Facebook, Instagram, Linkedin, Youtube
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ const iconMap: Record<string, any> = {
     "Message from Principal": GraduationCap,
     "Message from Managing Director": Users,
     "Career": Award,
+  "Mandatory Disclosure": Shield,
   "Academic Programs": BookOpen,
   "Curriculum": BookOpen,
   "Teaching Method": Brain,
@@ -59,6 +60,7 @@ const navLinks = [
         { name: "Orbit Management Teams", path: "/about/orbit-management-teams", desc: "Our leadership & management" },
         { name: "Our Branches", path: "/our-branches", desc: "Campus locations" },
         { name: "Career", path: "/career", desc: "Join our team" },
+        { name: "Mandatory Disclosure", path: "/mandatory-disclosure", desc: "Board compliance documents" },
     ],
   },
   {

@@ -230,7 +230,7 @@ export function AboutUs() {
 
                           <div className="w-14 h-1 bg-gradient-to-r from-primary to-accent rounded-full mb-6" />
 
-                          <div className="text leading-relaxed text-[1.04rem] mb-8 text-left">
+                          <div className="text leading-relaxed text-[1.04rem] mb-8">
                             <FormattedContent
                               content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
                             />

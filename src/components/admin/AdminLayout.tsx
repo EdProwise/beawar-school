@@ -51,8 +51,8 @@ interface NavItem {
   const navItems: NavItem[] = [
     { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Website Visits", path: "/admin/website-visits", icon: Eye },
-    { name: "Contact Messages", path: "/admin/contacts", icon: MessageSquare },
     { name: "Career", path: "/admin/career", icon: Briefcase },
+    { name: "Mandatory Disclosure", path: "/admin/mandatory-disclosure", icon: Shield },
     {
       name: "About Content",
       icon: Info,

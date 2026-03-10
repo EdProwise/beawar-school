@@ -25,6 +25,7 @@ import BeyondAcademics from "./pages/BeyondAcademics";
 import EntrepreneurSkills from "./pages/EntrepreneurSkills";
 import ResidentialSchool from "./pages/ResidentialSchool";
 import Career from "./pages/Career";
+import MandatoryDisclosure from "./pages/MandatoryDisclosure";
 import MessageFromOrbitGroup from "./pages/MessageFromOrbitGroup";
 import MessageFromPrincipal from "./pages/MessageFromPrincipal";
 import MessageFromManagingDirector from "./pages/MessageFromManagingDirector";
@@ -69,6 +70,7 @@ import AdminPrincipalMessage from "./pages/admin/AdminPrincipalMessage";
 import AdminManagingDirectorMessage from "./pages/admin/AdminManagingDirectorMessage";
 import AdminWhatsAppButton from "./pages/admin/AdminWhatsAppButton";
 import AdminWebsiteVisits from "./pages/admin/AdminWebsiteVisits";
+import AdminMandatoryDisclosure from "./pages/admin/AdminMandatoryDisclosure";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
 import AdminPopup from "./pages/admin/AdminPopup";
@@ -400,6 +402,16 @@ export const routers = [
     path: "/career",
     name: 'career',
     element: <Career />,
+  },
+  {
+    path: "/mandatory-disclosure",
+    name: 'mandatory-disclosure',
+    element: <MandatoryDisclosure />,
+  },
+  {
+    path: "/admin/mandatory-disclosure",
+    name: 'admin-mandatory-disclosure',
+    element: <AdminMandatoryDisclosure />,
   },
   {
     path: "/about/message-from-orbit-group",

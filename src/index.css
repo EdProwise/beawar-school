@@ -137,6 +137,22 @@ body,
   min-height: 100%;
 }
 
+/* Prevent rich-text editor CSS from breaking words mid-character in rendered content */
+.prose p,
+.prose p *,
+.prose div,
+.prose div *,
+.prose li,
+.prose li *,
+.prose span {
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  hyphens: none !important;
+  white-space: normal !important;
+  -webkit-hyphens: none !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
