@@ -953,3 +953,83 @@ export function useManagingDirectorMessage() {
     },
   });
 }
+
+// ── Blog ────────────────────────────────────────────────────────────────────
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  category: string | null;
+  tags: string[] | null;
+  author_name: string | null;
+  author_avatar: string | null;
+  cover_image_url: string | null;
+  is_published: boolean;
+  is_featured: boolean;
+  read_time: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogSettings {
+  id: string;
+  page_heading: string;
+  page_subheading: string | null;
+  card_style: "classic" | "modern" | "minimal";
+  show_author: boolean;
+  show_date: boolean;
+  show_read_time: boolean;
+  show_tags: boolean;
+  posts_per_page: number;
+  updated_at: string;
+}
+
+export function useBlogPosts() {
+  return useQuery({
+    queryKey: ["blog-posts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("is_published", true)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data as BlogPost[]) ?? [];
+    },
+  });
+}
+
+export function useBlogPostBySlug(slug: string) {
+  return useQuery({
+    queryKey: ["blog-post", slug],
+    enabled: !!slug,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("slug", slug)
+        .eq("is_published", true)
+        .maybeSingle();
+      if (error) throw error;
+      return data as BlogPost | null;
+    },
+  });
+}
+
+export function useBlogSettings() {
+  return useQuery({
+    queryKey: ["blog-settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("blog_settings")
+        .select("*")
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as BlogSettings | null;
+    },
+  });
+}

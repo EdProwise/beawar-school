@@ -137,12 +137,18 @@ const About = () => {
                         {about?.main_heading || "A Legacy of Educational Excellence"}
                       </h2>
                       <div className="mb-6">
-                        <FormattedContent 
-                          content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`} 
+                        <FormattedContent
+                          content={about?.main_description || `Founded in ${foundingYear} by visionary educators, ${schoolName} began with a simple mission: to provide world-class education that empowers students to reach their full potential.`}
+                          className="prose-justify"
+                          style={{ textAlign: "justify" }}
                         />
-                        
+
                         {about?.history_text && (
-                          <FormattedContent content={about.history_text} className="mt-4" />
+                          <FormattedContent
+                            content={about.history_text}
+                            className="mt-4 prose-justify"
+                            style={{ textAlign: "justify" }}
+                          />
                         )}
                       </div>
 

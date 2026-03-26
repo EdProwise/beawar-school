@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useSiteSettings, useAdmissionSettings } from "@/hooks/use-school-data";
+import { useSiteSettings, useAdmissionSettings, useOrbitGroupMessage } from "@/hooks/use-school-data";
 import { useAuthSafe } from "@/hooks/use-auth";
 import { ScrollingTicker } from "./ScrollingTicker";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,7 +25,7 @@ const ensureAbsoluteUrl = (url: string) => {
 // Icon map for dropdown items
 const iconMap: Record<string, any> = {
   "About Us": Users,
-  "Our Teams": Users,
+  "Our Team": Users,
   "Orbit Management Teams": Users,
   "Our Branches": Building2,
     "Message from Orbit Group": Building2,
@@ -56,7 +56,7 @@ const navLinks = [
           { name: "Message from Orbit Group", path: "/about/message-from-orbit-group", desc: "Leadership message" },
           { name: "Message from Managing Director", path: "/about/message-from-managing-director", desc: "MD's message" },
           { name: "Message from Principal", path: "/about/message-from-principal", desc: "Principal's message" },
-          { name: "Our Teams", path: "/our-teams", desc: "Meet our educators" },
+          { name: "Our Team", path: "/our-teams", desc: "Meet our educators" },
         { name: "Orbit Management Teams", path: "/about/orbit-management-teams", desc: "Our leadership & management" },
         { name: "Our Branches", path: "/our-branches", desc: "Campus locations" },
         { name: "Career", path: "/career", desc: "Join our team" },
@@ -94,6 +94,7 @@ const navLinks = [
   { name: "Infrastructure", path: "/infrastructure" },
   { name: "Gallery", path: "/gallery" },
   { name: "News", path: "/news" },
+  { name: "Blog", path: "/blog" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -110,6 +111,7 @@ export function Header({ variant = "solid" }: HeaderProps) {
   const location = useLocation();
   const { data: settings } = useSiteSettings();
   const { data: admissionSettings = {} } = useAdmissionSettings();
+  const { data: orbitGroupMessage } = useOrbitGroupMessage();
   const auth = useAuthSafe();
   const user = auth?.user ?? null;
 
@@ -173,9 +175,17 @@ export function Header({ variant = "solid" }: HeaderProps) {
           };
         }
       }
+      if (link.name === "About" && link.children) {
+        return {
+          ...link,
+          children: link.children.filter((child) =>
+            child.name !== "Message from Orbit Group" || !!orbitGroupMessage
+          ),
+        };
+      }
       return link;
     });
-  }, [admissionSettings]);
+  }, [admissionSettings, orbitGroupMessage]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);

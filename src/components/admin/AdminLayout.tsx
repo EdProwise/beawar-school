@@ -30,6 +30,7 @@ import {
         Briefcase,
         Pencil,
         Megaphone,
+        PenLine,
     } from "lucide-react";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -97,6 +98,7 @@ interface NavItem {
     { name: "Infrastructure", path: "/admin/facilities-manage", icon: Building },
   { name: "Gallery", path: "/admin/gallery", icon: Image },
   { name: "News & Events", path: "/admin/news", icon: Newspaper },
+  { name: "Blog", path: "/admin/blog", icon: PenLine },
     {
       name: "Settings",
       icon: Settings,

@@ -675,6 +675,7 @@ const staticSitemapRoutes: { path: string; changefreq: string; priority: string;
   { path: '/infrastructure',                         changefreq: 'monthly', priority: '0.7', collection: 'infrastructure' },
   { path: '/gallery',                                changefreq: 'weekly',  priority: '0.7', collection: 'gallery' },
   { path: '/news',                                   changefreq: 'weekly',  priority: '0.8', collection: 'news_events' },
+  { path: '/blog',                                   changefreq: 'weekly',  priority: '0.8', collection: 'blog_posts' },
   { path: '/career',                                 changefreq: 'weekly',  priority: '0.7', collection: 'careers' },
   { path: '/contact',                                changefreq: 'monthly', priority: '0.9', collection: 'site_settings' },
   { path: '/students',                               changefreq: 'monthly', priority: '0.5', collection: 'site_settings' },
@@ -742,7 +743,19 @@ app.get('/sitemap.xml', async (req, res) => {
     }
   } catch (_) {}
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticUrls, ...newsUrls].join('\n')}\n</urlset>`;
+  // Fetch published blog posts dynamically
+  const blogUrls: string[] = [];
+  try {
+    const Blog = getModel('blog_posts');
+    const blogPosts = await Blog.find({ is_published: true }, 'slug updatedAt').sort({ updatedAt: -1 }).lean() as any[];
+    for (const b of blogPosts) {
+      if (!b.slug) continue;
+      const lastmod = b.updatedAt ? new Date(b.updatedAt).toISOString().split('T')[0] : today;
+      blogUrls.push(urlEntry(`${baseUrl}/blog/${b.slug}`, lastmod, 'monthly', '0.6'));
+    }
+  } catch (_) {}
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...staticUrls, ...newsUrls, ...blogUrls].join('\n')}\n</urlset>`;
 
   res.setHeader('Content-Type', 'application/xml');
   res.send(xml);

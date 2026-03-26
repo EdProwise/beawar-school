@@ -153,6 +153,17 @@ body,
   -webkit-hyphens: none !important;
 }
 
+/* Justify alignment — words only, no mid-word breaks */
+.prose-justify p,
+.prose-justify li,
+.prose-justify {
+  text-align: justify !important;
+  text-justify: inter-word !important;
+  hyphens: none !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;

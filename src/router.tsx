@@ -74,6 +74,9 @@ import AdminMandatoryDisclosure from "./pages/admin/AdminMandatoryDisclosure";
 
 import AdminCurriculumAndTeaching from "./pages/admin/AdminCurriculumAndTeaching";
 import AdminPopup from "./pages/admin/AdminPopup";
+import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
+import AdminBlog from "./pages/admin/AdminBlog";
 
 export const routers = [
   {
@@ -443,6 +446,21 @@ export const routers = [
     name: 'admin-popup',
     element: <AdminPopup />,
   },
+    {
+      path: "/blog",
+      name: "blog",
+      element: <Blog />,
+    },
+    {
+      path: "/blog/:slug",
+      name: "blog-detail",
+      element: <BlogDetail />,
+    },
+    {
+      path: "/admin/blog",
+      name: "admin-blog",
+      element: <AdminBlog />,
+    },
     /* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */
     {
       path: "*",

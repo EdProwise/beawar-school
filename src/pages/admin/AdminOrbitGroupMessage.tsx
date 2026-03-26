@@ -5,10 +5,11 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { FileUpload } from "@/components/admin/FileUpload";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Building2, User, MessageSquare, ShieldCheck } from "lucide-react";
+import { Loader2, Save, Building2, User, MessageSquare, ShieldCheck, Eye, EyeOff } from "lucide-react";
 
 export default function AdminOrbitGroupMessage() {
   const { toast } = useToast();
@@ -241,19 +242,36 @@ export default function AdminOrbitGroupMessage() {
             </div>
           </div>
 
-          {/* Publish Toggle */}
-          <div className="bg-card rounded-xl border border-border p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="is_published"
-                checked={formData.is_published}
-                onChange={(e) => setFormData(prev => ({ ...prev, is_published: e.target.checked }))}
-                className="w-4 h-4 rounded border-border accent-primary"
-              />
-              <Label htmlFor="is_published" className="cursor-pointer">
-                Publish this message (visible on website)
-              </Label>
+          {/* Visibility Toggle */}
+          <div className={`rounded-xl border p-6 shadow-sm transition-colors duration-200 ${formData.is_published ? "bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800" : "bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-800"}`}>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                {formData.is_published ? (
+                  <Eye className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0" />
+                ) : (
+                  <EyeOff className="w-5 h-5 text-red-500 dark:text-red-400 shrink-0" />
+                )}
+                <div>
+                  <p className={`font-semibold text-sm ${formData.is_published ? "text-green-700 dark:text-green-300" : "text-red-600 dark:text-red-400"}`}>
+                    {formData.is_published ? "Message is Visible on Website" : "Message is Hidden from Website"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {formData.is_published
+                      ? "The message from Orbit Group is currently published and visible to visitors."
+                      : "The message from Orbit Group is currently hidden and not shown to visitors."}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <Label htmlFor="is_published" className="text-sm font-medium cursor-pointer select-none">
+                  {formData.is_published ? "Hide" : "Show"}
+                </Label>
+                <Switch
+                  id="is_published"
+                  checked={formData.is_published}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_published: checked }))}
+                />
+              </div>
             </div>
           </div>
 
