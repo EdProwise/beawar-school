@@ -37,4 +37,7 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
     }
   };
+  server: {
+    allowedHosts: ['beawar-school-production.up.railway.app']
+  }
 });
