@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME     = "${env.DOCKER_IMAGE_NAME ?: 'beawar-school-app'}"
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = "beawar-school-app"
-        APP_PORT       = "5000"
+        APP_PORT       = "80"
     }
 
     options {
@@ -40,6 +40,13 @@ pipeline {
 
                     # Create named volume for uploads if it doesn't exist yet
                     docker volume create beawar_school_uploads || true
+
+                    # Sync uploads from build workspace into the volume
+                    # (uses a temporary Alpine container; existing files are not deleted)
+                    docker run --rm \\
+                        -v beawar_school_uploads:/dest \\
+                        -v \$(pwd)/uploads:/src:ro \\
+                        alpine sh -c "cp -rn /src/. /dest/"
 
                     # Run new container — env vars come from the .env baked into the image
                     docker run -d \\
