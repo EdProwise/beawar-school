@@ -34,29 +34,39 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh """
-                    # Stop and remove old container (ignore error if not running)
+                    # Stop and remove the named container (ignore errors)
                     docker stop ${CONTAINER_NAME} || true
-                    docker rm   ${CONTAINER_NAME} || true
+                    docker rm -f ${CONTAINER_NAME} || true
 
-                    # Kill any other container(s) that may still hold port 80
+                    # Stop any other Docker container holding port ${APP_PORT}
                     CONFLICT=\$(docker ps -q --filter "publish=${APP_PORT}")
                     if [ -n "\$CONFLICT" ]; then
-                        echo "Stopping conflicting container(s) on port ${APP_PORT}: \$CONFLICT"
+                        echo "Stopping conflicting Docker container(s): \$CONFLICT"
                         docker stop \$CONFLICT || true
-                        docker rm   \$CONFLICT || true
+                        docker rm -f \$CONFLICT || true
                     fi
+
+                    # Kill any non-Docker host process holding port ${APP_PORT} (e.g. nginx, apache)
+                    if command -v fuser >/dev/null 2>&1; then
+                        fuser -k ${APP_PORT}/tcp || true
+                    elif command -v ss >/dev/null 2>&1; then
+                        PID=\$(ss -tlnp "sport = :${APP_PORT}" | awk 'NR>1 {match(\$0,/pid=([0-9]+)/,a); if(a[1]) print a[1]}' | head -1)
+                        [ -n "\$PID" ] && kill -9 "\$PID" || true
+                    fi
+
+                    # Brief pause to let the port release
+                    sleep 2
 
                     # Create named volume for uploads if it doesn't exist yet
                     docker volume create beawar_school_uploads || true
 
                     # Sync uploads from build workspace into the volume
-                    # (uses a temporary Alpine container; existing files are not deleted)
                     docker run --rm \\
                         -v beawar_school_uploads:/dest \\
                         -v \$(pwd)/uploads:/src:ro \\
                         alpine sh -c "cp -rn /src/. /dest/"
 
-                    # Run new container — env vars come from the .env baked into the image
+                    # Run new container
                     docker run -d \\
                         --name ${CONTAINER_NAME} \\
                         --restart unless-stopped \\
