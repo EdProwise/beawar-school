@@ -38,6 +38,14 @@ pipeline {
                     docker stop ${CONTAINER_NAME} || true
                     docker rm   ${CONTAINER_NAME} || true
 
+                    # Kill any other container(s) that may still hold port 80
+                    CONFLICT=\$(docker ps -q --filter "publish=${APP_PORT}")
+                    if [ -n "\$CONFLICT" ]; then
+                        echo "Stopping conflicting container(s) on port ${APP_PORT}: \$CONFLICT"
+                        docker stop \$CONFLICT || true
+                        docker rm   \$CONFLICT || true
+                    fi
+
                     # Create named volume for uploads if it doesn't exist yet
                     docker volume create beawar_school_uploads || true
 
