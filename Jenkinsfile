@@ -34,58 +34,36 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh """
-                    # Helper: forcibly free port ${APP_PORT} of ALL holders
-                    free_port() {
-                        # 1. Remove ALL Docker containers (running or created) that reference port ${APP_PORT}
-                        for CID in \$(docker ps -aq --filter "publish=${APP_PORT}"); do
-                            echo "Removing Docker container \$CID holding port ${APP_PORT}"
-                            docker rm -f "\$CID" || true
-                        done
-
-                        # 2. Kill any non-Docker host process holding port ${APP_PORT}
-                        fuser -k ${APP_PORT}/tcp 2>/dev/null || true
-
-                        # 3. Wait up to 10 s for the port to be released
-                        for i in \$(seq 1 10); do
-                            fuser ${APP_PORT}/tcp >/dev/null 2>&1 || return 0
-                            sleep 1
-                        done
-                        echo "WARNING: port ${APP_PORT} still occupied after 10 s"
-                    }
-
-                    # --- Stop & remove named container ---
+                    # 1. Stop & remove the named container (if running or stopped)
                     docker stop ${CONTAINER_NAME} 2>/dev/null || true
                     docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
 
-                    # --- Clear anything else holding the port ---
-                    free_port
+                    # 2. Remove ALL containers in any state that were mapped to port ${APP_PORT}
+                    #    (docker ps -a lists every state; grep on the port mapping string)
+                    docker ps -a --format '{{.ID}} {{.Ports}}' \
+                        | grep ':${APP_PORT}->' \
+                        | awk '{print \$1}' \
+                        | xargs -r docker rm -f || true
 
-                    # --- Uploads volume ---
+                    # 3. Restart the Docker daemon to flush any orphaned iptables/proxy
+                    #    state left by a previously failed port-binding attempt.
+                    sudo systemctl restart docker
+                    sleep 5
+
+                    # 4. Uploads volume
                     docker volume create beawar_school_uploads || true
                     docker run --rm \\
                         -v beawar_school_uploads:/dest \\
                         -v \$(pwd)/uploads:/src:ro \\
                         alpine sh -c "cp -rn /src/. /dest/"
 
-                    # --- Start new container (with one retry if port bind fails) ---
-                    if ! docker run -d \\
+                    # 5. Start the new container
+                    docker run -d \\
                         --name ${CONTAINER_NAME} \\
                         --restart unless-stopped \\
                         -p ${APP_PORT}:5000 \\
                         -v beawar_school_uploads:/app/uploads \\
-                        ${IMAGE_NAME}:${IMAGE_TAG}; then
-
-                        echo "First attempt failed – freeing port and retrying..."
-                        docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
-                        free_port
-
-                        docker run -d \\
-                            --name ${CONTAINER_NAME} \\
-                            --restart unless-stopped \\
-                            -p ${APP_PORT}:5000 \\
-                            -v beawar_school_uploads:/app/uploads \\
-                            ${IMAGE_NAME}:${IMAGE_TAG}
-                    fi
+                        ${IMAGE_NAME}:${IMAGE_TAG}
                 """
             }
         }
