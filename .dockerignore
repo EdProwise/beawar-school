@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+.env.example
+.orchids
+uploads
+*.log
+*.local
+code_template.zip
+test.txt
+test_brochure.pdf
+test-bun.ts
+test.ts
+check_mongo.ts
+query_users.ts
