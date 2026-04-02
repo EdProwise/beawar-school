@@ -6,8 +6,6 @@ pipeline {
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = "beawar-school-app"
         APP_PORT       = "5000"
-        // .env is committed in the repo — use it directly from workspace
-        ENV_FILE_PATH  = "${WORKSPACE}/.env"
     }
 
     options {
@@ -25,43 +23,23 @@ pipeline {
             }
         }
 
-        // ── 2. Copy .env from host into workspace ────────────────────────────
-        stage('Prepare .env') {
-            steps {
-                sh "cp ${ENV_FILE_PATH} .env"
-            }
-        }
-
-        // ── 3. Build Docker image (copies .env inside via COPY . .) ─────────
-        stage('Build Docker Image') {
-            steps {
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} -t ${IMAGE_NAME}:latest ."
-            }
-        }
-
-        // ── 4. Deploy on the same EC2 host ───────────────────────────────────
+        // ── 2. Deploy with docker-compose (builds + starts app + nginx) ──────
         stage('Deploy') {
             steps {
                 sh """
-                    # Stop and remove old container (ignore error if not running)
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm   ${CONTAINER_NAME} || true
+                    # Bring down old stack gracefully
+                    docker-compose down --remove-orphans || true
 
-                    # Create named volume for uploads if it doesn't exist yet
-                    docker volume create beawar_school_uploads || true
+                    # Build fresh images
+                    docker-compose build --no-cache
 
-                    # Run new container — env vars come from the .env baked into the image
-                    docker run -d \\
-                        --name ${CONTAINER_NAME} \\
-                        --restart unless-stopped \\
-                        -p ${APP_PORT}:5000 \\
-                        -v beawar_school_uploads:/app/uploads \\
-                        ${IMAGE_NAME}:${IMAGE_TAG}
+                    # Start all services (app + nginx), volume is created automatically
+                    docker-compose up -d
                 """
             }
         }
 
-        // ── 5. Health check ──────────────────────────────────────────────────
+        // ── 3. Health check ──────────────────────────────────────────────────
         stage('Health Check') {
             steps {
                 sh """
@@ -73,7 +51,7 @@ pipeline {
             }
         }
 
-        // ── 6. Cleanup old images ────────────────────────────────────────────
+        // ── 4. Cleanup old images ────────────────────────────────────────────
         stage('Cleanup') {
             steps {
                 sh "docker image prune -f"
@@ -83,7 +61,7 @@ pipeline {
 
     post {
         success {
-            echo "Deployment successful! Image: ${IMAGE_NAME}:${IMAGE_TAG}"
+            echo "Deployment successful!"
         }
         failure {
             echo "Pipeline failed. Check logs and redeploy."

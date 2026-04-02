@@ -4,7 +4,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@8.6.12
+RUN npm install -g pnpm@9
 
 # Copy dependency files
 COPY package.json pnpm-lock.yaml ./
@@ -24,7 +24,7 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm@8.6.12
+RUN npm install -g pnpm@9
 
 # Copy dependency files
 COPY package.json pnpm-lock.yaml ./
@@ -39,6 +39,7 @@ COPY --from=builder /app/dist ./dist
 COPY server ./server
 COPY tsconfig.json ./
 COPY tsconfig.node.json ./
+COPY .env ./.env
 
 # Install tsx for running TypeScript server
 RUN pnpm add -D tsx
