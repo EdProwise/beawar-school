@@ -34,45 +34,58 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh """
-                    # Stop and remove the named container (ignore errors)
-                    docker stop ${CONTAINER_NAME} || true
-                    docker rm -f ${CONTAINER_NAME} || true
+                    # Helper: forcibly free port ${APP_PORT} of ALL holders
+                    free_port() {
+                        # 1. Remove ALL Docker containers (running or created) that reference port ${APP_PORT}
+                        for CID in \$(docker ps -aq --filter "publish=${APP_PORT}"); do
+                            echo "Removing Docker container \$CID holding port ${APP_PORT}"
+                            docker rm -f "\$CID" || true
+                        done
 
-                    # Stop any other Docker container holding port ${APP_PORT}
-                    CONFLICT=\$(docker ps -q --filter "publish=${APP_PORT}")
-                    if [ -n "\$CONFLICT" ]; then
-                        echo "Stopping conflicting Docker container(s): \$CONFLICT"
-                        docker stop \$CONFLICT || true
-                        docker rm -f \$CONFLICT || true
-                    fi
+                        # 2. Kill any non-Docker host process holding port ${APP_PORT}
+                        fuser -k ${APP_PORT}/tcp 2>/dev/null || true
 
-                    # Kill any non-Docker host process holding port ${APP_PORT} (e.g. nginx, apache)
-                    if command -v fuser >/dev/null 2>&1; then
-                        fuser -k ${APP_PORT}/tcp || true
-                    elif command -v ss >/dev/null 2>&1; then
-                        PID=\$(ss -tlnp "sport = :${APP_PORT}" | awk 'NR>1 {match(\$0,/pid=([0-9]+)/,a); if(a[1]) print a[1]}' | head -1)
-                        [ -n "\$PID" ] && kill -9 "\$PID" || true
-                    fi
+                        # 3. Wait up to 10 s for the port to be released
+                        for i in \$(seq 1 10); do
+                            fuser ${APP_PORT}/tcp >/dev/null 2>&1 || return 0
+                            sleep 1
+                        done
+                        echo "WARNING: port ${APP_PORT} still occupied after 10 s"
+                    }
 
-                    # Brief pause to let the port release
-                    sleep 2
+                    # --- Stop & remove named container ---
+                    docker stop ${CONTAINER_NAME} 2>/dev/null || true
+                    docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
 
-                    # Create named volume for uploads if it doesn't exist yet
+                    # --- Clear anything else holding the port ---
+                    free_port
+
+                    # --- Uploads volume ---
                     docker volume create beawar_school_uploads || true
-
-                    # Sync uploads from build workspace into the volume
                     docker run --rm \\
                         -v beawar_school_uploads:/dest \\
                         -v \$(pwd)/uploads:/src:ro \\
                         alpine sh -c "cp -rn /src/. /dest/"
 
-                    # Run new container
-                    docker run -d \\
+                    # --- Start new container (with one retry if port bind fails) ---
+                    if ! docker run -d \\
                         --name ${CONTAINER_NAME} \\
                         --restart unless-stopped \\
                         -p ${APP_PORT}:5000 \\
                         -v beawar_school_uploads:/app/uploads \\
-                        ${IMAGE_NAME}:${IMAGE_TAG}
+                        ${IMAGE_NAME}:${IMAGE_TAG}; then
+
+                        echo "First attempt failed – freeing port and retrying..."
+                        docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
+                        free_port
+
+                        docker run -d \\
+                            --name ${CONTAINER_NAME} \\
+                            --restart unless-stopped \\
+                            -p ${APP_PORT}:5000 \\
+                            -v beawar_school_uploads:/app/uploads \\
+                            ${IMAGE_NAME}:${IMAGE_TAG}
+                    fi
                 """
             }
         }
