@@ -6,8 +6,6 @@ pipeline {
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = "beawar-school-app"
         APP_PORT       = "5000"
-        // .env is committed in the repo — use it directly from workspace
-        ENV_FILE_PATH  = "${WORKSPACE}/.env"
     }
 
     options {
@@ -25,14 +23,7 @@ pipeline {
             }
         }
 
-        // ── 2. Copy .env from host into workspace ────────────────────────────
-        stage('Prepare .env') {
-            steps {
-                sh "cp ${ENV_FILE_PATH} .env"
-            }
-        }
-
-        // ── 3. Build Docker image (copies .env inside via COPY . .) ─────────
+        // ── 2. Build Docker image (.env is already in workspace from git) ───
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} -t ${IMAGE_NAME}:latest ."
