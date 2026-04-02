@@ -39,6 +39,7 @@ COPY --from=builder /app/dist ./dist
 COPY server ./server
 COPY tsconfig.json ./
 COPY tsconfig.node.json ./
+COPY .env ./.env
 
 # Install tsx for running TypeScript server
 RUN pnpm add -D tsx
