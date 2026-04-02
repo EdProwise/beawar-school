@@ -6,8 +6,8 @@ pipeline {
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = "beawar-school-app"
         APP_PORT       = "5000"
-        // Path to the .env file on the EC2 host (place it here once, never changes)
-        ENV_FILE_PATH  = "/home/ec2-user/beawar-school/.env"
+        // .env is committed in the repo — use it directly from workspace
+        ENV_FILE_PATH  = "${WORKSPACE}/.env"
     }
 
     options {
