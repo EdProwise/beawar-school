@@ -39,25 +39,27 @@ pipeline {
                     docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
 
                     # 2. Remove ALL containers in any state that were mapped to port ${APP_PORT}
-                    #    (docker ps -a lists every state; grep on the port mapping string)
                     docker ps -a --format '{{.ID}} {{.Ports}}' \
                         | grep ':${APP_PORT}->' \
                         | awk '{print \$1}' \
                         | xargs -r docker rm -f || true
 
-                    # 3. Restart the Docker daemon to flush any orphaned iptables/proxy
-                    #    state left by a previously failed port-binding attempt.
+                    # 3. Kill any non-Docker process holding port ${APP_PORT} (nginx, apache, etc.)
+                    sudo fuser -k ${APP_PORT}/tcp 2>/dev/null || true
+                    sleep 2
+
+                    # 4. Restart the Docker daemon to flush any orphaned iptables/proxy state
                     sudo systemctl restart docker
                     sleep 5
 
-                    # 4. Uploads volume
+                    # 5. Uploads volume
                     docker volume create beawar_school_uploads || true
                     docker run --rm \\
                         -v beawar_school_uploads:/dest \\
                         -v \$(pwd)/uploads:/src:ro \\
                         alpine sh -c "cp -rn /src/. /dest/"
 
-                    # 5. Start the new container
+                    # 6. Start the new container
                     docker run -d \\
                         --name ${CONTAINER_NAME} \\
                         --restart unless-stopped \\
