@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     volumes:
-      - uploads_data:/app/uploads
+      - /opt/beawar-school/uploads:/app/uploads
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/auth/admin-exists"]
       interval: 30s
@@ -33,6 +33,3 @@ services:
       # - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - app
-
-volumes:
-  uploads_data:

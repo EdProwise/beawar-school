@@ -52,19 +52,17 @@ pipeline {
                     sudo systemctl restart docker
                     sleep 5
 
-                    # 5. Uploads volume
-                    docker volume create beawar_school_uploads || true
-                    docker run --rm \\
-                        -v beawar_school_uploads:/dest \\
-                        -v \$(pwd)/uploads:/src:ro \\
-                        alpine sh -c "cp -rn /src/. /dest/"
+                    # 5. Ensure the uploads folder exists on the host and sync from workspace
+                    sudo mkdir -p /opt/beawar-school/uploads
+                    sudo rsync -a --ignore-existing ${WORKSPACE}/uploads/ /opt/beawar-school/uploads/
+                    sudo chmod -R 755 /opt/beawar-school/uploads
 
-                    # 6. Start the new container
+                    # 6. Start the new container with bind mount to host uploads folder
                     docker run -d \\
                         --name ${CONTAINER_NAME} \\
                         --restart unless-stopped \\
                         -p ${APP_PORT}:5000 \\
-                        -v beawar_school_uploads:/app/uploads \\
+                        -v /opt/beawar-school/uploads:/app/uploads \\
                         ${IMAGE_NAME}:${IMAGE_TAG}
                 """
             }
