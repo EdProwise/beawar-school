@@ -5,7 +5,9 @@ pipeline {
         IMAGE_NAME     = "${env.DOCKER_IMAGE_NAME ?: 'beawar-school-app'}"
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = "beawar-school-app"
+        TEMP_CONTAINER = "beawar-school-app-new"
         APP_PORT       = "80"
+        TEMP_PORT      = "5001"
     }
 
     options {
@@ -23,41 +25,75 @@ pipeline {
             }
         }
 
-        // ── 2. Build Docker image (.env is already in workspace from git) ───
+        // ── 2. Build Docker image ────────────────────────────────────────────
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} -t ${IMAGE_NAME}:latest ."
             }
         }
 
-        // ── 4. Deploy on the same EC2 host ───────────────────────────────────
+        // ── 3. Sync uploads to host folder ───────────────────────────────────
+        stage('Sync Uploads') {
+            steps {
+                sh """
+                    sudo mkdir -p /opt/beawar-school/uploads
+                    sudo rsync -a --ignore-existing ${WORKSPACE}/uploads/ /opt/beawar-school/uploads/
+                    sudo chmod -R 755 /opt/beawar-school/uploads
+                """
+            }
+        }
+
+        // ── 4. Health check new image BEFORE replacing old container ─────────
+        stage('Pre-Deploy Health Check') {
+            steps {
+                sh """
+                    # Clean up any leftover temp container from previous run
+                    docker rm -f ${TEMP_CONTAINER} 2>/dev/null || true
+
+                    # Start new image on a temp port (old container still running on port 80)
+                    docker run -d \\
+                        --name ${TEMP_CONTAINER} \\
+                        -p ${TEMP_PORT}:5000 \\
+                        -v /opt/beawar-school/uploads:/app/uploads \\
+                        ${IMAGE_NAME}:${IMAGE_TAG}
+
+                    echo "Waiting for new container to start..."
+                    sleep 15
+
+                    # Health check the new container on temp port
+                    curl -f http://localhost:${TEMP_PORT}/api/auth/admin-exists || (docker rm -f ${TEMP_CONTAINER} && exit 1)
+
+                    echo "New image is healthy. Proceeding to swap."
+
+                    # Stop and remove the temp container (will be re-started on port 80 below)
+                    docker rm -f ${TEMP_CONTAINER}
+                """
+            }
+        }
+
+        // ── 5. Swap old container with new one ───────────────────────────────
         stage('Deploy') {
             steps {
                 sh """
-                    # 1. Stop & remove the named container (if running or stopped)
+                    # Stop & remove the old named container
                     docker stop ${CONTAINER_NAME} 2>/dev/null || true
                     docker rm -f ${CONTAINER_NAME} 2>/dev/null || true
 
-                    # 2. Remove ALL containers in any state that were mapped to port ${APP_PORT}
+                    # Remove any other containers still holding port ${APP_PORT}
                     docker ps -a --format '{{.ID}} {{.Ports}}' \
                         | grep ':${APP_PORT}->' \
                         | awk '{print \$1}' \
                         | xargs -r docker rm -f || true
 
-                    # 3. Kill any non-Docker process holding port ${APP_PORT} (nginx, apache, etc.)
+                    # Kill any non-Docker process on port ${APP_PORT}
                     sudo fuser -k ${APP_PORT}/tcp 2>/dev/null || true
                     sleep 2
 
-                    # 4. Restart the Docker daemon to flush any orphaned iptables/proxy state
+                    # Restart Docker daemon to flush iptables/proxy state
                     sudo systemctl restart docker
                     sleep 5
 
-                    # 5. Ensure the uploads folder exists on the host and sync from workspace
-                    sudo mkdir -p /opt/beawar-school/uploads
-                    sudo rsync -a --ignore-existing ${WORKSPACE}/uploads/ /opt/beawar-school/uploads/
-                    sudo chmod -R 755 /opt/beawar-school/uploads
-
-                    # 6. Start the new container with bind mount to host uploads folder
+                    # Start the new container on port 80
                     docker run -d \\
                         --name ${CONTAINER_NAME} \\
                         --restart unless-stopped \\
@@ -68,11 +104,11 @@ pipeline {
             }
         }
 
-        // ── 5. Health check ──────────────────────────────────────────────────
+        // ── 6. Post-deploy health check ──────────────────────────────────────
         stage('Health Check') {
             steps {
                 sh """
-                    echo "Waiting for application to start..."
+                    echo "Waiting for application to start on port ${APP_PORT}..."
                     sleep 15
                     curl -f http://localhost:${APP_PORT}/api/auth/admin-exists || exit 1
                     echo "Health check passed."
@@ -80,7 +116,7 @@ pipeline {
             }
         }
 
-        // ── 6. Cleanup old images ────────────────────────────────────────────
+        // ── 7. Cleanup old images ─────────────────────────────────────────────
         stage('Cleanup') {
             steps {
                 sh "docker image prune -f"
@@ -93,7 +129,7 @@ pipeline {
             echo "Deployment successful! Image: ${IMAGE_NAME}:${IMAGE_TAG}"
         }
         failure {
-            echo "Pipeline failed. Check logs and redeploy."
+            echo "Pipeline failed. Old container was NOT replaced (if failure was before Deploy stage)."
         }
         always {
             cleanWs()
