@@ -4,7 +4,6 @@ import cors from 'cors';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import multer from 'multer';
-import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs';
 
@@ -102,29 +101,6 @@ app.post('/api/storage/upload', (req, res, next) => {
       let filePath = req.file.path;
       let relativePath = path.relative(path.join(process.cwd(), 'uploads'), req.file.path).replace(/\\/g, '/');
 
-      // Automatic WebP conversion for images (improves PSI score)
-      const isImage = req.file.mimetype.startsWith('image/');
-      const isAlreadyWebP = req.file.mimetype === 'image/webp';
-      const isSvg = req.file.mimetype === 'image/svg+xml';
-
-      if (isImage && !isAlreadyWebP && !isSvg) {
-        try {
-          const webpPath = filePath.replace(path.extname(filePath), '.webp');
-          await sharp(filePath)
-            .webp({ quality: 80 })
-            .toFile(webpPath);
-          
-          // Delete original file
-          fs.unlinkSync(filePath);
-          
-          // Update paths
-          filePath = webpPath;
-          relativePath = relativePath.replace(path.extname(relativePath), '.webp');
-        } catch (webpError) {
-          console.error('WebP conversion failed, falling back to original:', webpError);
-        }
-      }
-        
       res.json({ data: { path: relativePath, url: `/uploads/${relativePath}` } });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
