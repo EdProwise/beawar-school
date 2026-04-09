@@ -6,7 +6,7 @@ pipeline {
         IMAGE_TAG      = "${env.BUILD_NUMBER}"
         CONTAINER_NAME = "beawar-school-app"
         TEMP_CONTAINER = "beawar-school-app-new"
-        APP_PORT       = "80"
+        APP_PORT       = "8081"
         TEMP_PORT      = "5001"
     }
 
