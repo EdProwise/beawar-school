@@ -401,6 +401,7 @@ export interface SiteSettings {
   topbar_bg_color: string | null;
   footer_images: string[] | null;
   site_url: string | null;
+  google_tag_id: string | null;
 }
 
 export function useSiteSettings() {

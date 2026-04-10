@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Save, Palette, ExternalLink, Globe, Layout, Info, Phone as PhoneIcon, Share2, ShieldCheck } from "lucide-react";
+import { Loader2, Save, Palette, ExternalLink, Globe, Layout, Info, Phone as PhoneIcon, Share2, ShieldCheck, Tag } from "lucide-react";
 import { FileUpload } from "@/components/admin/FileUpload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -90,6 +90,7 @@ export default function AdminSettings() {
       copyright_text: "",
         topbar_bg_color: "#1f2937",
         footer_images: [] as string[],
+        google_tag_id: "",
       });
 
     const [primaryLinkType, setPrimaryLinkType] = useState<string>("preset");
@@ -131,6 +132,7 @@ export default function AdminSettings() {
                 copyright_text: settings.copyright_text || "",
                 topbar_bg_color: settings.topbar_bg_color || "#1f2937",
                 footer_images: settings.footer_images || [],
+                google_tag_id: settings.google_tag_id || "",
               });
 
         // Initialize link types based on values
@@ -235,6 +237,10 @@ export default function AdminSettings() {
             <TabsTrigger value="footer" className="gap-2">
               <Globe className="w-4 h-4" />
               Footer
+            </TabsTrigger>
+            <TabsTrigger value="google-tag" className="gap-2">
+              <Tag className="w-4 h-4" />
+              Google Tag
             </TabsTrigger>
           </TabsList>
 
@@ -787,6 +793,47 @@ export default function AdminSettings() {
                     />
                   </div>
                 </div>
+            </div>
+          </TabsContent>
+          <TabsContent value="google-tag">
+            <div className="bg-card rounded-xl border border-border p-6 space-y-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Tag className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-semibold">Google Tag</h2>
+              </div>
+
+              <div className="p-4 rounded-lg bg-blue-50 border border-blue-200 text-sm text-blue-800 space-y-1">
+                <p className="font-medium">What is a Google Tag ID?</p>
+                <p>Your Google Tag ID starts with <strong>AW-</strong> (Google Ads) or <strong>G-</strong> (Google Analytics). You can find it in your Google Ads or Google Analytics account under the tag setup instructions.</p>
+                <p>Example: <code className="bg-blue-100 px-1 rounded">AW-17727585651</code> or <code className="bg-blue-100 px-1 rounded">G-XXXXXXXXXX</code></p>
+              </div>
+
+              <div className="space-y-2 max-w-md">
+                <Label htmlFor="google_tag_id">Google Tag ID</Label>
+                <Input
+                  id="google_tag_id"
+                  value={formData.google_tag_id}
+                  onChange={(e) => setFormData({ ...formData, google_tag_id: e.target.value.trim() })}
+                  placeholder="AW-XXXXXXXXXX or G-XXXXXXXXXX"
+                />
+                <p className="text-xs text-muted-foreground">
+                  The Google Tag (gtag.js) script will be automatically injected into every page of the website using this ID. Leave empty to disable tracking.
+                </p>
+              </div>
+
+              {formData.google_tag_id && (
+                <div className="p-4 rounded-lg bg-muted border border-border space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Preview — script that will be injected:</p>
+                  <pre className="text-xs text-foreground overflow-x-auto whitespace-pre-wrap break-all leading-relaxed">{`<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${formData.google_tag_id}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${formData.google_tag_id}');
+</script>`}</pre>
+                </div>
+              )}
             </div>
           </TabsContent>
         </Tabs>
