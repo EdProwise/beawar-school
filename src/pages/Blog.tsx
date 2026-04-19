@@ -262,15 +262,6 @@ export default function Blog() {
                           {stripHtml(post.excerpt) || stripHtml(post.content)}
                         </p>
 
-                        {showTags && post.tags && post.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 mb-4">
-                            {post.tags.slice(0, 3).map(tag => (
-                              <span key={tag} className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-black/50 rounded-lg text-[10px] font-semibold">
-                                <Tag className="w-2.5 h-2.5" /> {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
 
                         <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-50">
                           {showAuthor && post.author_name ? (

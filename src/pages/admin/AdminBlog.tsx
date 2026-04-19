@@ -606,13 +606,11 @@ export default function AdminBlog() {
 
               {/* Excerpt */}
               <div>
-                <Label>Excerpt (Short Summary)</Label>
-                <textarea
+                <RichTextEditor
+                  label="Excerpt (Short Summary)"
                   value={form.excerpt || ""}
-                  onChange={e => setForm(p => ({ ...p, excerpt: e.target.value }))}
-                  rows={3}
+                  onChange={val => setForm(p => ({ ...p, excerpt: val }))}
                   placeholder="Brief summary shown in the listing..."
-                  className="w-full mt-1 rounded-xl border border-input bg-background px-3 py-2 text-sm resize-none focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
                 />
               </div>
 

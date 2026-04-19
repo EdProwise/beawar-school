@@ -338,7 +338,9 @@ app.get('/api/:table', async (req, res) => {
       
       if (sort && typeof sort === 'string') {
         const sortObj: any = {};
-        sortObj[sort] = order === 'desc' ? -1 : 1;
+        // Map snake_case timestamp aliases to MongoDB camelCase fields
+        const sortField = sort === 'created_at' ? 'createdAt' : sort === 'updated_at' ? 'updatedAt' : sort;
+        sortObj[sortField] = order === 'desc' ? -1 : 1;
         query = query.sort(sortObj);
       }
       
